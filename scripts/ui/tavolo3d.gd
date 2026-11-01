@@ -530,6 +530,49 @@ func _carta3d(t: Texture2D, c_px: Vector2, h_px: float, n := 1, id := -1, da_px 
 
 
 var _nazgul_scena: PackedScene
+var _scene_pg := {}
+var _mat_pg: StandardMaterial3D
+## Altezza delle miniature (unità del tavolo): gli hobbit più bassi, Éomer a cavallo più alto.
+const ALTEZZA_PG := {"frodo": 1.1, "pipino": 1.1, "gollum": 0.85, "eomer": 1.8, "gimli": 1.2}
+
+
+## Miniatura dipinta del personaggio (modello 3D con i colori nei vertici), su una basetta,
+## girata verso la camera. null se il modello non c'è.
+func _miniatura(chi: String, pos: Vector3, attivo: bool) -> Node3D:
+	if not _scene_pg.has(chi):
+		var path := "res://assets/modelli/pg_%s.glb" % chi
+		_scene_pg[chi] = load(path) if ResourceLoader.exists(path) else null
+	if _scene_pg[chi] == null:
+		return null
+	if _mat_pg == null:
+		_mat_pg = StandardMaterial3D.new()
+		_mat_pg.vertex_color_use_as_albedo = true
+		_mat_pg.roughness = 0.55
+		_mat_pg.rim_enabled = true
+		_mat_pg.rim = 0.25
+	var h: float = ALTEZZA_PG.get(chi.trim_suffix("_bianco"), 1.5) * (1.15 if attivo else 1.0)
+	var p := Node3D.new()
+	p.position = pos
+	p.set_meta("sagoma", true)
+	p.rotation.y = _rot.y
+	var n: Node3D = _scene_pg[chi].instantiate()
+	n.scale = Vector3.ONE * h
+	p.add_child(n)
+	for mi in n.find_children("*", "MeshInstance3D", true, false):
+		mi.material_override = _mat_pg
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	# basetta; quella del personaggio attivo ha l'anello dorato
+	var base := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = 0.3 if chi not in ["frodo", "pipino", "eomer"] else 0.42
+	cm.bottom_radius = cm.top_radius + 0.02
+	cm.height = 0.05
+	base.mesh = cm
+	base.position.y = 0.025
+	base.material_override = _colore(UI.ORO if attivo else Color(0.1, 0.08, 0.06))
+	p.add_child(base)
+	dinamici.add_child(p)
+	return p
 var _carte_prima := {}
 var ritmo := 1.0
 var _linea3d: Node3D
@@ -819,9 +862,12 @@ func aggiorna(m: Motore, anima := true) -> void:
 		var lista: Array = per_luogo[l]
 		for k in lista.size():
 			var p: String = lista[k]
-			var tex := UI.pedina("gandalf_bianco" if p == "gandalf" and m.pg[p]["bianco"] else p)
-			var pos := _luogo3d(l) + Vector3((k - (lista.size() - 1) / 2.0) * 0.6, 0, -0.1)
-			_segna(_pezzo(tex, pos, 1.45 if p != m.attivo else 1.75, 0.09, Color(0.1, 0.08, 0.06), true), "pg_" + p)
+			var chi: String = "gandalf_bianco" if p == "gandalf" and m.pg[p]["bianco"] else p
+			var pos := _luogo3d(l) + Vector3((k - (lista.size() - 1) / 2.0) * 0.75, 0, -0.1)
+			var mini := _miniatura(chi, pos, p == m.attivo)
+			if mini == null:
+				mini = _pezzo(UI.pedina(chi), pos, 1.45 if p != m.attivo else 1.75, 0.09, Color(0.1, 0.08, 0.06), true)
+			_segna(mini, "pg_" + p)
 	# Nazgûl: il modello 3D sulle regioni
 	for r in m.nazgul:
 		var n: int = m.nazgul[r]
