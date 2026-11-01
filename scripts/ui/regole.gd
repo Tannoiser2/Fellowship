@@ -9,36 +9,36 @@ Il gioco è cooperativo: vincete o perdete tutti insieme. Vincete quando Frodo c
 
 [font_size=28][color=#dcb05c]Il turno[/color][/font_size]
 [b]1. Azioni.[/b] Fai fino a 4 azioni con uno dei tuoi personaggi e fino a 1 con l'altro (prima tutte quelle di uno, poi quelle dell'altro).
-[b]2. Pesca 2 carte giocatore.[/b] Il limite della mano è 7 carte. Se peschi [b]Il cielo si oscura[/b]: la minaccia sale di 1; se l'Occhio è già sulla regione di Frodo perdete 2 speranza, altrimenti l'Occhio va lì; 3 truppe dell'Ombra arrivano nel luogo indicato (con battaglia se ci sono truppe amiche); gli scarti dell'Ombra si rimescolano sopra il mazzo. Se il mazzo è finito, -1 speranza per ogni carta che non potete pescare.
+[b]2. Pesca 2 carte giocatore.[/b] Il limite della mano è 7 carte. Se peschi [b]Oscuramento dei Cieli[/b]: la minaccia sale di 1; se l'Occhio è già sulla regione di Frodo perdete 2 speranza, altrimenti l'Occhio va lì; 3 truppe ombra arrivano nel luogo indicato (con battaglia se ci sono truppe amiche); gli scarti dell'Ombra si rimescolano sopra il mazzo. Se il mazzo è finito, -1 speranza per ogni carta che non potete pescare.
 [b]3. Carte dell'Ombra.[/b] Se ne girano tante quante dice la traccia della minaccia. Di ogni carta si risolve una sola metà, decisa dal dorso della carta che ora è in cima al mazzo: [b]bandiera rossa[/b]: la metà sopra (avanzata); [b]stendardo nero[/b]: la metà sotto (rinforzo).
 
 [font_size=28][color=#dcb05c]Le azioni[/color][/font_size]
-[b]Viaggiare[/b]: vai in un luogo collegato, portando con te se vuoi gli altri personaggi e le truppe amiche del luogo. I [b]percorsi speciali[/b] costano i simboli stampati. Quando viaggia Frodo si spende 1 Furtività oppure si tira una [b]ricerca[/b] nel luogo d'arrivo.
+[b]Viaggiare[/b]: vai in un luogo collegato, portando con te se vuoi gli altri personaggi e le truppe amiche del luogo. I [b]sentieri speciali[/b] costano i simboli stampati. Quando viaggia Frodo si spende 1 Furtività oppure si tira una [b]ricerca[/b] nel luogo d'arrivo.
 [b]Compagnia[/b]: con un personaggio di un altro giocatore nello stesso luogo, date o prendete una carta della regione in cui vi trovate (non i segnalini). Non si usa in solitario.
 [b]Preparare[/b]: in un rifugio scarta una carta regione e prendi il segnalino con il suo simbolo. In solitario la carta deve essere della regione in cui ti trovi.
-[b]Arruolare[/b]: in un luogo con il simbolo di Gondor, Rohirrim, Elfi o Nani spendi 1 Amicizia e aggiungi una truppa di quel colore.
+[b]Radunare[/b]: in un luogo con il simbolo di Gondor, Rohirrim, Elfi o Nani spendi 1 Amicizia e aggiungi una truppa di quel colore.
 [b]Attaccare[/b]: dove ci sono truppe amiche e dell'Ombra, l'Occhio si sposta in quella regione e tiri da 1 a 3 dadi di battaglia (al massimo uno per truppa amica).
-[b]Conquistare[/b]: in una fortezza dell'Ombra senza truppe dell'Ombra e con almeno una truppa amica, spendi 3 Valore. Diventa un rifugio, l'Occhio va lì e guadagnate 2 speranza. Moria, Isengard, Dol Guldur e Umbar conquistate non ricevono più rinforzi.
+[b]Conquistare[/b]: in una roccaforte ombra senza truppe ombra e con almeno una truppa amica, spendi 3 Valore. Diventa un rifugio, l'Occhio va lì e guadagnate 2 speranza. Moria, Isengard, Dol Guldur e Umbar conquistate non ricevono più rinforzi.
 Gli [b]eventi[/b] si giocano in qualsiasi momento e non costano azioni.
 
 [font_size=28][color=#dcb05c]I simboli[/color][/font_size]
-Si spendono scartando una carta regione con quel simbolo o restituendo un segnalino. [b]Amicizia[/b]: arruolare. [b]Valore[/b]: in battaglia toglie 1 truppa dell'Ombra; 3 per conquistare. [b]Furtività[/b]: Frodo viaggia senza ricerca. [b]Resistenza[/b]: ritira un dado di battaglia o di ricerca; Frodo ne spende 5 al Monte Fato (ce ne sono solo 12 in tutto il gioco!).
+Si spendono scartando una carta regione con quel simbolo o restituendo un segnalino. [b]Amicizia[/b]: radunare. [b]Valore[/b]: in battaglia toglie 1 truppa ombra; 3 per conquistare. [b]Furtività[/b]: Frodo viaggia senza ricerca. [b]Resistenza[/b]: ritira un dado di battaglia o di ricerca; Frodo ne spende 5 al Monte Fato (ce ne sono solo 12 in tutto il gioco!).
 
-[font_size=28][color=#dcb05c]Battaglie[/color][/font_size]
-Un attacco tira 1 dado per truppa amica (da 1 a 3); una battaglia causata dall'Ombra tira 1 dado per truppa dell'Ombra (massimo 3). [b]Rotta[/b]: -1 truppa dell'Ombra. [b]Scambio[/b]: -1 dell'Ombra e -1 amica. [b]Travolti[/b]: -1 amica (non nei rifugi). [b]Nazgûl![/b]: se ci sono Nazgûl nella regione, -2 amiche. Dopo il tiro i personaggi presenti possono spendere Resistenza per ritirare dadi e Valore per togliere truppe dell'Ombra. Se in un rifugio restano truppe dell'Ombra e nessuna amica, il rifugio cade: diventa una fortezza dell'Ombra e perdete 3 speranza.
+[font_size=28][color=#dcb05c]Combattimenti[/color][/font_size]
+Un attacco tira 1 dado per truppa amica (da 1 a 3); una battaglia causata dall'Ombra tira 1 dado per truppa ombra (massimo 3). [b]Rotta[/b]: -1 truppa ombra. [b]Scambio[/b]: -1 dell'Ombra e -1 amica. [b]Travolti[/b]: -1 amica (non nei rifugi). [b]Nazgûl![/b]: se ci sono Nazgûl nella regione, -2 amiche. Dopo il tiro i personaggi presenti possono spendere Resistenza per ritirare dadi e Valore per togliere truppe ombra. Se in un rifugio restano truppe ombra e nessuna amica, il rifugio cade: diventa una roccaforte ombra e perdete 3 speranza.
 
-[font_size=28][color=#dcb05c]Ricerche[/color][/font_size]
-Si tira 1 dado per ogni Nazgûl nella regione di Frodo e per ogni truppa dell'Ombra nel suo luogo (al massimo 7). [b]Sfuggito[/b]: niente. [b]Stanchezza[/b]: -1 speranza. [b]Scoperto[/b]: -1 speranza, ma non in un rifugio. [b]Richiamo[/b]: un Nazgûl della regione torna a Mordor. I personaggi presenti possono spendere Resistenza per ritirare dadi.
+[font_size=28][color=#dcb05c]Tiri di ricerca[/color][/font_size]
+Si tira 1 dado per ogni Nazgûl nella regione di Frodo e per ogni truppa ombra nel suo luogo (al massimo 7). [b]Sfuggito[/b]: niente. [b]Stanchezza[/b]: -1 speranza. [b]Scoperto[/b]: -1 speranza, ma non in un rifugio. [b]Richiamo[/b]: un Nazgûl della regione torna a Mordor. I personaggi presenti possono spendere Resistenza per ritirare dadi.
 
 [font_size=28][color=#dcb05c]L'Ombra[/color][/font_size]
-[b]Avanzata[/b]: le truppe dell'Ombra sulla linea di battaglia indicata avanzano di un luogo (prima quelle più avanti), poi si combatte dove incontrano truppe amiche. [b]Rinforzo[/b]: +1 truppa dell'Ombra nel luogo indicato (con battaglia se ci sono truppe amiche), poi un ordine: l'Occhio si volge sulla regione di Frodo (se c'è già, ricerca), 2 Nazgûl si avvicinano a Frodo, oppure 3 Nazgûl vanno da Mordor all'Occhio (se l'Occhio è su Mordor, ne tornano 3 a Mordor). Se mancano truppe dell'Ombra nella riserva, -1 speranza per ognuna.
+[b]Avanzata[/b]: le truppe ombra sulla linea di battaglia indicata avanzano di un luogo (prima quelle più avanti), poi si combatte dove incontrano truppe amiche. [b]Rinforzo[/b]: +1 truppa ombra nel luogo indicato (con battaglia se ci sono truppe amiche), poi un ordine: l'Occhio si volge sulla regione di Frodo (se c'è già, ricerca), 2 Nazgûl si avvicinano a Frodo, oppure 3 Nazgûl vanno da Mordor all'Occhio (se l'Occhio è su Mordor, ne tornano 3 a Mordor). Se mancano truppe ombra nella riserva, -1 speranza per ognuna.
 
 [font_size=28][color=#dcb05c]Il Monte Fato[/color][/font_size]
 Completati gli altri obiettivi, Frodo al Monte Fato spende 5 Resistenza e affronta una ricerca finale con 1 dado in più per ogni speranza mancante (massimo 7). Se resta almeno 1 speranza, avete vinto!
 
 [font_size=28][color=#dcb05c]Difficoltà e solitario[/color][/font_size]
-Introduttiva: 4 «Il cielo si oscura», 4 obiettivi. Standard: 5 e 4. Eroica: 5 e 5. Epica: 6 e 5. Leggendaria: 6 e 6.
-In solitario guidi Frodo e Sam e altri 4 personaggi, che hanno a turno il segnalino: chi lo ha fa 4 azioni, Frodo 1. La mano è unica.
+Introduttiva: 4 «Oscuramento dei Cieli», 4 obiettivi. Standard: 5 e 4. Eroica: 5 e 5. Epica: 6 e 5. Leggendaria: 6 e 6.
+In solitario guidi Frodo & Sam e altri 4 personaggi, che hanno a turno il segnalino: chi lo ha fa 4 azioni, Frodo 1. La mano è unica.
 
 [font_size=28][color=#dcb05c]In questa versione[/color][/font_size]
 Le scelte compaiono nel pannello in basso (anche con i tasti 1–9); si può cliccare direttamente sui luoghi evidenziati della mappa. Passa il mouse su carte, personaggi e obiettivi per leggerli; su un luogo per vedere truppe e collegamenti. La rotellina ingrandisce la mappa, trascinando la si sposta. La partita si salva da sola: dal menu si può continuare.

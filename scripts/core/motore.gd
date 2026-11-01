@@ -41,11 +41,11 @@ var scarti_ombra: Array = []
 var risolte: Array = []            # carte Ombra di questo turno (spazio «Risolvi»)
 var obiettivi: Array = []          # {codice, fatto}
 var su_carta: Dictionary = {}      # codice obiettivo -> truppe/segnalini sopra la carta
-var eored: Dictionary = {}         # regione -> true (spazi occupati su «Cavalcare con l'éored»)
+var eored: Dictionary = {}         # regione -> true (spazi occupati su «Cavalcare con gli Éored»)
 var hobbit: Dictionary = {}        # tipo di rifugio -> true
 var nazgul_eowyn := 0
 var aragorn_erech := false
-var gandalf_attesa := false        # Gandalf dopo il Balrog: torna alla prossima carta Il cielo si oscura
+var gandalf_attesa := false        # Gandalf dopo il Balrog: torna alla prossima carta Oscuramento dei Cieli
 var boromir_sostituire := false
 var turno_di := 0
 var turno := 0
@@ -198,7 +198,7 @@ func prepara(config: Dictionary) -> void:
 	for i in n_g:
 		for k in mano:
 			giocatori[i]["mano"].append(giocatore_carte.pop_back())
-	# mazzo a pile con Il cielo si oscura
+	# mazzo a pile con Oscuramento dei Cieli
 	var cieli: Array = []
 	for c in D["carte_cieli"]:
 		cieli.append(int(c["id"]))
@@ -583,7 +583,7 @@ func opzioni_azione(p: String) -> Array:
 		# Arruolare
 		var col: String = Dati.luogo(l)["arruolo"]
 		if col != "" and p != "gollum" and riserva_truppe[col] > 0 and (_arruolo_gratis(p, col) or disponibili(pos, "amicizia") >= 1) and stato[l]["tipo"] != "fortezza":
-			o.append({"testo": "Arruola: +%d truppa %s%s" % [2 if p == "gandalf" and riserva_truppe[col] > 1 else 1, Dati.NOMI_ARMATE[col], "" if _arruolo_gratis(p, col) else " (1 Amicizia)"], "chiave": "arruola", "luogo": l})
+			o.append({"testo": "Raduna: +%d truppa %s%s" % [2 if p == "gandalf" and riserva_truppe[col] > 1 else 1, Dati.NOMI_ARMATE[col], "" if _arruolo_gratis(p, col) else " (1 Amicizia)"], "chiave": "arruola", "luogo": l})
 		# Attacco
 		if p != "gollum" and amiche(l) > 0 and stato[l]["ombra"] > 0:
 			for nd in range(1, min(3, amiche(l)) + 1):
@@ -680,27 +680,27 @@ func _azioni_speciali(p: String, l: String, pos: int) -> Array:
 	match p:
 		"aragorn":
 			if not usi.get("anduril", false) and obiettivi_fatti() > 0 and stato[l]["ombra"] > 0:
-				o.append({"testo": "Andúril: togli 1 truppa dell'Ombra qui", "chiave": "anduril"})
+				o.append({"testo": "Andúril: togli 1 truppa ombra qui", "chiave": "anduril"})
 		"galadriel":
 			if not mazzo.is_empty():
 				o.append({"testo": "Specchio di Galadriel: guarda e riordina le prime 4 carte", "chiave": "specchio"})
 		"gimli":
 			if not usi.get("arte_nani", false) and riserva_simboli["valore"] > 0:
-				o.append({"testo": "Arte dei Nani: prendi 1 Valore", "chiave": "arte_nani"})
+				o.append({"testo": "Arte Nanica: prendi 1 Valore", "chiave": "arte_nani"})
 		"legolas":
 			if not usi.get("passo_silenzioso", false) and riserva_simboli["furtivita"] > 0:
-				o.append({"testo": "Passo silenzioso: prendi 1 Furtività", "chiave": "passo_silenzioso"})
+				o.append({"testo": "Camminare Silenziosamente: prendi 1 Furtività", "chiave": "passo_silenzioso"})
 		"pipino":
 			if not usi.get("amico_leale", false) and riserva_simboli["amicizia"] > 0:
-				o.append({"testo": "Amico leale: prendi 1 Amicizia", "chiave": "amico_leale"})
+				o.append({"testo": "Amici Fedeli: prendi 1 Amicizia", "chiave": "amico_leale"})
 			if in_gioco("frodo") and pg["frodo"]["luogo"] == l and disponibili(pos, "amicizia") >= 3 and speranza < Dati.SPERANZA_MAX:
-				o.append({"testo": "Cantaci una canzone! (3 Amicizia: +2 speranza)", "chiave": "canzone"})
+				o.append({"testo": "Dacci una Canzone! (3 Amicizia: +2 speranza)", "chiave": "canzone"})
 		"gollum":
 			if not usi.get("strisciante", false):
 				for id in scarti:
 					var c := Dati.carta(id)
 					if c.get("tipo", "") == "regione" and c["simbolo"] == "furtivita":
-						o.append({"testo": "Strisciante: prendi dagli scarti la carta Furtività (%s)" % Dati.nome_regione(c["regione"]), "chiave": "strisciante", "carta": id})
+						o.append({"testo": "Servile: prendi dagli scarti la carta Furtività (%s)" % Dati.nome_regione(c["regione"]), "chiave": "strisciante", "carta": id})
 		"faramir":
 			if not usi.get("eldar", false) and e_rifugio(l):
 				for id in scarti:
@@ -780,10 +780,10 @@ func _opzioni_libere() -> Array:
 			bersagli.append_array(Dati.vicini(l).keys())
 			for b in bersagli:
 				if stato[b]["ombra"] > 0:
-					o.append({"testo": "Tiro sicuro: togli 1 truppa dell'Ombra a %s (1 Furtività)" % Dati.nome(b), "chiave": "tiro_sicuro", "luogo": b})
+					o.append({"testo": "Colpo Sicuro: togli 1 truppa ombra a %s (1 Furtività)" % Dati.nome(b), "chiave": "tiro_sicuro", "luogo": b})
 			var r := Dati.regione(l)
 			if nazgul[r] > 0 and r != "mordor":
-				o.append({"testo": "Tiro sicuro: rimanda a Mordor 1 Nazgûl (1 Furtività)", "chiave": "tiro_nazgul"})
+				o.append({"testo": "Colpo Sicuro: rimanda a Mordor 1 Nazgûl (1 Furtività)", "chiave": "tiro_nazgul"})
 	if in_gioco("pipino"):
 		var pos := posto_di("pipino")
 		var r := Dati.regione(pg["pipino"]["luogo"])
@@ -792,7 +792,7 @@ func _opzioni_libere() -> Array:
 				if nazgul[r2] > 0:
 					o.append({"testo": "Distrarre: attira fino a 2 Nazgûl da %s (1 Amicizia)" % Dati.nome_regione(r2), "chiave": "distrarre", "da_regione": r2})
 	if in_gioco("galadriel") and e_rifugio(pg["galadriel"]["luogo"]) and not eventi_inutilizzati.is_empty() and disponibili(posto_di("galadriel"), "furtivita") >= 1:
-		o.append({"testo": "Signora della Luce: pesca un evento non usato (1 Furtività)", "chiave": "signora_luce"})
+		o.append({"testo": "Dama della Luce: pesca un evento non usato (1 Furtività)", "chiave": "signora_luce"})
 	return o
 
 
@@ -825,11 +825,11 @@ func _esegui_azione(p: String, o: Dictionary) -> void:
 		"arruola":
 			var col: String = Dati.luogo(l)["arruolo"]
 			if not _arruolo_gratis(p, col):
-				await paga(pos, {"amicizia": 1}, "Arruolare")
+				await paga(pos, {"amicizia": 1}, "Radunare")
 			var n := 2 if p == "gandalf" else 1
 			n = min(n, riserva_truppe[col])
 			aggiungi_truppe(l, col, n)
-			_log("%s arruola %d truppa %s a %s." % [nome_pg(p), n, Dati.NOMI_ARMATE[col], Dati.nome(l)])
+			_log("%s raduna %d truppa %s a %s." % [nome_pg(p), n, Dati.NOMI_ARMATE[col], Dati.nome(l)])
 			_controlla_gollum(l)
 		"attacca":
 			sposta_occhio(Dati.regione(l), "attacco a %s" % Dati.nome(l))
@@ -841,9 +841,9 @@ func _esegui_azione(p: String, o: Dictionary) -> void:
 		"anduril":
 			usi["anduril"] = true
 			togli_ombra(l, 1)
-			_log("Andúril: Aragorn toglie 1 truppa dell'Ombra a %s." % Dati.nome(l))
+			_log("Andúril: Aragorn toglie 1 truppa ombra a %s." % Dati.nome(l))
 		"specchio":
-			await _riordina_cima(pos, 4, false, "Lo Specchio di Galadriel")
+			await _riordina_cima(pos, 4, false, "Specchio di Galadriel")
 		"arte_nani":
 			usi["arte_nani"] = true
 			prendi_simbolo(pos, "valore")
@@ -854,8 +854,8 @@ func _esegui_azione(p: String, o: Dictionary) -> void:
 			usi["amico_leale"] = true
 			prendi_simbolo(pos, "amicizia")
 		"canzone":
-			await paga(pos, {"amicizia": 3}, "Cantaci una canzone!")
-			cambia_speranza(2, "Cantaci una canzone!")
+			await paga(pos, {"amicizia": 3}, "Dacci una Canzone!")
+			cambia_speranza(2, "Dacci una Canzone!")
 		"strisciante":
 			usi["strisciante"] = true
 			scarti.erase(int(o["carta"]))
@@ -869,21 +869,21 @@ func _esegui_azione(p: String, o: Dictionary) -> void:
 			await gioca_evento(int(o["da"]), int(o["carta"]))
 		"tiro_sicuro":
 			costa = false
-			await paga(posto_di("legolas"), {"furtivita": 1}, "Tiro sicuro")
+			await paga(posto_di("legolas"), {"furtivita": 1}, "Colpo Sicuro")
 			togli_ombra(o["luogo"], 1)
 			if obiettivo_attivo("sei"):
 				su_carta["sei"] = int(su_carta.get("sei", 0)) + 1
 				riserva_ombra -= 1
-				_log("Tiro sicuro: la truppa va su «Fanno sei!» (%d/6)." % su_carta["sei"])
+				_log("Colpo Sicuro: la truppa va su «Con Questo Fanno Sei!» (%d/6)." % su_carta["sei"])
 			else:
-				_log("Tiro sicuro: Legolas toglie 1 truppa dell'Ombra a %s." % Dati.nome(o["luogo"]))
+				_log("Colpo Sicuro: Legolas toglie 1 truppa ombra a %s." % Dati.nome(o["luogo"]))
 		"tiro_nazgul":
 			costa = false
-			await paga(posto_di("legolas"), {"furtivita": 1}, "Tiro sicuro")
+			await paga(posto_di("legolas"), {"furtivita": 1}, "Colpo Sicuro")
 			var r := Dati.regione(pg["legolas"]["luogo"])
 			nazgul[r] -= 1
 			nazgul["mordor"] += 1
-			_log("Tiro sicuro: un Nazgûl torna a Mordor.")
+			_log("Colpo Sicuro: un Nazgûl torna a Mordor.")
 		"distrarre":
 			costa = false
 			await paga(posto_di("pipino"), {"amicizia": 1}, "Distrarre")
@@ -891,10 +891,10 @@ func _esegui_azione(p: String, o: Dictionary) -> void:
 			var n: int = min(2, nazgul[o["da_regione"]], 4 - nazgul[r])
 			nazgul[o["da_regione"]] -= n
 			nazgul[r] += n
-			_log("Merry e Pipino attirano %d Nazgûl in %s." % [n, Dati.nome_regione(r)])
+			_log("Merry & Pipino attirano %d Nazgûl in %s." % [n, Dati.nome_regione(r)])
 		"signora_luce":
 			costa = false
-			await paga(posto_di("galadriel"), {"furtivita": 1}, "Signora della Luce")
+			await paga(posto_di("galadriel"), {"furtivita": 1}, "Dama della Luce")
 			var e: int = eventi_inutilizzati.pop_at(rng.randi_range(0, eventi_inutilizzati.size() - 1))
 			_log("Galadriel pesca l'evento «%s»." % Dati.carta(e)["nome"])
 			await dai_carta(posto_di("galadriel"), e)
@@ -977,7 +977,7 @@ func _viaggio(p: String, dest: String, costo: Dictionary, passi: int, senza_rice
 				else:
 					truppe[x["armata"]] -= 1
 	if not costo.is_empty():
-		await paga(pos, costo, "Percorso speciale")
+		await paga(pos, costo, "Sentiero speciale")
 	var con_frodo: bool = p == "frodo" or compagni.has("frodo")
 	# muove tutti
 	pg[p]["luogo"] = dest
@@ -1030,10 +1030,10 @@ func _controlla_aragorn_erech(p: String, da: String, dest: String) -> void:
 		await _controlla_rifugi()
 
 
-## «Ci ha ingannati!»: Gollum, Frodo e truppe amiche nello stesso luogo costano 1 speranza.
+## «Ci Hanno Ingannato!»: Gollum, Frodo e truppe amiche nello stesso luogo costano 1 speranza.
 func _controlla_gollum(l: String) -> void:
 	if in_gioco("gollum") and in_gioco("frodo") and pg["gollum"]["luogo"] == l and pg["frodo"]["luogo"] == l and amiche(l) > 0:
-		cambia_speranza(-1, "Ci ha ingannati! (Gollum, Frodo e truppe amiche a %s)" % Dati.nome(l))
+		cambia_speranza(-1, "Ci Hanno Ingannato! (Gollum, Frodo e truppe amiche a %s)" % Dati.nome(l))
 
 
 # -------------------------------------------------------------------------------------
@@ -1083,14 +1083,14 @@ func _prepara(p: String, id: int) -> void:
 	if p == "frodo" and not usi.get("elrond", false) and e_rifugio(l) and c["regione"] == Dati.regione(l) and riserva_simboli["amicizia"] > 0:
 		usi["elrond"] = true
 		prendi_simbolo(pos, "amicizia")
-		_log("Il sostegno di Elrond: Frodo prende anche 1 Amicizia.")
+		_log("Sostegno di Elrond: Frodo prende anche 1 Amicizia.")
 	if p == "arwen" and stato[l]["truppe"]["elfi"] > 0:
 		var op: Array = [{"testo": "Nessuno"}]
 		for q in pg:
 			if q != "arwen" and in_gioco(q) and Dati.regione(pg[q]["luogo"]) == c["regione"] and pg[q]["luogo"] != l:
 				op.append({"testo": "Manda 1 truppa elfica da %s" % nome_pg(q), "pg": q, "luogo": pg[q]["luogo"]})
 		if op.size() > 1:
-			var r := await chiedi(turno_di, {"tipo": "scelta", "titolo": "Mandare aiuto", "testo": "Arwen può mandare 1 truppa elfica a un personaggio nella regione della carta.", "opzioni": op, "conferma": true})
+			var r := await chiedi(turno_di, {"tipo": "scelta", "titolo": "Inviare Aiuto", "testo": "Arwen può mandare 1 truppa elfica a un personaggio nella regione della carta.", "opzioni": op, "conferma": true})
 			if r > 0:
 				stato[l]["truppe"]["elfi"] -= 1
 				stato[op[r]["luogo"]]["truppe"]["elfi"] += 1
@@ -1098,13 +1098,13 @@ func _prepara(p: String, id: int) -> void:
 	if p == "legolas" and not usi.get("vista_acuta", false) and not mazzo_ombra.is_empty():
 		usi["vista_acuta"] = true
 		var top: int = mazzo_ombra.back()
-		_log("Vista acuta: la prima carta dell'Ombra è «%s»." % descrivi_ombra(top))
+		_log("Vista Acuta: la prima carta dell'Ombra è «%s»." % descrivi_ombra(top))
 		evento.emit("guarda_ombra", {"carte": [top]})
 	if p == "gollum" and stato[l]["ombra"] > 0:
 		var op: Array = [{"testo": "Nessuna"}]
 		for v in Dati.vicini(l):
-			op.append({"testo": "Sposta 1 truppa dell'Ombra a %s" % Dati.nome(v), "luogo": v})
-		var r := await chiedi(turno_di, {"tipo": "scelta", "titolo": "Astuto", "testo": "Gollum può spostare 1 truppa dell'Ombra in un luogo vicino (senza battaglia).", "opzioni": op, "conferma": true})
+			op.append({"testo": "Sposta 1 truppa ombra a %s" % Dati.nome(v), "luogo": v})
+		var r := await chiedi(turno_di, {"tipo": "scelta", "titolo": "Astuto", "testo": "Gollum può spostare 1 truppa ombra in un luogo vicino (senza battaglia).", "opzioni": op, "conferma": true})
 		if r > 0:
 			stato[l]["ombra"] -= 1
 			stato[op[r]["luogo"]]["ombra"] += 1
@@ -1205,7 +1205,7 @@ func _nome_carta(id: int) -> String:
 		"evento":
 			return "evento «%s»" % c["nome"]
 		"cieli":
-			return "Il cielo si oscura"
+			return "Oscuramento dei Cieli"
 	return str(id)
 
 
@@ -1232,13 +1232,13 @@ func togli_ombra(l: String, n: int) -> int:
 	return k
 
 
-## Aggiunge truppe dell'Ombra (perdendo speranza per quelle che mancano) e, se richiesto, tira la battaglia.
+## Aggiunge truppe ombra (perdendo speranza per quelle che mancano) e, se richiesto, tira la battaglia.
 func aggiungi_ombra(l: String, n: int, con_battaglia: bool) -> void:
 	var k: int = min(n, riserva_ombra)
 	stato[l]["ombra"] += k
 	riserva_ombra -= k
 	if k < n:
-		cambia_speranza(-(n - k), "mancano truppe dell'Ombra nella riserva")
+		cambia_speranza(-(n - k), "mancano truppe ombra nella riserva")
 	if con_battaglia and amiche(l) > 0 and esito == "":
 		await battaglia(l, min(3, stato[l]["ombra"]), false, "")
 	await _controlla_rifugi()
@@ -1268,7 +1268,7 @@ func cambia_speranza(n: int, perche: String) -> void:
 		_log("Frodo ha perso ogni speranza. L'Ombra copre la Terra di Mezzo.")
 
 
-## Rifugi caduti: truppe dell'Ombra e nessuna truppa amica → fortezza dell'Ombra, -3 speranza.
+## Rifugi caduti: truppe ombra e nessuna truppa amica → roccaforte ombra, -3 speranza.
 func _controlla_rifugi() -> void:
 	for l in stato:
 		if e_rifugio(l) and stato[l]["ombra"] > 0 and amiche(l) == 0:
@@ -1309,14 +1309,14 @@ func battaglia(l: String, dadi: int, attacco: bool, chi: String, imboscata := fa
 	var r := Dati.regione(l)
 	var esiti := tira(dadi, Dati.FACCE_BATTAGLIA)
 	evento.emit("dadi", {"tipo": "battaglia", "facce": esiti.duplicate(), "luogo": l})
-	_log("Battaglia a %s: %s." % [Dati.nome(l), _testo_facce(esiti)])
+	_log("Combattimento a %s: %s." % [Dati.nome(l), _testo_facce(esiti)])
 	var presenti := personaggi_in(l)
 	var tolte_ombra := 0
 	var valore_speso := 0
 	var tom := true
 	# modifiche dopo il tiro
 	while esito == "":
-		var op: Array = [{"testo": "Risolvi la battaglia: %s" % _testo_facce(esiti), "chiave": "ok"}]
+		var op: Array = [{"testo": "Risolvi il combattimento: %s" % _testo_facce(esiti), "chiave": "ok"}]
 		var paganti := _paganti(presenti)
 		for pos in paganti:
 			var who := "" if solo else " (%s)" % giocatori[pos]["nome"]
@@ -1325,12 +1325,12 @@ func battaglia(l: String, dadi: int, attacco: bool, chi: String, imboscata := fa
 					if esiti[k] != "rotta":
 						op.append({"testo": "Ritira il dado %d (%s) con 1 Resistenza%s" % [k + 1, Dati.NOMI_FACCE[esiti[k]], who], "chiave": "ritira", "dado": k, "pos": pos})
 			if disponibili(pos, "valore") > 0 and stato[l]["ombra"] - tolte_ombra > 0:
-				op.append({"testo": "Mostra valore: togli 1 truppa dell'Ombra con 1 Valore%s" % who, "chiave": "valore", "pos": pos})
+				op.append({"testo": "Mostra valore: togli 1 truppa ombra con 1 Valore%s" % who, "chiave": "valore", "pos": pos})
 		if presente("gandalf", l) and disponibili(posto_di("gandalf"), "valore") > 0:
 			var bianco: bool = pg["gandalf"]["bianco"]
 			for k in esiti.size():
 				if esiti[k] != "rotta":
-					op.append({"testo": "Luce e fiamma: dado %d in Rotta (1 Valore%s)" % [k + 1, ", tutti i dadi" if bianco else ""], "chiave": "fiamma", "dado": k})
+					op.append({"testo": "Luce e Fiamme: dado %d in Rotta (1 Valore%s)" % [k + 1, ", tutti i dadi" if bianco else ""], "chiave": "fiamma", "dado": k})
 					if bianco:
 						break
 		if presente("galadriel", l) and stato[l]["truppe"]["elfi"] > 0 and not usi.get("nenya_battaglia", false):
@@ -1349,7 +1349,7 @@ func battaglia(l: String, dadi: int, attacco: bool, chi: String, imboscata := fa
 			var t := _chi_ha_evento("tom_bombadil")
 			if t >= 0:
 				op.append({"testo": "Tom Bombadil: ritira fino a 3 dadi", "chiave": "tom", "pos": t})
-		var sc := await chiedi(turno_di, {"tipo": "battaglia", "titolo": "Battaglia a %s" % Dati.nome(l), "testo": _testo_facce(esiti), "opzioni": op, "facce": esiti, "luogo": l})
+		var sc := await chiedi(turno_di, {"tipo": "battaglia", "titolo": "Combattimento a %s" % Dati.nome(l), "testo": _testo_facce(esiti), "opzioni": op, "facce": esiti, "luogo": l})
 		var x: Dictionary = op[sc]
 		match x["chiave"]:
 			"ok":
@@ -1362,7 +1362,7 @@ func battaglia(l: String, dadi: int, attacco: bool, chi: String, imboscata := fa
 				tolte_ombra += togli_ombra(l, 1)
 				valore_speso += 1
 			"fiamma":
-				await paga(posto_di("gandalf"), {"valore": 1}, "Luce e fiamma")
+				await paga(posto_di("gandalf"), {"valore": 1}, "Luce e Fiamme")
 				if pg["gandalf"]["bianco"]:
 					for k in esiti.size():
 						esiti[k] = "rotta"
@@ -1375,7 +1375,7 @@ func battaglia(l: String, dadi: int, attacco: bool, chi: String, imboscata := fa
 				await paga(posto_di("faramir"), {"furtivita": 1}, "Imboscata")
 				esiti[x["dado"]] = "rotta"
 			"eowyn":
-				await paga(posto_di("eowyn"), {"valore": 2}, "Non più fanciulla dello scudo")
+				await paga(posto_di("eowyn"), {"valore": 2}, "Non Più Fanciulla dello Scudo")
 				esiti[x["dado"]] = "nazgul"
 			"tom":
 				tom = false
@@ -1415,7 +1415,7 @@ func battaglia(l: String, dadi: int, attacco: bool, chi: String, imboscata := fa
 	tolte_ombra += tolte
 	if perdite > 0:
 		await _perdi_amiche(l, perdite)
-	_log("Esito: tolte %d truppe dell'Ombra, perse %d truppe amiche." % [tolte_ombra, min(perdite, prima_amiche)])
+	_log("Esito: tolte %d truppe ombra, perse %d truppe amiche." % [tolte_ombra, min(perdite, prima_amiche)])
 	# Cavalcare con l'éored
 	if chi == "eomer" and attacco and obiettivo_attivo("eored") and tolte_ombra > 0 and prima_amiche > 0:
 		var reg := Dati.regione(pg["eomer"]["luogo"])
@@ -1424,7 +1424,7 @@ func battaglia(l: String, dadi: int, attacco: bool, chi: String, imboscata := fa
 			eored[reg] = true
 			riserva_ombra -= 1
 			su_carta["eored"] = eored.size()
-			_log("Una truppa dell'Ombra va sullo spazio %s di «Cavalcare con l'éored» (%d/4)." % [Dati.nome_regione(reg), eored.size()])
+			_log("Una truppa ombra va sullo spazio %s di «Cavalcare con gli Éored» (%d/4)." % [Dati.nome_regione(reg), eored.size()])
 	# Boromir riscatta il suo onore
 	if obiettivo_attivo("boromir") and presente("boromir", l) and personaggi_in(l).size() > 1 and prima_amiche > 0 and amiche(l) == 0:
 		await completa("boromir")
@@ -1509,23 +1509,23 @@ func ricerca(perche: String, finale := false, extra := 0) -> bool:
 	var pf := posto_di("frodo")
 	var ignora := false
 	if not finale and stato[l]["ombra"] > 0 and speranza > 1:
-		if await _si_no(pf, "Mettere l'Anello", "Prima della ricerca (%s), Frodo può mettere l'Anello: ignora le %d truppe dell'Ombra, ma perde 1 speranza e l'Occhio si volge su di lui." % [perche, stato[l]["ombra"]], "Metti l'Anello", "No", "anello_ricerca"):
+		if await _si_no(pf, "Indossare l'Anello", "Prima della ricerca (%s), Frodo può mettere l'Anello: ignora le %d truppe ombra, ma perde 1 speranza e l'Occhio si volge su di lui." % [perche, stato[l]["ombra"]], "Metti l'Anello", "No", "anello_ricerca"):
 			ignora = true
 			cambia_speranza(-1, "Frodo mette l'Anello")
 			sposta_occhio(r, "l'Anello")
 	var n := dadi_ricerca(extra, ignora)
 	if n <= 0:
-		_log("Ricerca (%s): nessun dado da tirare." % perche)
+		_log("Tiro di ricerca (%s): nessun dado da tirare." % perche)
 		return true
 	var esiti := tira(n, Dati.FACCE_RICERCA)
 	evento.emit("dadi", {"tipo": "ricerca", "facce": esiti.duplicate(), "luogo": l})
-	_log("Ricerca (%s): %s." % [perche, _testo_facce(esiti)])
+	_log("Tiro di ricerca (%s): %s." % [perche, _testo_facce(esiti)])
 	var presenti := personaggi_in(l)
 	var ignorati := 0
 	var aragorn := presente("aragorn", l)
 	var tom := true
 	while esito == "":
-		var op: Array = [{"testo": "Risolvi la ricerca: %s" % _testo_facce(esiti), "chiave": "ok"}]
+		var op: Array = [{"testo": "Risolvi il tiro di ricerca: %s" % _testo_facce(esiti), "chiave": "ok"}]
 		for pos in _paganti(presenti):
 			if disponibili(pos, "resistenza") > 0:
 				for k in esiti.size():
@@ -1538,12 +1538,12 @@ func ricerca(perche: String, finale := false, extra := 0) -> bool:
 		if disponibili(pf, "amicizia") > 0:
 			for k in esiti.size():
 				if esiti[k] in ["stanchezza", "scoperto"]:
-					op.append({"testo": "L'aiuto di Sam: ignora il dado %d con 1 Amicizia" % [k + 1], "chiave": "sam", "dado": k})
+					op.append({"testo": "Aiuto di Sam: ignora il dado %d con 1 Amicizia" % [k + 1], "chiave": "sam", "dado": k})
 		if tom:
 			var t := _chi_ha_evento("tom_bombadil")
 			if t >= 0:
 				op.append({"testo": "Tom Bombadil: ritira fino a 3 dadi", "chiave": "tom"})
-		var sc := await chiedi(turno_di, {"tipo": "ricerca", "titolo": "Ricerca: %s" % perche, "testo": _testo_facce(esiti), "opzioni": op, "facce": esiti, "luogo": l})
+		var sc := await chiedi(turno_di, {"tipo": "ricerca", "titolo": "Tiro di ricerca: %s" % perche, "testo": _testo_facce(esiti), "opzioni": op, "facce": esiti, "luogo": l})
 		var x: Dictionary = op[sc]
 		match x["chiave"]:
 			"ok":
@@ -1555,7 +1555,7 @@ func ricerca(perche: String, finale := false, extra := 0) -> bool:
 				aragorn = false
 				esiti[x["dado"]] = tira(1, Dati.FACCE_RICERCA)[0]
 			"sam":
-				await paga(pf, {"amicizia": 1}, "L'aiuto di Sam")
+				await paga(pf, {"amicizia": 1}, "Aiuto di Sam")
 				esiti[x["dado"]] = "sfuggito"
 			"tom":
 				tom = false
@@ -1616,7 +1616,7 @@ func _pesca_carte() -> void:
 
 func _cielo_si_oscura(id: int) -> void:
 	var c := Dati.carta(id)
-	_log("IL CIELO SI OSCURA!")
+	_log("OSCURAMENTO DEI CIELI!")
 	evento.emit("cieli", {"carta": id})
 	# 1. l'Ombra cresce
 	minaccia = min(minaccia + 1, Dati.MINACCIA.size() - 1)
@@ -1629,7 +1629,7 @@ func _cielo_si_oscura(id: int) -> void:
 	if esito != "":
 		return
 	# 3. Col favore delle tenebre
-	_log("Col favore delle tenebre: 3 truppe dell'Ombra a %s." % Dati.nome(c["luogo"]))
+	_log("Col favore delle tenebre: 3 truppe ombra a %s." % Dati.nome(c["luogo"]))
 	await aggiungi_ombra(c["luogo"], 3, true)
 	# 4. Il pericolo aumenta
 	_mescola(scarti_ombra)
@@ -1729,7 +1729,7 @@ func avanzata(lid: String) -> void:
 			mosse = true
 	evento.emit("avanzata", {"linea": lid})
 	if not mosse:
-		_log("Nessuna truppa dell'Ombra su questa linea.")
+		_log("Nessuna truppa ombra su questa linea.")
 	for k in range(p.size() - 1, -1, -1):
 		var l: String = p[k]
 		if stato[l]["ombra"] > 0 and amiche(l) > 0 and esito == "":
@@ -1742,7 +1742,7 @@ func rinforzo(c: Dictionary) -> void:
 	if stato[l]["liberata"] or e_rifugio(l):
 		_log("RINFORZO a %s: il luogo è stato liberato, nessuna truppa." % Dati.nome(l))
 	else:
-		_log("RINFORZO: +1 truppa dell'Ombra a %s." % Dati.nome(l))
+		_log("RINFORZO: +1 truppa ombra a %s." % Dati.nome(l))
 		await aggiungi_ombra(l, 1, true)
 	if esito != "":
 		return
@@ -1922,9 +1922,9 @@ func gioca_evento(pos: int, id: int) -> void:
 			var op: Array = []
 			for l in stato:
 				if stato[l]["ombra"] > 0:
-					op.append({"testo": "%s (%d truppe dell'Ombra)" % [Dati.nome(l), stato[l]["ombra"]], "luogo": l})
+					op.append({"testo": "%s (%d truppe ombra)" % [Dati.nome(l), stato[l]["ombra"]], "luogo": l})
 			if not op.is_empty():
-				var l: String = op[await chiedi(turno_di, {"tipo": "luogo", "titolo": c["nome"], "testo": "Da dove togliete fino a 2 truppe dell'Ombra?", "opzioni": op})]["luogo"]
+				var l: String = op[await chiedi(turno_di, {"tipo": "luogo", "titolo": c["nome"], "testo": "Da dove togliete fino a 2 truppe ombra?", "opzioni": op})]["luogo"]
 				togli_ombra(l, 2)
 		"preveggenza_elrond":
 			await _riordina_cima(turno_di, 4, true, c["nome"])
@@ -1969,7 +1969,7 @@ func gioca_evento(pos: int, id: int) -> void:
 				if r == 0:
 					break
 				if not op[r]["costo"].is_empty():
-					await paga(posto_di(p), op[r]["costo"], "Percorso speciale")
+					await paga(posto_di(p), op[r]["costo"], "Sentiero speciale")
 				var da: String = pg[p]["luogo"]
 				pg[p]["luogo"] = op[r]["luogo"]
 				_log("%s viaggia a %s." % [nome_pg(p), Dati.nome(op[r]["luogo"])])
@@ -2120,7 +2120,7 @@ func gioca_evento(pos: int, id: int) -> void:
 				if stato[l]["ombra"] > 0:
 					op.append({"testo": "%s (%d)" % [Dati.nome(l), stato[l]["ombra"]], "luogo": l})
 			if not op.is_empty():
-				var l: String = op[await chiedi(turno_di, {"tipo": "luogo", "titolo": c["nome"], "testo": "Da quale luogo se ne vanno le truppe dell'Ombra?", "opzioni": op})]["luogo"]
+				var l: String = op[await chiedi(turno_di, {"tipo": "luogo", "titolo": c["nome"], "testo": "Da quale luogo se ne vanno le truppe ombra?", "opzioni": op})]["luogo"]
 				while stato[l]["ombra"] > 0:
 					var op2: Array = []
 					for v in Dati.vicini(l):
@@ -2135,7 +2135,7 @@ func gioca_evento(pos: int, id: int) -> void:
 
 func _battaglia_facoltativa(l: String) -> void:
 	if stato[l]["ombra"] > 0 and amiche(l) > 0:
-		if await _si_no(turno_di, "Battaglia", "Tirate una battaglia a %s? (l'Occhio si volge su %s)" % [Dati.nome(l), Dati.nome_regione(Dati.regione(l))], "Tira", "No", "battaglia_facoltativa", {"luogo": l}):
+		if await _si_no(turno_di, "Combattimento", "Effettuate un tiro di combattimento a %s? (l'Occhio si volge su %s)" % [Dati.nome(l), Dati.nome_regione(Dati.regione(l))], "Tira", "No", "battaglia_facoltativa", {"luogo": l}):
 			sposta_occhio(Dati.regione(l), "battaglia")
 			await battaglia(l, min(3, amiche(l)), true, "")
 

@@ -21,7 +21,12 @@ Si gioca nel browser: https://tannoiser2.github.io/Fellowship/
   online** con gli amici (Firebase, radice `fellowship/rooms`).
 - **Mappa 2D** dal tabellone del modulo TTS, con luoghi cliccabili, ingrandimento e descrizione di ogni
   luogo; **tavolo 3D** con le sagome dei personaggi in piedi, le truppe, i Nazgûl e l'Occhio di Sauron.
-- Testi italiani per carte, personaggi e obiettivi; passando il mouse si vedono le carte grandi.
+- **Carte dalle scansioni dell'edizione italiana** (Ombra, regione, eventi, Oscuramento dei Cieli,
+  20 obiettivi su 24, personaggi e dorsi), con i nomi e i termini ufficiali (Radunare, roccaforti
+  ombra, sentieri speciali, tiro di combattimento…); passando il mouse si vedono le carte grandi.
+  Quattro obiettivi non erano fra le scansioni e restano in inglese: Mettere a Nudo le Fosse,
+  «Non Più Fanciulla dello Scudo», Assicurare il Passaggio dell'Anduin, Gli Spergiuri Adempiono al
+  Loro Dovere.
 
 ## Struttura
 
@@ -56,12 +61,11 @@ Il workflow `Pubblica` parte solo a mano (Actions → Pubblica → Run workflow)
 
 ## Scansioni italiane
 
-Le carte sono in `assets/carte/` con il loro numero (lo stesso del modulo TTS): per sostituirle con le
-scansioni dell'edizione italiana basta salvare ogni carta con lo stesso nome (`<numero>.webp`).
-Regione 2100–2169 e 2800–2804, eventi e «Il cielo si oscura» fra 2107 e 2158, Ombra 2900–2948 più
-3039 e 3049, obiettivi 2000–2003 e 4200–4219, personaggi 500–514 (Gandalf il Bianco 4500).
+Le carte sono in `assets/carte/` con il numero del modulo TTS (`<numero>.webp`): le scansioni sono state
+ritagliate e abbinate automaticamente confrontandole con le carte del modulo, poi controllate a vista.
+Per i quattro obiettivi mancanti basta salvare la scansione come 4201, 4212, 4215 e 4219.
 
 ## Materiale
 
-Immagini dal modulo Tabletop Simulator «The Lord of the Rings: Fate of the Fellowship [Scripted]».
+Carte dalle scansioni dell'edizione italiana; tabellone e pedine dal modulo Tabletop Simulator «The Lord of the Rings: Fate of the Fellowship [Scripted]».
 Font: Cinzel, Cinzel Decorative e Alegreya (SIL Open Font License). Uso personale e non commerciale.

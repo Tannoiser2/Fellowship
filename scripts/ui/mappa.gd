@@ -133,12 +133,12 @@ func _descrivi(l: String) -> String:
 		"rifugio":
 			t += "\nRifugio"
 		"fortezza":
-			t += "\nFortezza dell'Ombra"
+			t += "\nRoccaforte ombra"
 		"ombra":
 			t += "\nLuogo dell'Ombra"
 	var col: String = Dati.luogo(l)["arruolo"]
 	if col != "":
-		t += "\nSi arruolano truppe %s" % Dati.NOMI_ARMATE[col]
+		t += "\nSi radunano truppe %s" % Dati.NOMI_ARMATE[col]
 	var tr: Array = []
 	for a in Dati.ARMATE:
 		if s["truppe"][a] > 0:
@@ -146,7 +146,7 @@ func _descrivi(l: String) -> String:
 	if not tr.is_empty():
 		t += "\nTruppe amiche: " + ", ".join(tr)
 	if s["ombra"] > 0:
-		t += "\nTruppe dell'Ombra: %d" % s["ombra"]
+		t += "\nTruppe ombra: %d" % s["ombra"]
 	var pp := motore.personaggi_in(l)
 	if not pp.is_empty():
 		var nn: Array = []

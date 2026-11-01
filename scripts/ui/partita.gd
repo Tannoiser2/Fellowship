@@ -300,7 +300,7 @@ func _aggiorna_sx() -> void:
 		pnl.add_theme_stylebox_override("panel", st)
 		pnl.add_child(UI.etichetta(str(Dati.MINACCIA[k]), 18, UI.PERGAMENA, true))
 		hm.add_child(pnl)
-	hm.tooltip_text = "Si girano %d carte dell'Ombra a fine turno. Sale di uno a ogni «Il cielo si oscura»." % motore.valore_minaccia()
+	hm.tooltip_text = "Si girano %d carte dell'Ombra a fine turno. Sale di uno a ogni «Oscuramento dei Cieli»." % motore.valore_minaccia()
 	hm.mouse_filter = Control.MOUSE_FILTER_PASS
 	col_sx.add_child(hm)
 	var occ := UI.etichetta("L'Occhio è su: %s" % Dati.nome_regione(motore.occhio), 18, Color(1, 0.6, 0.3))
@@ -353,7 +353,7 @@ func _aggiorna_sx() -> void:
 	col_sx.add_child(hr)
 	for a in Dati.ARMATE:
 		hr.add_child(UI.contatore(UI.pedina("truppa_" + a), motore.riserva_truppe[a], 17, "Truppe %s nella riserva" % Dati.NOMI_ARMATE[a]))
-	hr.add_child(UI.contatore(UI.pedina("truppa_ombra"), motore.riserva_ombra, 17, "Truppe dell'Ombra nella riserva"))
+	hr.add_child(UI.contatore(UI.pedina("truppa_ombra"), motore.riserva_ombra, 17, "Truppe ombra nella riserva"))
 	var hsimb := HFlowContainer.new()
 	hsimb.add_theme_constant_override("h_separation", 8)
 	col_sx.add_child(hsimb)
@@ -471,7 +471,7 @@ func _mostra_zoom(id: int, sorgente: Control) -> void:
 			testo = motore.descrivi_ombra(id) if not c.has("speciale") else "%s — %s" % [c["nome"], c["testo"]]
 			if not c.has("speciale"):
 				var ordini := {"occhio": "L'Occhio si volge sulla regione di Frodo (se c'è già, ricerca).", "nazgul2": "2 Nazgûl si avvicinano a Frodo.", "nazgul3": "3 Nazgûl da Mordor all'Occhio."}
-				testo = "Sopra (bandiera rossa in cima al mazzo): avanzata lungo la linea %s.\nSotto (stendardo nero): +1 truppa dell'Ombra a %s, poi: %s" % [testo.split(" / ")[0], Dati.nome(c["rinforzo"]), ordini[c["ordine"]]]
+				testo = "Sopra (bandiera rossa in cima al mazzo): avanzata lungo la linea %s.\nSotto (stendardo nero): +1 truppa ombra a %s, poi: %s" % [testo.split(" / ")[0], Dati.nome(c["rinforzo"]), ordini[c["ordine"]]]
 				mappa.evidenzia({c["rinforzo"]: Color(0.9, 0.1, 0.1)}, c["linea"])
 		"regione":
 			testo = "%s — %s" % [Dati.nome_regione(c["regione"]), Dati.NOMI_SIMBOLI[c["simbolo"]]]
@@ -480,7 +480,7 @@ func _mostra_zoom(id: int, sorgente: Control) -> void:
 				luoghi[l] = Color(1, 0.85, 0.3)
 			mappa.evidenzia(luoghi)
 		"cieli":
-			testo = "Il cielo si oscura: la minaccia sale, l'Occhio cerca Frodo (se c'è già, -2 speranza), 3 truppe dell'Ombra a %s, poi si rimescolano gli scarti dell'Ombra sul mazzo." % Dati.nome(c["luogo"])
+			testo = "Oscuramento dei Cieli: la minaccia sale, l'Occhio cerca Frodo (se c'è già, -2 speranza), 3 truppe ombra a %s, poi si rimescolano gli scarti dell'Ombra sul mazzo." % Dati.nome(c["luogo"])
 	zoom_testo.text = testo
 	zoom.visible = true
 	zoom.reset_size()
@@ -690,7 +690,7 @@ func _mostra_dadi(dati: Dictionary) -> void:
 	overlay_dadi.add_child(p)
 	var v := VBoxContainer.new()
 	p.add_child(v)
-	var t := UI.titolo(("Ricerca" if dati["tipo"] == "ricerca" else "Battaglia") + " a " + Dati.nome(dati.get("luogo", "the_shire")), 26, UI.ORO)
+	var t := UI.titolo(("Tiro di ricerca" if dati["tipo"] == "ricerca" else "Combattimento") + " a " + Dati.nome(dati.get("luogo", "the_shire")), 26, UI.ORO)
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(t)
 	var h := HBoxContainer.new()

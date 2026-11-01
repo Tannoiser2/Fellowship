@@ -72,7 +72,7 @@ func _costruisci() -> void:
 	logo.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	sx.add_child(logo)
 	sx.add_child(UI.etichetta("The Lord of the Rings: Fate of the Fellowship — un gioco di Matt Leacock", 20, UI.CENERE))
-	var spieg := UI.testo_lungo("Cooperativo da 1 a 5 giocatori. Portate Frodo e Sam al Monte Fato con l'Unico Anello, completate gli obiettivi e difendete i rifugi dei popoli liberi, sfuggendo all'Occhio di Sauron e ai Nove.", 20, UI.PERGAMENA)
+	var spieg := UI.testo_lungo("Cooperativo da 1 a 5 giocatori. Portate Frodo & Sam al Monte Fato con l'Unico Anello, completate gli obiettivi e difendete i rifugi dei popoli liberi, sfuggendo all'Occhio di Sauron e ai Nove.", 20, UI.PERGAMENA)
 	spieg.custom_minimum_size.x = 600
 	sx.add_child(spieg)
 	sx.add_child(Control.new())
@@ -123,7 +123,7 @@ func _costruisci() -> void:
 	var dd: Dictionary = Dati.d()["difficolta"]
 	var kk := 0
 	for k in dd:
-		opt_diff.add_item("%s (%d «Il cielo si oscura», %d obiettivi)" % [dd[k]["nome"], dd[k]["cieli"], dd[k]["obiettivi"]])
+		opt_diff.add_item("%s (%d «Oscuramento dei Cieli», %d obiettivi)" % [dd[k]["nome"], dd[k]["cieli"], dd[k]["obiettivi"]])
 		opt_diff.set_item_metadata(kk, k)
 		if k == difficolta:
 			opt_diff.select(kk)

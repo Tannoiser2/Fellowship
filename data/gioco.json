@@ -1,7 +1,7 @@
 {
  "luoghi": {
   "ered_luin": {
-   "nome": "Monti Azzurri",
+   "nome": "Ered Luin",
    "x": 286,
    "y": 330,
    "regione": "eriador",
@@ -33,7 +33,7 @@
    "arruolo": ""
   },
   "weather_hills": {
-   "nome": "Colli Ventosi",
+   "nome": "Colline Vento",
    "x": 954,
    "y": 466,
    "regione": "eriador",
@@ -121,7 +121,7 @@
    "arruolo": ""
   },
   "gladden_fields": {
-   "nome": "Campo Gaggiolo",
+   "nome": "Campi Iridati",
    "x": 1774,
    "y": 570,
    "regione": "misty_mountains",
@@ -161,7 +161,7 @@
    "arruolo": ""
   },
   "old_forest_road": {
-   "nome": "Vecchia Via della Foresta",
+   "nome": "Strada della Vecchia Foresta",
    "x": 2050,
    "y": 364,
    "regione": "mirkwood",
@@ -321,7 +321,7 @@
    "arruolo": "gondor"
   },
   "north_ithilien": {
-   "nome": "Ithilien del Nord",
+   "nome": "Nord Ithilien",
    "x": 2040,
    "y": 1364,
    "regione": "ithilien",
@@ -337,7 +337,7 @@
    "arruolo": ""
   },
   "south_ithilien": {
-   "nome": "Ithilien del Sud",
+   "nome": "Sud Ithilien",
    "x": 2148,
    "y": 1740,
    "regione": "ithilien",
@@ -385,7 +385,7 @@
    "arruolo": ""
   },
   "nurn": {
-   "nome": "Nurn",
+   "nome": "Núrn",
    "x": 3010,
    "y": 1598,
    "regione": "mordor",
@@ -533,7 +533,7 @@
    "y": 560
   },
   "dale": {
-   "nome": "Dale",
+   "nome": "Valle",
    "luoghi": [
     "erebor",
     "iron_hills",
@@ -1975,16 +1975,16 @@
   {
    "id": 3039,
    "speciale": "saruman",
-   "nome": "Le ruote di Saruman",
+   "nome": "Le Ruote di Saruman",
    "retro": "stendardo",
    "testo": "Scegliete una cosa: Rompere il giuramento (togliete 2 truppe amiche qualsiasi), Dubbio (un giocatore scarta in tutto 2 carte e/o segnalini simbolo) o Disperazione (perdete 1 speranza)."
   },
   {
    "id": 3049,
    "speciale": "tamburi",
-   "nome": "I tamburi di guerra",
+   "nome": "I Tamburi di Guerra",
    "retro": "bandiera",
-   "testo": "Aggiungete 1 truppa dell'Ombra in ogni fortezza dell'Ombra di Mordor."
+   "testo": "Aggiungete 1 truppa ombra in ogni roccaforte ombra di Mordor."
   }
  ],
  "carte_regione": [
@@ -2331,20 +2331,20 @@
   {
    "id": 2107,
    "codice": "lotte_orchi",
-   "nome": "Lotte fra Orchi",
-   "testo": "Togliete fino a 2 truppe dell'Ombra da un solo luogo."
+   "nome": "Lotta Interna tra Orchi",
+   "testo": "Togliete fino a 2 truppe ombra da un solo luogo."
   },
   {
    "id": 2108,
    "codice": "preveggenza_elrond",
-   "nome": "La preveggenza di Elrond",
-   "testo": "Il giocatore di turno guarda fino a 4 carte in cima al mazzo dei giocatori. Può prenderne 1 in mano (non una carta Il cielo si oscura) e rimette le altre in cima nell'ordine che vuole."
+   "nome": "La Preveggenza di Elrond",
+   "testo": "Il giocatore di turno guarda fino a 4 carte in cima al mazzo dei giocatori. Può prenderne 1 in mano (non una carta Oscuramento dei Cieli) e rimette le altre in cima nell'ordine che vuole."
   },
   {
    "id": 2117,
    "codice": "freccia_rossa",
    "nome": "La Freccia Rossa",
-   "testo": "Spostate fino a 3 truppe amiche che si trovano nello stesso rifugio in un altro rifugio. Poi, se volete, tirate una battaglia lì (e spostate l'Occhio in quella regione)."
+   "testo": "Spostate fino a 3 truppe amiche che si trovano nello stesso rifugio in un altro rifugio. Poi, se volete, tirate un combattimento lì (e spostate l'Occhio in quella regione)."
   },
   {
    "id": 2118,
@@ -2355,19 +2355,19 @@
   {
    "id": 2127,
    "codice": "mantelli_elfici",
-   "nome": "Mantelli elfici e corda",
-   "testo": "Scegliete un personaggio: può viaggiare da solo fino a 2 volte, senza tirare ricerche (paga i percorsi speciali come al solito e non porta con sé altri personaggi né truppe)."
+   "nome": "Mantello e Corda Elfica",
+   "testo": "Scegliete un personaggio: può viaggiare da solo fino a 2 volte, senza tirare ricerche (paga i sentieri speciali come al solito e non porta con sé altri personaggi né truppe)."
   },
   {
    "id": 2128,
    "codice": "cavalli_rohan",
-   "nome": "Rohan presta i cavalli",
-   "testo": "Scegliete un luogo: i personaggi che si trovano lì possono viaggiare tutti insieme fino a 3 volte, senza truppe e senza percorsi speciali. Se Frodo viaggia così, dopo ogni viaggio si tira una ricerca e non si può spendere Furtività per evitarla."
+   "nome": "Rohan Presta i Cavalli",
+   "testo": "Scegliete un luogo: i personaggi che si trovano lì possono viaggiare tutti insieme fino a 3 volte, senza truppe e senza sentieri speciali. Se Frodo viaggia così, dopo ogni viaggio si tira una ricerca e non si può spendere Furtività per evitarla."
   },
   {
    "id": 2137,
    "codice": "aquile",
-   "nome": "Le Aquile",
+   "nome": "Aquile",
    "testo": "Spostate un personaggio in un luogo qualsiasi. Se è Frodo, spostate i 7 Nazgûl più vicini direttamente nella sua regione e l'Occhio su di lui, poi tirate una ricerca."
   },
   {
@@ -2379,8 +2379,8 @@
   {
    "id": 2144,
    "codice": "gwaihir",
-   "nome": "Gwaihir porta notizie",
-   "testo": "Scegliete un luogo vicino a truppe amiche: spostateci una o più di quelle truppe (senza percorsi speciali). Poi, se volete, tirate una battaglia lì (e spostate l'Occhio in quella regione)."
+   "nome": "Gwaihir Porta Buone Notizie",
+   "testo": "Scegliete un luogo vicino a truppe amiche: spostateci una o più di quelle truppe (senza sentieri speciali). Poi, se volete, tirate un combattimento lì (e spostate l'Occhio in quella regione)."
   },
   {
    "id": 2145,
@@ -2397,20 +2397,20 @@
   {
    "id": 2147,
    "codice": "palantir",
-   "nome": "Guardare nel Palantír",
+   "nome": "Scrutare in un Palantír",
    "testo": "Scegliete un personaggio: spostate l'Occhio nella sua regione, poi spostate lì 3 Nazgûl qualsiasi."
   },
   {
    "id": 2148,
    "codice": "doni_elfi",
-   "nome": "I doni degli Elfi",
+   "nome": "Doni dagli Elfi",
    "testo": "Prendete dalla riserva un segnalino simbolo qualsiasi e datelo a un giocatore."
   },
   {
    "id": 2150,
    "codice": "ordini_contrastanti",
-   "nome": "Ordini contrastanti",
-   "testo": "Scegliete un luogo e spostate tutte le sue truppe dell'Ombra nei luoghi vicini che volete. Non si tirano battaglie; se ora ci sono truppe dell'Ombra in un rifugio senza truppe amiche, il rifugio cade."
+   "nome": "Ordini in Conflitto",
+   "testo": "Scegliete un luogo e spostate tutte le sue truppe ombra nei luoghi vicini che volete. Non si tirano battaglie; se ora ci sono truppe ombra in un rifugio senza truppe amiche, il rifugio cade."
   }
  ],
  "personaggi": {
@@ -2426,11 +2426,11 @@
     },
     {
      "nome": "Capitano dell'Ovest",
-     "testo": "Se Aragorn è presente a una battaglia, ogni Rotta toglie fino a 2 truppe dell'Ombra dal suo luogo invece di 1."
+     "testo": "Se Aragorn è presente a un combattimento, ogni Rotta toglie fino a 2 truppe ombra dal suo luogo invece di 1."
     },
     {
      "nome": "Andúril",
-     "testo": "Azione (una volta per turno): se è stato completato almeno un obiettivo, togliete 1 truppa dell'Ombra dal luogo di Aragorn."
+     "testo": "Azione (una volta per turno): se è stato completato almeno un obiettivo, togliete 1 truppa ombra dal luogo di Aragorn."
     }
    ]
   },
@@ -2442,14 +2442,14 @@
    "abilita": [
     {
      "nome": "Stella del Vespro",
-     "testo": "Quando Arwen arruola in un luogo elfico non spende Amicizia."
+     "testo": "Quando Arwen raduna in un luogo elfico non spende Amicizia."
     },
     {
-     "nome": "Mandare aiuto",
+     "nome": "Inviare Aiuto",
      "testo": "Quando Arwen prepara, se un personaggio si trova nella regione della carta potete spostare 1 truppa elfica dal luogo di Arwen al luogo di quel personaggio."
     },
     {
-     "nome": "Dare consiglio",
+     "nome": "Dare Consiglio",
      "testo": "Una volta nel vostro turno, quando Arwen usa la Compagnia in un rifugio, la carta data o presa non deve essere della sua regione. In solitario: una volta per turno, quando Arwen prepara, la carta scartata non deve essere della sua regione."
     }
    ]
@@ -2462,14 +2462,14 @@
    "abilita": [
     {
      "nome": "Erede del Sovrintendente",
-     "testo": "Quando Boromir arruola in un luogo di Gondor non spende Amicizia."
+     "testo": "Quando Boromir raduna in un luogo di Gondor non spende Amicizia."
     },
     {
      "nome": "Eroe di Gondor",
      "testo": "Quando Boromir conquista spende 1 Valore in meno."
     },
     {
-     "nome": "Tentato dal potere",
+     "nome": "Tentato dal Potere",
      "testo": "Quando Boromir partecipa alla Compagnia non si possono dare (né prendere da lui) carte Resistenza."
     }
    ]
@@ -2486,7 +2486,7 @@
     },
     {
      "nome": "Maresciallo del Mark",
-     "testo": "Se Éomer e almeno una truppa dei Rohirrim sono presenti a una battaglia, ignorate la perdita di 1 truppa amica."
+     "testo": "Se Éomer e almeno una truppa dei Rohirrim sono presenti a un combattimento, ignorate la perdita di 1 truppa amica."
     }
    ]
   },
@@ -2497,12 +2497,12 @@
    "colore": "bianco",
    "abilita": [
     {
-     "nome": "Fanciulla dello scudo di Rohan",
-     "testo": "Quando Éowyn arruola in un luogo dei Rohirrim non spende Amicizia."
+     "nome": "Fanciulla d'Arme di Rohan",
+     "testo": "Quando Éowyn raduna in un luogo dei Rohirrim non spende Amicizia."
     },
     {
-     "nome": "Nessun uomo vivente io sono!",
-     "testo": "Se Éowyn è presente a una battaglia, ogni risultato Nazgûl! toglie dal gioco 1 Nazgûl della sua regione (e non si perdono le 2 truppe amiche)."
+     "nome": "Io Non Sono un Uomo Vivente!",
+     "testo": "Se Éowyn è presente a un combattimento, ogni risultato Nazgûl! toglie dal gioco 1 Nazgûl della sua regione (e non si perdono le 2 truppe amiche)."
     }
    ]
   },
@@ -2514,11 +2514,11 @@
    "abilita": [
     {
      "nome": "Imboscata",
-     "testo": "Quando Faramir viaggia con almeno una truppa amica può fare un attacco gratis nel luogo d'arrivo; per ogni Furtività spesa cambiate 1 dado di battaglia in Rotta."
+     "testo": "Quando Faramir viaggia con almeno una truppa amica può fare un attacco gratis nel luogo d'arrivo; per ogni Furtività spesa cambiate 1 dado di combattimento in Rotta."
     },
     {
      "nome": "Furtivo",
-     "testo": "Quando Faramir percorre un percorso speciale spende 1 simbolo in meno."
+     "testo": "Quando Faramir percorre un sentiero speciale spende 1 simbolo in meno."
     },
     {
      "nome": "Saggezza degli Eldar",
@@ -2528,7 +2528,7 @@
   },
   "frodo": {
    "carta": 502,
-   "nome": "Frodo e Sam",
+   "nome": "Frodo & Sam",
    "partenza": "the_shire",
    "colore": "giallo",
    "abilita": [
@@ -2537,16 +2537,16 @@
      "testo": "Quando Frodo viaggia o partecipa a un viaggio, il giocatore di turno spende 1 Furtività oppure tira una ricerca nel luogo d'arrivo di Frodo."
     },
     {
-     "nome": "Il sostegno di Elrond",
+     "nome": "Sostegno di Elrond",
      "testo": "Una volta per turno, quando Frodo prepara in un rifugio della regione della carta, prende anche 1 segnalino Amicizia."
     },
     {
-     "nome": "L'aiuto di Sam",
+     "nome": "Aiuto di Sam",
      "testo": "Quando si tira una ricerca, potete spendere Amicizia per ignorare altrettanti risultati Stanchezza o Scoperto."
     },
     {
-     "nome": "Mettere l'Anello",
-     "testo": "Prima di tirare una ricerca potete ignorare tutte le truppe dell'Ombra presenti: perdete 1 speranza e spostate l'Occhio nella regione di Frodo."
+     "nome": "Indossare l'Anello",
+     "testo": "Prima di tirare una ricerca potete ignorare tutte le truppe ombra presenti: perdete 1 speranza e spostate l'Occhio nella regione di Frodo."
     }
    ]
   },
@@ -2557,7 +2557,7 @@
    "colore": "verde scuro",
    "abilita": [
     {
-     "nome": "Signora della Luce",
+     "nome": "Dama della Luce",
      "testo": "In qualsiasi momento (non è un'azione): se è in un rifugio, spende 1 Furtività per pescare a caso uno degli eventi non usati nella preparazione."
     },
     {
@@ -2566,7 +2566,7 @@
     },
     {
      "nome": "Nenya",
-     "testo": "Se Galadriel e almeno una truppa elfica sono presenti a una battaglia, potete ritirare 1 dado di battaglia."
+     "testo": "Se Galadriel e almeno una truppa elfica sono presenti a un combattimento, potete ritirare 1 dado di combattimento."
     }
    ]
   },
@@ -2578,21 +2578,21 @@
    "abilita": [
     {
      "nome": "Mithrandir",
-     "testo": "Quando Gandalf arruola aggiunge fino a 2 truppe nel suo luogo invece di 1."
+     "testo": "Quando Gandalf raduna aggiunge fino a 2 truppe nel suo luogo invece di 1."
     },
     {
      "nome": "Ombromanto",
-     "testo": "Quando Gandalf viaggia da solo può spostarsi di 2 luoghi, ma non su percorsi speciali."
+     "testo": "Quando Gandalf viaggia da solo può spostarsi di 2 luoghi, ma non su sentieri speciali."
     },
     {
-     "nome": "Luce e fiamma",
-     "testo": "Se Gandalf è presente a una battaglia, potete spendere Valore per cambiare altrettanti dadi di battaglia nel risultato che volete."
+     "nome": "Luce e Fiamme",
+     "testo": "Se Gandalf è presente a un combattimento, potete spendere Valore per cambiare altrettanti dadi di combattimento nel risultato che volete."
     }
    ],
    "bianco": {
     "carta": 4500,
     "nome": "Gandalf il Bianco",
-    "testo": "Luce e fiamma: spendendo 1 Valore potete cambiare quanti dadi di battaglia volete."
+    "testo": "Luce e fiamma: spendendo 1 Valore potete cambiare quanti dadi di combattimento volete."
    }
   },
   "gimli": {
@@ -2603,10 +2603,10 @@
    "abilita": [
     {
      "nome": "Figlio di Glóin",
-     "testo": "Quando Gimli arruola in un luogo dei Nani non spende Amicizia."
+     "testo": "Quando Gimli raduna in un luogo dei Nani non spende Amicizia."
     },
     {
-     "nome": "Arte dei Nani",
+     "nome": "Arte Nanica",
      "testo": "Azione (una volta per turno): prende 1 segnalino Valore dalla riserva."
     }
    ]
@@ -2619,10 +2619,10 @@
    "abilita": [
     {
      "nome": "Limiti",
-     "testo": "Gollum non può arruolare, attaccare né conquistare, e quando viaggia non porta con sé truppe amiche."
+     "testo": "Gollum non può radunare, attaccare né conquistare, e quando viaggia non porta con sé truppe amiche."
     },
     {
-     "nome": "Ci ha ingannati!",
+     "nome": "Ci Hanno Ingannato!",
      "testo": "Quando Gollum, Frodo o truppe amiche entrano o vengono aggiunti in un luogo, se lì ci sono tutti e tre perdete 1 speranza."
     },
     {
@@ -2630,12 +2630,12 @@
      "testo": "Se Gollum è presente quando si tira una ricerca, tirate 3 dadi in meno (si possono comunque tirare fino a 7 dadi)."
     },
     {
-     "nome": "Strisciante",
+     "nome": "Servile",
      "testo": "Azione (una volta per turno): prende dagli scarti dei giocatori una carta Furtività qualsiasi."
     },
     {
      "nome": "Astuto",
-     "testo": "Gollum può preparare anche fuori da un rifugio. Quando prepara può spostare 1 truppa dell'Ombra presente in un luogo vicino (senza battaglia)."
+     "testo": "Gollum può preparare anche fuori da un rifugio. Quando prepara può spostare 1 truppa ombra presente in un luogo vicino (senza battaglia)."
     }
    ]
   },
@@ -2646,27 +2646,27 @@
    "colore": "verde chiaro",
    "abilita": [
     {
-     "nome": "Passo silenzioso",
+     "nome": "Camminare Silenziosamente",
      "testo": "Azione (una volta per turno): prende 1 segnalino Furtività dalla riserva."
     },
     {
-     "nome": "Tiro sicuro",
-     "testo": "In qualsiasi momento (non è un'azione): spende 1 Furtività per togliere 1 truppa dell'Ombra dal suo luogo o da un luogo vicino, oppure per rimandare a Mordor 1 Nazgûl della sua regione."
+     "nome": "Colpo Sicuro",
+     "testo": "In qualsiasi momento (non è un'azione): spende 1 Furtività per togliere 1 truppa ombra dal suo luogo o da un luogo vicino, oppure per rimandare a Mordor 1 Nazgûl della sua regione."
     },
     {
-     "nome": "Vista acuta",
+     "nome": "Vista Acuta",
      "testo": "Una volta per turno, quando Legolas prepara, guarda la prima carta del mazzo dell'Ombra."
     }
    ]
   },
   "pipino": {
    "carta": 503,
-   "nome": "Merry e Pipino",
+   "nome": "Merry & Pipino",
    "partenza": "the_shire",
    "colore": "arancio",
    "abilita": [
     {
-     "nome": "Amico leale",
+     "nome": "Amici Fedeli",
      "testo": "Azione (una volta per turno): prendono 1 segnalino Amicizia dalla riserva."
     },
     {
@@ -2674,7 +2674,7 @@
      "testo": "In qualsiasi momento (non è un'azione): se nella loro regione ci sono meno di 4 Nazgûl, spendono 1 Amicizia per attirare lì fino a 2 Nazgûl."
     },
     {
-     "nome": "Cantaci una canzone!",
+     "nome": "Dacci una Canzone!",
      "testo": "Azione: se sono nel luogo di Frodo, spendono 3 Amicizia per guadagnare 2 speranze."
     }
    ]
@@ -2684,7 +2684,7 @@
   {
    "id": 2000,
    "codice": "benedizione",
-   "nome": "Ottenere la benedizione degli Elfi",
+   "nome": "Ottenere la Benedizione degli Elfi",
    "richiede": "",
    "primo": true,
    "preparazione": "Preparazione: 3 truppe elfiche su questa carta (non si usano finché l'obiettivo non è completato).",
@@ -2694,11 +2694,11 @@
   {
    "id": 2001,
    "codice": "saruman",
-   "nome": "«Saruman, il tuo bastone è spezzato»",
+   "nome": "«Saruman, il Tuo Bastone è Rotto»",
    "richiede": "",
    "primo": true,
-   "preparazione": "Preparazione: 2 truppe dell'Ombra in più a Isengard.",
-   "condizione": "Isengard è un rifugio e il Rohan è libero da truppe e fortezze dell'Ombra.",
+   "preparazione": "Preparazione: 2 truppe ombra in più a Isengard.",
+   "condizione": "Isengard è un rifugio e il Rohan è libero da truppe e roccaforti ombra.",
    "effetto": "Il giocatore di turno prende 1 Resistenza dalla riserva."
   },
   {
@@ -2708,8 +2708,8 @@
    "richiede": "",
    "primo": true,
    "preparazione": "",
-   "condizione": "Un personaggio spende un'azione nell'Ithilien del Nord quando ci sono almeno 2 truppe dei Rohirrim, 2 elfiche e 3 di Gondor.",
-   "effetto": "L'Occhio va nell'Ithilien e tutte le truppe dell'Ombra di Mordor vanno a Udûn."
+   "condizione": "Un personaggio spende un'azione nell'Nord Ithilien quando ci sono almeno 2 truppe dei Rohirrim, 2 elfiche e 3 di Gondor.",
+   "effetto": "L'Occhio va nell'Ithilien e tutte le truppe ombra di Mordor vanno a Udûn."
   },
   {
    "id": 2003,
@@ -2724,20 +2724,20 @@
   {
    "id": 4200,
    "codice": "boromir",
-   "nome": "Boromir riscatta il suo onore",
+   "nome": "Boromir Rivendica il Suo Onore",
    "richiede": "boromir",
    "primo": false,
    "preparazione": "Preparazione: si usa Boromir.",
-   "condizione": "Boromir e almeno un altro personaggio sono in un luogo dove una battaglia toglie l'ultima truppa amica.",
-   "effetto": "Togliete fino a 2 truppe dell'Ombra dal luogo di Boromir; Boromir esce dal gioco. Al prossimo obiettivo completato un personaggio a caso lo sostituisce."
+   "condizione": "Boromir e almeno un altro personaggio sono in un luogo dove un combattimento toglie l'ultima truppa amica.",
+   "effetto": "Togliete fino a 2 truppe ombra dal luogo di Boromir; Boromir esce dal gioco. Al prossimo obiettivo completato un personaggio a caso lo sostituisce."
   },
   {
    "id": 4201,
    "codice": "pozzi",
-   "nome": "Mettere a nudo le fosse",
+   "nome": "Mettere a Nudo le Fosse",
    "richiede": "galadriel",
    "primo": false,
-   "preparazione": "Preparazione: si usa Galadriel; 1 truppa dell'Ombra in più a Dol Guldur.",
+   "preparazione": "Preparazione: si usa Galadriel; 1 truppa ombra in più a Dol Guldur.",
    "condizione": "Dol Guldur è un rifugio e ci sono almeno 3 truppe elfiche. Galadriel può conquistare Dol Guldur spendendo 3 Valore oppure 2 Resistenza e 1 Valore.",
    "effetto": "Se Galadriel è a Dol Guldur, +1 speranza."
   },
@@ -2754,17 +2754,17 @@
   {
    "id": 4203,
    "codice": "raminghi",
-   "nome": "I Raminghi proteggono l'Eriador",
+   "nome": "I Raminghi Liberano l'Eriador",
    "richiede": "",
    "primo": false,
    "preparazione": "",
-   "condizione": "L'Eriador è libero da truppe e fortezze dell'Ombra e c'è almeno una truppa amica in ogni suo luogo.",
-   "effetto": "Spostate le truppe amiche dell'Eriador che volete ai Colli Ventosi o a Tharbad; +1 speranza."
+   "condizione": "L'Eriador è libero da truppe e roccaforti ombra e c'è almeno una truppa amica in ogni suo luogo.",
+   "effetto": "Spostate le truppe amiche dell'Eriador che volete ai Colline Vento o a Tharbad; +1 speranza."
   },
   {
    "id": 4204,
    "codice": "freca",
-   "nome": "Sistemare gli eredi di Freca",
+   "nome": "Occuparsi degli Eredi di Freca",
    "richiede": "",
    "primo": false,
    "preparazione": "",
@@ -2778,27 +2778,27 @@
    "richiede": "",
    "primo": false,
    "preparazione": "",
-   "condizione": "Umbar è un rifugio, oppure c'è una truppa amica in ogni luogo dell'Haradwaith e nessuna truppa dell'Ombra.",
+   "condizione": "Umbar è un rifugio, oppure c'è una truppa amica in ogni luogo dell'Haradwaith e nessuna truppa ombra.",
    "effetto": "Spostate a Pelargir le truppe amiche dell'Haradwaith che volete."
   },
   {
    "id": 4206,
    "codice": "nani",
-   "nome": "Liberare dall'Ombra le terre dei Nani",
+   "nome": "Sollevare l'Ombra dalle Terre Naniche",
    "richiede": "gimli",
    "primo": false,
-   "preparazione": "Preparazione: si usa Gimli; 1 truppa dell'Ombra ai Monti Azzurri.",
-   "condizione": "Nessuna truppa dell'Ombra ai Monti Azzurri, almeno 4 truppe dei Nani lì, e nessuna truppa o fortezza dell'Ombra nel Dale.",
+   "preparazione": "Preparazione: si usa Gimli; 1 truppa ombra ai Ered Luin.",
+   "condizione": "Nessuna truppa ombra ai Ered Luin, almeno 4 truppe dei Nani lì, e nessuna truppa o roccaforte ombra nella Valle.",
    "effetto": "Il giocatore di turno prende 2 Valore; +1 speranza."
   },
   {
    "id": 4207,
    "codice": "eored",
-   "nome": "Cavalcare con l'éored",
+   "nome": "Cavalcare con gli Éored",
    "richiede": "eomer",
    "primo": false,
    "preparazione": "Preparazione: si usa Éomer.",
-   "condizione": "Quando Éomer attacca con i Rohirrim e toglie truppe dell'Ombra, ne mette 1 sullo spazio della sua regione (Rohan e regioni vicine, una per spazio). Completato con 4 truppe sulla carta.",
+   "condizione": "Quando Éomer attacca con i Rohirrim e toglie truppe ombra, ne mette 1 sullo spazio della sua regione (Rohan e regioni vicine, una per spazio). Completato con 4 truppe sulla carta.",
    "effetto": "Le truppe tornano nella riserva; +1 speranza."
   },
   {
@@ -2808,23 +2808,23 @@
    "richiede": "gandalf",
    "primo": false,
    "preparazione": "Preparazione: si usa Gandalf.",
-   "condizione": "Gandalf spende un'azione a Moria e tira 3 dadi di battaglia (Travolti: -1 speranza, Scambio: -2, Nazgûl!: -3, Rotta: niente). Ogni Resistenza ignora un dado, ogni Valore evita 1 speranza persa.",
-   "effetto": "Gandalf esce dalla mappa: alla prossima carta Il cielo si oscura torna a Lórien come Gandalf il Bianco e +2 speranze."
+   "condizione": "Gandalf spende un'azione a Moria e tira 3 dadi di combattimento (Travolti: -1 speranza, Scambio: -2, Nazgûl!: -3, Rotta: niente). Ogni Resistenza ignora un dado, ogni Valore evita 1 speranza persa.",
+   "effetto": "Gandalf esce dalla mappa: alla prossima carta Oscuramento dei Cieli torna a Lórien come Gandalf il Bianco e +2 speranze."
   },
   {
    "id": 4209,
    "codice": "bosco_atro",
-   "nome": "Portare la luce nel Bosco Atro",
+   "nome": "Portare la Luce al Bosco Atro",
    "richiede": "",
    "primo": false,
-   "preparazione": "Preparazione: 1 truppa dell'Ombra nella Vecchia Via della Foresta e nel Bosco Atro Meridionale.",
-   "condizione": "Il Bosco Atro è libero da truppe dell'Ombra (non serve conquistare Dol Guldur) e c'è una truppa elfica in ogni suo luogo.",
+   "preparazione": "Preparazione: 1 truppa ombra nella Strada della Vecchia Foresta e nel Bosco Atro Meridionale.",
+   "condizione": "Il Bosco Atro è libero da truppe ombra (non serve conquistare Dol Guldur) e c'è una truppa elfica in ogni suo luogo.",
    "effetto": "Scegliete un luogo del Bosco Atro e spostateci le truppe elfiche del Bosco Atro che volete; +1 speranza."
   },
   {
    "id": 4210,
    "codice": "theoden",
-   "nome": "Liberare la mente di Théoden",
+   "nome": "Liberare la Mente di Théoden",
    "richiede": "",
    "primo": false,
    "preparazione": "Preparazione: 4 truppe dei Rohirrim su questa carta.",
@@ -2837,24 +2837,24 @@
    "nome": "Infiltrarsi a Minas Morgul",
    "richiede": "",
    "primo": false,
-   "preparazione": "Preparazione: 1 truppa dell'Ombra in più a Minas Morgul.",
+   "preparazione": "Preparazione: 1 truppa ombra in più a Minas Morgul.",
    "condizione": "Minas Morgul è un rifugio. Si può conquistare spendendo 3 Valore oppure 3 Furtività.",
    "effetto": "Il giocatore di turno prende 2 Furtività; guardate le prime 2 carte dell'Ombra e togliete dal gioco quelle che volete."
   },
   {
    "id": 4212,
    "codice": "eowyn",
-   "nome": "«Non più fanciulla dello scudo»",
+   "nome": "«Non Più Fanciulla dello Scudo»",
    "richiede": "eowyn",
    "primo": false,
-   "preparazione": "Preparazione: si usa Éowyn. Se Éowyn è presente a una battaglia può spendere 2 Valore per cambiare 1 dado in Nazgûl!.",
-   "condizione": "Éowyn ha distrutto almeno 2 Nazgûl e il Rohan è libero da truppe e fortezze dell'Ombra.",
+   "preparazione": "Preparazione: si usa Éowyn. Se Éowyn è presente a un combattimento può spendere 2 Valore per cambiare 1 dado in Nazgûl!.",
+   "condizione": "Éowyn ha distrutto almeno 2 Nazgûl e il Rohan è libero da truppe e roccaforti ombra.",
    "effetto": "+1 speranza."
   },
   {
    "id": 4213,
    "codice": "hobbit",
-   "nome": "Gli Hobbit giurano fedeltà",
+   "nome": "Gli Hobbit Giurano la Loro Fedeltà",
    "richiede": "pipino",
    "primo": false,
    "preparazione": "Preparazione: si usano Merry e Pipino.",
@@ -2864,27 +2864,27 @@
   {
    "id": 4214,
    "codice": "shelob",
-   "nome": "La tana di Shelob",
+   "nome": "La Tana di Shelob",
    "richiede": "gollum",
    "primo": false,
    "preparazione": "Preparazione: si usa Gollum (non può averlo chi ha Frodo).",
-   "condizione": "Sam spende un'azione a Minas Morgul con Gollum presente e tira 3 dadi di battaglia (Travolti: -1 speranza, Scambio: -2, Nazgûl!: -3, Rotta: niente); si perde anche 1 speranza per ogni Resistenza del giocatore di Gollum. Ogni Resistenza ignora un dado, ogni Valore evita 1 speranza persa.",
+   "condizione": "Sam spende un'azione a Minas Morgul con Gollum presente e tira 3 dadi di combattimento (Travolti: -1 speranza, Scambio: -2, Nazgûl!: -3, Rotta: niente); si perde anche 1 speranza per ogni Resistenza del giocatore di Gollum. Ogni Resistenza ignora un dado, ogni Valore evita 1 speranza persa.",
    "effetto": "Se Frodo non ha perso speranza può fare un'azione in più in questo turno."
   },
   {
    "id": 4215,
    "codice": "anduin",
-   "nome": "Assicurare il passaggio dell'Anduin",
+   "nome": "Assicurare il Passaggio dell'Anduin",
    "richiede": "faramir",
    "primo": false,
-   "preparazione": "Preparazione: si usa Faramir; 1 truppa dell'Ombra a Osgiliath.",
+   "preparazione": "Preparazione: si usa Faramir; 1 truppa ombra a Osgiliath.",
    "condizione": "Osgiliath è un rifugio. Faramir può conquistarla spendendo 3 Valore oppure 2 Resistenza e 1 Furtività.",
    "effetto": "Potete aggiungere 1 truppa di Gondor a Osgiliath."
   },
   {
    "id": 4216,
    "codice": "denethor",
-   "nome": "Spodestare Denethor",
+   "nome": "Deporre Denethor",
    "richiede": "",
    "primo": false,
    "preparazione": "Preparazione: 4 truppe di Gondor su questa carta.",
@@ -2894,17 +2894,17 @@
   {
    "id": 4217,
    "codice": "sei",
-   "nome": "«Fanno sei!»",
+   "nome": "«Con Questo Fanno Sei!»",
    "richiede": "legolas",
    "primo": false,
    "preparazione": "Preparazione: si usa Legolas.",
-   "condizione": "Quando Legolas toglie una truppa dell'Ombra con Tiro sicuro, la mette su questa carta. Completato con 6 truppe sulla carta.",
+   "condizione": "Quando Legolas toglie una truppa ombra con Tiro sicuro, la mette su questa carta. Completato con 6 truppe sulla carta.",
    "effetto": "Le truppe tornano nella riserva; +1 speranza."
   },
   {
    "id": 4218,
    "codice": "stendardo",
-   "nome": "Arwen spiega lo stendardo",
+   "nome": "Arwen Dispiega lo Stendardo",
    "richiede": "arwen",
    "primo": false,
    "preparazione": "Preparazione: si usa Arwen.",
@@ -2914,11 +2914,11 @@
   {
    "id": 4219,
    "codice": "spergiuri",
-   "nome": "Gli Spergiuri adempiono al loro dovere",
+   "nome": "Gli Spergiuri Adempiono al Loro Dovere",
    "richiede": "aragorn",
    "primo": false,
-   "preparazione": "Preparazione: si usa Aragorn. Una volta per partita Aragorn viaggia da Edoras a Erech: aggiungete 2 truppe dell'Ombra a Pelargir, spostate lì tutte quelle di Umbar e aggiungete fino a 3 truppe di Gondor a Erech.",
-   "condizione": "Aragorn ha fatto quel viaggio e il Gondor è libero da truppe e fortezze dell'Ombra.",
+   "preparazione": "Preparazione: si usa Aragorn. Una volta per partita Aragorn viaggia da Edoras a Erech: aggiungete 2 truppe ombra a Pelargir, spostate lì tutte quelle di Umbar e aggiungete fino a 3 truppe di Gondor a Erech.",
+   "condizione": "Aragorn ha fatto quel viaggio e il Gondor è libero da truppe e roccaforti ombra.",
    "effetto": "+1 speranza."
   }
  ],

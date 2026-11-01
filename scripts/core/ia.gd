@@ -82,7 +82,7 @@ func scegli(m: Motore, posto: int, req: Dictionary) -> int:
 
 # -------------------------------------------------------------------------------------
 
-## Distanze pesate: i percorsi speciali costano come i simboli da spendere.
+## Distanze pesate: i sentieri speciali costano come i simboli da spendere.
 var _cache_dist := {}
 
 
@@ -360,7 +360,7 @@ func _prova(m: Motore, p: String, o: Dictionary, seme: int) -> float:
 	return v
 
 
-## Valutazione della situazione: speranza, pericolo per Frodo, rifugi minacciati, truppe dell'Ombra, obiettivi.
+## Valutazione della situazione: speranza, pericolo per Frodo, rifugi minacciati, truppe ombra, obiettivi.
 func valuta(m: Motore) -> float:
 	if m.esito == "vittoria":
 		return 1e9
@@ -745,7 +745,7 @@ func _generica(m: Motore, req: Dictionary, op: Array) -> int:
 	# per le domande sì/no il «no» è la seconda opzione: l'IA accetta solo se conviene
 	if req.get("conferma", false) and op.size() == 2 and op[0].get("si", false):
 		return 1
-	# scelte di luoghi: il rifugio più minacciato o il luogo con più truppe dell'Ombra
+	# scelte di luoghi: il rifugio più minacciato o il luogo con più truppe ombra
 	var best := 0
 	var bv := -1e9
 	for k in op.size():
