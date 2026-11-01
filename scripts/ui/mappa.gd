@@ -47,6 +47,8 @@ var sotto_mouse := ""
 var _anim: Dictionary = {}           # chiave -> {da, a: Vector2, t, dur, arco}: pezzi che scorrono
 var _voli: Array = []                # pezzi "fantasma" che volano tra due luoghi (truppe, Nazgûl)
 var _foto: Dictionary = {}           # stato dei pezzi all'ultimo aggiornamento
+var _carte_volo: Array = []          # carte che si girano e volano verso la loro casella
+var ritmo := 1.0                     # durata delle animazioni (1 = normale, di più = più lente)
 var _lampi: Array = []               # {pos, t, col}
 var _carte_mappa: Array = []         # [{rect (pixel tabellone), id}] per l'ingrandimento
 var _carta_sotto := -1
@@ -270,7 +272,80 @@ func _istantanea() -> Dictionary:
 		if motore.nazgul[r] > 0:
 			cn[r] = int(motore.nazgul[r])
 	f["conti"]["nazgul"] = cn
+	f["carte"] = {"risolte": motore.risolte.duplicate(), "so_n": motore.scarti_ombra.size(),
+		"so_top": motore.scarti_ombra.back() if not motore.scarti_ombra.is_empty() else -1,
+		"sg_n": motore.scarti.size(), "sg_top": motore.scarti.back() if not motore.scarti.is_empty() else -1,
+		"mazzo_n": motore.mazzo.size()}
 	return f
+
+
+func _slot_risolta(k: int) -> Vector2:
+	return OMBRA_RISOLVI + Vector2(k * 14, k * 22)
+
+
+func _vola_carta(fronte: Texture2D, retro: Texture2D, da: Vector2, a: Vector2, h: float, dur: float, nascondi := "", ritardo := 0.0) -> void:
+	_carte_volo.append({"fronte": fronte, "retro": retro, "da": da, "a": a, "h": h, "t": -ritardo / dur, "dur": dur, "nascondi": nascondi})
+
+
+## Carte: quelle dell'Ombra si girano uscendo dal mazzo, gli scarti scivolano nella loro casella.
+func _anima_carte(prima: Dictionary, dopo: Dictionary) -> void:
+	var r0: Array = prima["risolte"]
+	var r1: Array = dopo["risolte"]
+	var rit := 0.0
+	for k in r1.size():
+		if k < r0.size() and r0[k] == r1[k]:
+			continue
+		var id: int = r1[k]
+		var retro := UI.tex("res://assets/carte/dorso_%s.webp" % Dati.carta(id).get("retro", "bandiera"))
+		_vola_carta(UI.carta_tex(id), retro, OMBRA_PESCA, _slot_risolta(k), H_OMBRA, 1.0 * ritmo, "risolte:%d" % k, rit)
+		rit += 0.35 * ritmo
+	if dopo["so_n"] > prima["so_n"] and dopo["so_top"] >= 0:
+		# le risolte vanno negli scarti: scivolano una dopo l'altra
+		var n_nuove: int = mini(dopo["so_n"] - prima["so_n"], 4)
+		var j := 0
+		for k in range(r0.size() - n_nuove, r0.size()):
+			if k < 0:
+				continue
+			_vola_carta(UI.carta_tex(r0[k]), null, _slot_risolta(k), OMBRA_SCARTI, H_OMBRA, 0.7 * ritmo, "scarti_ombra" if k == r0.size() - 1 else "", j * 0.15 * ritmo)
+			j += 1
+		if j == 0:
+			_vola_carta(UI.carta_tex(dopo["so_top"]), null, OMBRA_RISOLVI, OMBRA_SCARTI, H_OMBRA, 0.7 * ritmo, "scarti_ombra")
+	if dopo["sg_n"] > prima["sg_n"] and dopo["sg_top"] >= 0 and dopo["sg_top"] != prima["sg_top"]:
+		_vola_carta(UI.carta_tex(dopo["sg_top"]), null, Vector2(W + 250, H * 0.55), GIOC_SCARTI, H_GIOC, 0.8 * ritmo, "scarti")
+	if dopo["mazzo_n"] < prima["mazzo_n"]:
+		var dg := UI.tex("res://assets/carte/dorso_giocatori.webp")
+		for k in mini(prima["mazzo_n"] - dopo["mazzo_n"], 2):
+			_vola_carta(dg, null, GIOC_PESCA, Vector2(W + 300, H * 0.45), H_GIOC, 0.8 * ritmo, "", k * 0.25 * ritmo)
+
+
+func _nascosta(chiave: String) -> bool:
+	for c in _carte_volo:
+		if c["nascondi"] == chiave:
+			return true
+	return false
+
+
+func _disegna_carte_volo() -> void:
+	for c in _carte_volo:
+		var t: float = c["t"]
+		if t < 0.0:
+			continue
+		var e := smoothstep(0.0, 1.0, t)
+		var centro: Vector2 = c["da"].lerp(c["a"], e)
+		var h: float = c["h"] * (1.0 + sin(t * PI) * 0.15)
+		var tex: Texture2D = c["fronte"]
+		var sx := 1.0
+		if c["retro"] != null:
+			# si gira a metà strada: prima il dorso, poi la faccia
+			sx = absf(cos(t * PI))
+			if t < 0.5:
+				tex = c["retro"]
+		if tex == null:
+			continue
+		var w: float = h * tex.get_width() / max(1.0, float(tex.get_height()))
+		var r := Rect2(centro - Vector2(w * sx, h) / 2.0, Vector2(w * sx, h))
+		draw_rect(Rect2(a_schermo(r.position + Vector2(10, 14)), r.size * zoom), Color(0, 0, 0, 0.35))
+		draw_texture_rect(tex, Rect2(a_schermo(r.position), r.size * zoom), false)
 
 
 ## Dove si disegna un pezzo di quel tipo in quel luogo (pixel del tabellone).
@@ -312,7 +387,7 @@ func registra() -> void:
 		if da.distance_to(a) < 1.0:
 			continue
 		var d := da.distance_to(a)
-		_anim[k] = {"da": da, "a": a, "t": 0.0, "dur": clampf(0.35 + d / 1400.0, 0.35, 1.5), "arco": clampf(d * 0.15, 10.0, 70.0)}
+		_anim[k] = {"da": da, "a": a, "t": 0.0, "dur": clampf(0.35 + d / 1400.0, 0.35, 1.5) * ritmo, "arco": clampf(d * 0.15, 10.0, 70.0)}
 	for tipo in nuova["conti"]:
 		var prima: Dictionary = _foto["conti"].get(tipo, {})
 		var dopo: Dictionary = nuova["conti"][tipo]
@@ -329,7 +404,7 @@ func registra() -> void:
 		for l in arrivi:
 			var a := _pos_tipo(tipo, l)
 			if via.is_empty():
-				_voli.append({"tex": tex, "da": a, "a": a, "t": 0.0, "dur": 0.45, "lato": lato, "modo": "compari"})
+				_voli.append({"tex": tex, "da": a, "a": a, "t": 0.0, "dur": 0.6 * ritmo, "lato": lato, "modo": "compari"})
 				continue
 			var best := 0
 			for q in via.size():
@@ -338,12 +413,13 @@ func registra() -> void:
 			var da := _pos_tipo(tipo, via[best])
 			via.remove_at(best)
 			var d := da.distance_to(a)
-			_voli.append({"tex": tex, "da": da, "a": a, "t": 0.0, "dur": clampf(0.4 + d / 1400.0, 0.4, 1.5), "lato": lato,
+			_voli.append({"tex": tex, "da": da, "a": a, "t": 0.0, "dur": clampf(0.6 + d / 900.0, 0.6, 2.2) * ritmo, "lato": lato,
 				"modo": "vola", "arco": clampf(d * 0.2, 20.0, 160.0 if tipo == "nazgul" else 80.0)})
 		for l in via:
-			_voli.append({"tex": tex, "da": _pos_tipo(tipo, l), "a": _pos_tipo(tipo, l), "t": 0.0, "dur": 0.6, "lato": lato, "modo": "svanisci"})
+			_voli.append({"tex": tex, "da": _pos_tipo(tipo, l), "a": _pos_tipo(tipo, l), "t": 0.0, "dur": 0.8 * ritmo, "lato": lato, "modo": "svanisci"})
+	_anima_carte(_foto["carte"], nuova["carte"])
 	_foto = nuova
-	if not _anim.is_empty() or not _voli.is_empty():
+	if not _anim.is_empty() or not _voli.is_empty() or not _carte_volo.is_empty():
 		set_process(true)
 
 
@@ -358,6 +434,12 @@ func _process(delta: float) -> void:
 		_anim[p]["t"] += delta / float(_anim[p]["dur"])
 		if _anim[p]["t"] >= 1.0:
 			_anim.erase(p)
+		else:
+			attivo = true
+	for k in range(_carte_volo.size() - 1, -1, -1):
+		_carte_volo[k]["t"] += delta / float(_carte_volo[k]["dur"])
+		if _carte_volo[k]["t"] >= 1.0:
+			_carte_volo.remove_at(k)
 		else:
 			attivo = true
 	for k in range(_voli.size() - 1, -1, -1):
@@ -488,6 +570,7 @@ func _draw() -> void:
 		var col: Color = x["col"]
 		col.a = 1.0 - x["t"]
 		draw_arc(c, (40 + 120 * x["t"]) * z, 0, TAU, 48, col, max(3.0, 12 * z), true)
+	_disegna_carte_volo()
 	# nome del luogo sotto il mouse
 	if sotto_mouse != "":
 		var c := a_schermo(pos_luogo(sotto_mouse)) + Vector2(0, 70 * z + 18)
@@ -549,11 +632,16 @@ func _disegna_spazi(z: float) -> void:
 		dorso_ombra = "dorso_" + Dati.carta(m.mazzo_ombra.back())["retro"]
 		_carta(UI.tex("res://assets/carte/%s.webp" % dorso_ombra), OMBRA_PESCA, H_OMBRA, -1, m.mazzo_ombra.size())
 	for k in m.risolte.size():
-		_carta(UI.carta_tex(m.risolte[k]), OMBRA_RISOLVI + Vector2(k * 14, k * 22), H_OMBRA, m.risolte[k])
+		if not _nascosta("risolte:%d" % k):
+			_carta(UI.carta_tex(m.risolte[k]), _slot_risolta(k), H_OMBRA, m.risolte[k])
 	if not m.scarti_ombra.is_empty():
-		_carta(UI.carta_tex(m.scarti_ombra.back()), OMBRA_SCARTI, H_OMBRA, m.scarti_ombra.back(), m.scarti_ombra.size())
+		var so: int = m.scarti_ombra.size() - (1 if _nascosta("scarti_ombra") else 0)
+		if so > 0:
+			_carta(UI.carta_tex(m.scarti_ombra[so - 1]), OMBRA_SCARTI, H_OMBRA, m.scarti_ombra[so - 1], so)
 	# mazzo dei giocatori
 	if not m.mazzo.is_empty():
 		_carta(UI.tex("res://assets/carte/dorso_giocatori.webp"), GIOC_PESCA, H_GIOC, -1, m.mazzo.size())
 	if not m.scarti.is_empty():
-		_carta(UI.carta_tex(m.scarti.back()), GIOC_SCARTI, H_GIOC, m.scarti.back(), m.scarti.size())
+		var sg: int = m.scarti.size() - (1 if _nascosta("scarti") else 0)
+		if sg > 0:
+			_carta(UI.carta_tex(m.scarti[sg - 1]), GIOC_SCARTI, H_GIOC, m.scarti[sg - 1], sg)

@@ -37,6 +37,11 @@ var _richiesta := {}
 var _in_attesa := false
 var _da_aggiornare := false
 var _ripresa := false
+var _linea_id := 0
+## Velocità della fase dell'Ombra e delle animazioni: nome, pausa del motore, durata animazioni.
+const RITMI := [["Lento", 1.8, 1.7], ["Normale", 1.0, 1.0], ["Veloce", 0.45, 0.6], ["Istantaneo", 0.0, 0.35]]
+var _ritmo := 1
+var b_ritmo: Button
 const SALVATAGGIO := "user://partita_in_corso.json"
 const LARGHEZZA_SX := 400
 const LARGHEZZA_DX := 400
@@ -76,6 +81,12 @@ func _ready() -> void:
 	cfg.erase("online")
 	motore.prepara(cfg)
 	mappa.motore = motore
+	var cf := ConfigFile.new()
+	if cf.load("user://impostazioni.cfg") == OK:
+		_ritmo = clampi(int(cf.get_value("vista", "ritmo", 1)), 0, RITMI.size() - 1)
+	if config.has("ritmo"):
+		_ritmo = int(config["ritmo"])
+	_applica_ritmo()
 	_aggiorna()
 	if config.get("vista3d", false):
 		_imposta_3d(true)
@@ -130,6 +141,12 @@ func _costruisci() -> void:
 	hb.add_child(box_info)
 	stato_online = UI.etichetta("", 18, UI.ORO)
 	hb.add_child(stato_online)
+	b_ritmo = UI.bottone("", 15)
+	b_ritmo.tooltip_text = "Velocità delle animazioni e della fase dell'Ombra (clic per cambiarla)."
+	b_ritmo.pressed.connect(func():
+		_ritmo = (_ritmo + 1) % RITMI.size()
+		_applica_ritmo())
+	hb.add_child(b_ritmo)
 	b3d = UI.bottone("Tavolo 3D", 15)
 	b3d.toggle_mode = true
 	b3d.toggled.connect(_imposta_3d)
@@ -223,6 +240,20 @@ func _costruisci() -> void:
 # =====================================================================================
 # AGGIORNAMENTO
 # =====================================================================================
+
+func _applica_ritmo() -> void:
+	var r: Array = RITMI[_ritmo]
+	b_ritmo.text = "Ritmo: %s" % r[0]
+	if motore != null:
+		motore.ritmo = r[1]
+	mappa.ritmo = r[2]
+	if tavolo3d != null:
+		tavolo3d.ritmo = r[2]
+	var cf := ConfigFile.new()
+	cf.load("user://impostazioni.cfg")
+	cf.set_value("vista", "ritmo", _ritmo)
+	cf.save("user://impostazioni.cfg")
+
 
 func _salva() -> void:
 	var cfg := config.duplicate()
@@ -665,13 +696,22 @@ func _al_evento(tipo: String, dati: Dictionary) -> void:
 			_lampo(Color(0.05, 0.02, 0.08))
 		"obiettivo":
 			_lampo(UI.ORO)
-		"avanzata":
+		"linea":
+			# la rotta dell'avanzata resta evidenziata finché le truppe non hanno finito di muoversi
 			mappa.evidenzia({}, dati["linea"])
-			get_tree().create_timer(1.6).timeout.connect(func(): if mappa != null: mappa.evidenzia({}))
+			_linea_id += 1
+			var mio := _linea_id
+			get_tree().create_timer(4.0 * maxf(0.5, motore.ritmo)).timeout.connect(func():
+				if mappa != null and mio == _linea_id:
+					mappa.evidenzia({})
+					if tavolo3d != null:
+						tavolo3d.evidenzia_linea(""))
 		"ombra":
 			_segna_aggiornamento()
 	if tavolo3d != null and vista3d:
 		tavolo3d.evento(tipo, dati)
+		if tipo == "linea":
+			tavolo3d.evidenzia_linea(dati["linea"])
 
 
 func _lampo(col: Color) -> void:
@@ -794,6 +834,7 @@ func _imposta_3d(on: bool) -> void:
 		tavolo3d = preload("res://scripts/ui/tavolo3d.gd").new()
 		tavolo3d.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		tavolo3d.vista = self
+		tavolo3d.ritmo = RITMI[_ritmo][2]
 		centro.add_child(tavolo3d)
 	if tavolo3d != null:
 		tavolo3d.visible = on

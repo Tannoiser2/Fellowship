@@ -104,6 +104,9 @@ func _process(delta: float) -> void:
 	if occhio3d != null:
 		occhio3d.position.y = 3.2 + sin(_t * 1.6) * 0.25
 		occhio3d.rotation.y = _rot.y
+	if dinamici != null:
+		for p in get_tree().get_nodes_in_group("volteggia"):
+			_volteggia(p)
 	if not visible or not has_focus():
 		return
 	var d := Vector2.ZERO
@@ -466,35 +469,102 @@ func evento(tipo: String, dati: Dictionary) -> void:
 
 
 ## Carta (o dorso) appoggiata sul tabellone: centro e altezza in pixel del tabellone, con la pila sotto.
-func _carta3d(t: Texture2D, c_px: Vector2, h_px: float, n := 1, id := -1) -> void:
+func _carta3d(t: Texture2D, c_px: Vector2, h_px: float, n := 1, id := -1, da_px := Vector2.INF, retro: Texture2D = null, ritardo := 0.0) -> void:
 	if t == null:
 		return
 	var w_px: float = h_px * t.get_width() / max(1.0, float(t.get_height()))
 	var spess: float = 0.006 * clampi(n, 1, 40)
 	var pos := _a3d(c_px)
-	if n > 1:
+	var anima := da_px != Vector2.INF
+	# la pila sotto la carta (se la carta arriva in volo, la pila è quella di prima)
+	var n_pila: int = n - 1 if anima else n
+	if n_pila > 1:
+		var sp2: float = 0.006 * clampi(n_pila, 1, 40)
 		var box := MeshInstance3D.new()
 		var bm := BoxMesh.new()
-		bm.size = Vector3(w_px * SCALA, spess, h_px * SCALA)
+		bm.size = Vector3(w_px * SCALA, sp2, h_px * SCALA)
 		box.mesh = bm
-		box.position = pos + Vector3(0, spess / 2.0, 0)
+		box.position = pos + Vector3(0, sp2 / 2.0, 0)
 		box.material_override = _colore(Color(0.86, 0.82, 0.72))
 		dinamici.add_child(box)
+	var carta := Node3D.new()
+	carta.position = pos + Vector3(0, spess + 0.004, 0)
+	dinamici.add_child(carta)
 	var mi := MeshInstance3D.new()
 	var pm := PlaneMesh.new()
 	pm.size = Vector2(w_px, h_px) * SCALA
 	mi.mesh = pm
-	mi.position = pos + Vector3(0, spess + 0.004, 0)
 	mi.material_override = _mat_tex(t)
 	if id >= 0:
-		mi.set_meta("carta", id)
-		mi.set_meta("mezza", Vector2(w_px, h_px) * SCALA / 2.0)
-	dinamici.add_child(mi)
+		carta.set_meta("carta", id)
+		carta.set_meta("mezza", Vector2(w_px, h_px) * SCALA / 2.0)
+	carta.add_child(mi)
+	if retro != null:
+		var mr := MeshInstance3D.new()
+		var pr := PlaneMesh.new()
+		pr.size = Vector2(w_px, h_px) * SCALA
+		mr.mesh = pr
+		mr.material_override = _mat_tex(retro)
+		mr.rotation.z = PI
+		mr.position.y = -0.003
+		carta.add_child(mr)
+	if anima:
+		var a := carta.position
+		var da := _a3d(da_px, a.y + 0.05)
+		var gira := retro != null
+		var dur := 1.0 * ritmo
+		carta.position = da
+		if gira:
+			carta.rotation.z = PI
+		var tw := carta.create_tween()
+		if ritardo > 0.0:
+			carta.visible = false
+			tw.tween_interval(ritardo)
+			tw.tween_callback(func(): carta.visible = true)
+		tw.tween_method(func(x: float):
+			carta.position = da.lerp(a, x) + Vector3(0, sin(x * PI) * 1.4, 0)
+			if gira:
+				carta.rotation.z = PI * (1.0 - x), 0.0, 1.0, dur).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	if n > 1:
 		_scritta(str(n), pos + Vector3(w_px * SCALA * 0.35, spess + 0.3, h_px * SCALA * 0.38), 70, Color.WHITE)
 
 
 var _nazgul_scena: PackedScene
+var _carte_prima := {}
+var ritmo := 1.0
+var _linea3d: Node3D
+
+
+## Rotta di un'avanzata dell'Ombra: un nastro rosso luminoso sopra il tabellone ("" = toglila).
+func evidenzia_linea(lid: String) -> void:
+	if _linea3d != null and is_instance_valid(_linea3d):
+		_linea3d.queue_free()
+	_linea3d = null
+	if lid == "" or sv == null:
+		return
+	_linea3d = Node3D.new()
+	sv.add_child(_linea3d)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.albedo_color = Color(1, 0.15, 0.08, 0.75)
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.no_depth_test = true
+	mat.render_priority = 5
+	var p: Array = Dati.linea(lid)["percorso"]
+	for k in p.size() - 1:
+		var a := _luogo3d(p[k], 0.06)
+		var b := _luogo3d(p[k + 1], 0.06)
+		var seg := MeshInstance3D.new()
+		var bm := BoxMesh.new()
+		bm.size = Vector3(0.16, 0.02, a.distance_to(b))
+		seg.mesh = bm
+		seg.material_override = mat
+		seg.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_linea3d.add_child(seg)
+		seg.look_at_from_position((a + b) / 2.0, b, Vector3.UP)
+	var tw := _linea3d.create_tween().set_loops()
+	tw.tween_property(mat, "albedo_color:a", 0.35, 0.5)
+	tw.tween_property(mat, "albedo_color:a", 0.8, 0.5)
 var _scene_truppe := {}
 var _mat_truppe := {}
 
@@ -535,18 +605,47 @@ func _nazgul(pos: Vector3, rot: float, k := 0) -> Node3D:
 	if _nazgul_scena == null:
 		push_warning("modello del Nazgûl non trovato")
 		return _pezzo(UI.pedina("nazgul"), pos, 0.9, 0.08, Color(0.1, 0.1, 0.1), true)
+	# il perno sta sulla regione (è lui che si sposta quando il Nazgûl cambia regione);
+	# la bestia gli vola attorno in cerchio, in aria, fluttuando come l'Occhio
+	var perno_n := Node3D.new()
+	perno_n.position = pos
+	perno_n.add_to_group("volteggia")
+	perno_n.set_meta("raggio", 0.75 + (k % 3) * 0.4)
+	perno_n.set_meta("quota", 1.5 + (k % 3) * 0.35 + (k / 3) * 0.3)
+	perno_n.set_meta("fase", rot)
+	perno_n.set_meta("vel", 0.45 + (k % 2) * 0.12)
+	dinamici.add_child(perno_n)
 	var n: Node3D = _nazgul_scena.instantiate()
-	n.scale = Vector3.ONE * 0.85
-	n.position = pos
-	n.rotation.y = rot
-	dinamici.add_child(n)
+	n.scale = Vector3.ONE * 0.75
+	perno_n.add_child(n)
 	for mi in n.find_children("*", "MeshInstance3D", true, false):
 		mi.material_override = _mat_nazgul(k)
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-	return n
+	_volteggia(perno_n)
+	return perno_n
+
+
+## Posizione in volo di un Nazgûl attorno al suo perno: cerchio, su e giù, inclinato in virata.
+func _volteggia(p: Node3D) -> void:
+	if p.get_child_count() == 0:
+		return
+	var n: Node3D = p.get_child(0)
+	var a: float = _t * float(p.get_meta("vel")) + float(p.get_meta("fase"))
+	var r: float = p.get_meta("raggio")
+	n.position = Vector3(cos(a) * r, float(p.get_meta("quota")) + sin(_t * 1.4 + float(p.get_meta("fase"))) * 0.18, sin(a) * r)
+	# il muso del modello guarda verso -x: lo si gira lungo la tangente del cerchio
+	n.rotation = Vector3(0, PI / 2.0 - a, 0.25)
 
 
 var _mn: Array = []
+var _mc: ShaderMaterial
+
+
+func _mat_cono() -> ShaderMaterial:
+	if _mc == null:
+		_mc = ShaderMaterial.new()
+		_mc.shader = load("res://assets/shader/cono_occhio.gdshader")
+	return _mc
 
 
 ## Materiale della bestia alata: lo shader fa battere le ali, ognuna con la sua fase.
@@ -576,7 +675,7 @@ func _vola(n: Node3D, da: Vector3, arco: float) -> void:
 	var d := da.distance_to(a)
 	if d < 0.02:
 		return
-	var dur := clampf(0.35 + d * 0.07, 0.35, 1.5)
+	var dur := clampf(0.5 + d * 0.1, 0.5, 2.2) * ritmo
 	var h := arco * clampf(d / 3.0, 0.25, 1.0)
 	n.position = da
 	var tw := n.create_tween()
@@ -588,7 +687,7 @@ func _compari(n: Node3D) -> void:
 	var sc := n.scale
 	n.scale = sc * 0.01
 	var tw := n.create_tween()
-	tw.tween_property(n, "scale", sc, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(n, "scale", sc, 0.45 * ritmo).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 ## Confronta i pezzi di prima con quelli nuovi e anima gli spostamenti.
@@ -658,18 +757,36 @@ func aggiorna(m: Motore, anima := true) -> void:
 		for k in min(n, 6):
 			_segna(_truppa3d(a, _a3d(MAPPA.RISERVE[a]) + Vector3(-0.4 + (k % 3) * 0.4, 0, -0.2 + (k / 3) * 0.4), 0.5), "truppa_" + a, "riserva")
 		_scritta(str(n), _a3d(MAPPA.RISERVE[a], 0.9) + Vector3(0.75, 0, 0.1), 70)
-	# mazzi
+	# mazzi: le carte nuove arrivano in volo (quelle dell'Ombra si girano uscendo dal mazzo)
+	var prima: Dictionary = _carte_prima if anima else {}
+	_carte_prima = {"risolte": m.risolte.duplicate(), "so_n": m.scarti_ombra.size(), "sg_n": m.scarti.size(),
+		"sg_top": m.scarti.back() if not m.scarti.is_empty() else -1}
 	if not m.mazzo_ombra.is_empty():
 		var dorso: String = "dorso_" + Dati.carta(m.mazzo_ombra.back())["retro"]
 		_carta3d(UI.tex("res://assets/carte/%s.webp" % dorso), MAPPA.OMBRA_PESCA, MAPPA.H_OMBRA, m.mazzo_ombra.size())
+	var r0: Array = prima.get("risolte", m.risolte)
+	var rit := 0.0
 	for k in m.risolte.size():
-		_carta3d(UI.carta_tex(m.risolte[k]), MAPPA.OMBRA_RISOLVI + Vector2(k * 14, k * 22), MAPPA.H_OMBRA, k + 1, m.risolte[k])
+		var id: int = m.risolte[k]
+		var slot: Vector2 = MAPPA.OMBRA_RISOLVI + Vector2(k * 14, k * 22)
+		if not prima.is_empty() and (k >= r0.size() or r0[k] != id):
+			var retro := UI.tex("res://assets/carte/dorso_%s.webp" % Dati.carta(id).get("retro", "bandiera"))
+			_carta3d(UI.carta_tex(id), slot, MAPPA.H_OMBRA, k + 1, id, MAPPA.OMBRA_PESCA, retro, rit)
+			rit += 0.35 * ritmo
+		else:
+			_carta3d(UI.carta_tex(id), slot, MAPPA.H_OMBRA, k + 1, id)
 	if not m.scarti_ombra.is_empty():
-		_carta3d(UI.carta_tex(m.scarti_ombra.back()), MAPPA.OMBRA_SCARTI, MAPPA.H_OMBRA, m.scarti_ombra.size(), m.scarti_ombra.back())
+		var da := Vector2.INF
+		if not prima.is_empty() and m.scarti_ombra.size() > int(prima["so_n"]):
+			da = MAPPA.OMBRA_RISOLVI + Vector2(maxi(0, r0.size() - 1) * 14, maxi(0, r0.size() - 1) * 22)
+		_carta3d(UI.carta_tex(m.scarti_ombra.back()), MAPPA.OMBRA_SCARTI, MAPPA.H_OMBRA, m.scarti_ombra.size(), m.scarti_ombra.back(), da)
 	if not m.mazzo.is_empty():
 		_carta3d(UI.tex("res://assets/carte/dorso_giocatori.webp"), MAPPA.GIOC_PESCA, MAPPA.H_GIOC, m.mazzo.size())
 	if not m.scarti.is_empty():
-		_carta3d(UI.carta_tex(m.scarti.back()), MAPPA.GIOC_SCARTI, MAPPA.H_GIOC, m.scarti.size(), m.scarti.back())
+		var da2 := Vector2.INF
+		if not prima.is_empty() and m.scarti.size() > int(prima["sg_n"]) and m.scarti.back() != prima["sg_top"]:
+			da2 = Vector2(MAPPA.W + 300, MAPPA.H * 0.55)
+		_carta3d(UI.carta_tex(m.scarti.back()), MAPPA.GIOC_SCARTI, MAPPA.H_GIOC, m.scarti.size(), m.scarti.back(), da2)
 	# rifugi conquistati e caduti
 	for l in m.stato:
 		var orig: String = Dati.luogo(l)["tipo"]
@@ -710,10 +827,8 @@ func aggiorna(m: Motore, anima := true) -> void:
 		var n: int = m.nazgul[r]
 		var rr: Dictionary = Dati.d()["regioni"][r]
 		for k in n:
-			var col := k % 3
-			var riga := k / 3
-			var pos := _a3d(Vector2(rr["x"], rr["y"])) + Vector3((col - 1) * 1.2 + riga * 0.55, 0, riga * 0.95)
-			_segna(_nazgul(pos, 0.4 + k * 0.7, k), "nazgul", r)
+			var pos := _a3d(Vector2(rr["x"], rr["y"]))
+			_segna(_nazgul(pos, TAU * k / float(n) + k * 0.4, k), "nazgul", r)
 	# Occhio di Sauron sospeso sopra la regione
 	var ro: Dictionary = Dati.d()["regioni"][m.occhio]
 	occhio3d = Node3D.new()
@@ -726,9 +841,32 @@ func aggiorna(m: Motore, anima := true) -> void:
 	occhio3d.add_child(q)
 	var luce := OmniLight3D.new()
 	luce.light_color = Color(1, 0.4, 0.1)
-	luce.light_energy = 2.5
-	luce.omni_range = 6.0
+	luce.light_energy = 1.2
+	luce.omni_range = 5.0
 	occhio3d.add_child(luce)
+	# cono di luce soffusa verso la mappa
+	var cono := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = 0.12
+	cm.bottom_radius = 2.1
+	cm.height = 3.1
+	cm.radial_segments = 32
+	cm.rings = 1
+	cm.cap_top = false
+	cm.cap_bottom = false
+	cono.mesh = cm
+	cono.position.y = -1.65
+	cono.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	cono.material_override = _mat_cono()
+	occhio3d.add_child(cono)
+	var faro := SpotLight3D.new()
+	faro.light_color = Color(1, 0.55, 0.2)
+	faro.light_energy = 2.0
+	faro.spot_range = 6.0
+	faro.spot_angle = 30.0
+	faro.spot_angle_attenuation = 2.5
+	faro.rotation.x = -PI / 2
+	occhio3d.add_child(faro)
 	dinamici.add_child(occhio3d)
 	_segna(occhio3d, "occhio")
 	if anima:

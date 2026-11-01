@@ -22,7 +22,7 @@ func _init() -> void:
 		gg.append({"nome": ["Compagno", "Anna", "Marco", "Giulia"][k], "ia": true})
 	main.start_game({"giocatori": gg, "difficolta": "introduttivo",
 		"obiettivi": ["benedizione", "saruman", "sauron", "anello"], "personaggi": preload("res://scripts/ui/menu.gd").PRIMA_PARTITA[n_g],
-		"primo_frodo": true, "ritardo_ia": 0.05, "seme": 4242, "vista3d": tre_d})
+		"primo_frodo": true, "ritardo_ia": 0.05, "seme": 4242, "vista3d": tre_d, "ritmo": 2})
 	await _attendi(2.5)
 	await _foto("02_inizio")
 	await _attendi(8.0)

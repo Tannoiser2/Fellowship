@@ -138,6 +138,26 @@ func _percorso_sicuro(m: Motore, da: String) -> Dictionary:
 	return d
 
 
+## Passi (sul grafo dei collegamenti) per uscire dalla regione r partendo da l.
+## I sentieri speciali contano solo se chi ha Frodo può pagarli.
+func _passi_fuori(r: String, l: String, m: Motore = null) -> int:
+	var visti := {l: 0}
+	var coda := [l]
+	while not coda.is_empty():
+		var x: String = coda.pop_front()
+		for y in Dati.vicini(x):
+			if visti.has(y):
+				continue
+			var costo: Dictionary = Dati.collegamento(x, y)["costo"]
+			if not costo.is_empty() and (m == null or not m.in_gioco("frodo") or not m._puo_pagare(m.posto_di("frodo"), costo)):
+				continue
+			visti[y] = visti[x] + 1
+			if Dati.regione(y) != r:
+				return visti[y]
+			coda.append(y)
+	return 9
+
+
 func _fase_finale(m: Motore) -> bool:
 	for o in m.obiettivi:
 		if o["codice"] != "anello" and not o["fatto"]:
@@ -161,6 +181,9 @@ func _piano(m: Motore, op: Array) -> int:
 		if p == "frodo" and n == 4 and not _fase_finale(m):
 			var pf := _pericolo(m, m.regione_frodo()) + float(m.stato[m.luogo_frodo()]["ombra"])
 			v += pf * 2.5 - 6.0
+			# l'Occhio è su di lui e per uscire dalla regione serve più di un passo
+			if m.occhio == m.regione_frodo() and _passi_fuori(m.regione_frodo(), m.luogo_frodo(), m) > 1:
+				v += 12.0
 		if v > bv:
 			bv = v
 			best = k
@@ -383,7 +406,11 @@ func valuta(m: Motore) -> float:
 		var occhio := m.occhio == r
 		v -= perdita * (9.0 if occhio else 4.0)
 		if occhio:
-			v -= 7.0 + float(m.valore_minaccia()) * 1.5
+			# l'Occhio sulla regione di Frodo: ricerche a ogni ordine dell'Ombra e -2 speranza al prossimo
+			# Oscuramento dei Cieli. Frodo deve uscire dalla regione il prima possibile.
+			# Ogni passo che manca per uscirne vale circa un turno in più sotto l'Occhio.
+			var dadi_reg := float(mini(7, m.nazgul[r] + 1))
+			v -= 22.0 + float(m.valore_minaccia()) * 1.5 + float(_passi_fuori(r, l, m)) * (8.0 + dadi_reg * 5.0)
 		v -= float(m.nazgul[r]) * 1.5
 		# potenziale: costo del percorso più sicuro verso un rifugio tranquillo (ogni passo pesa quanto la
 		# ricerca che costerebbe), così Frodo esce in tempo dalle regioni dove i Nazgûl si radunano
@@ -394,7 +421,7 @@ func valuta(m: Motore) -> float:
 				if not m.e_rifugio(h) or m.stato[h]["ombra"] > 0:
 					continue
 				var rh := Dati.regione(h)
-				var dz: float = float(m.nazgul[rh]) * 1.8 + (3.0 if m.occhio == rh else 0.0)
+				var dz: float = float(m.nazgul[rh]) * 1.8 + (12.0 if m.occhio == rh else 0.0)
 				for rv in Dati.regioni_vicine(rh):
 					dz += float(m.nazgul[rv]) * 0.35
 				pot = minf(pot, dz + costi[h])
@@ -417,7 +444,7 @@ func valuta(m: Motore) -> float:
 				vic += int(m.stato[x]["ombra"])
 			var minaccia := float(o) * 2.2 + float(vic) * 0.7 - float(am) * 1.1
 			if minaccia > 0.0:
-				v -= minaccia * 4.0
+				v -= minaccia * 2.0
 			if o > 0:
 				v -= 6.0
 		elif m.e_fortezza(l) and Dati.luogo(l)["tipo"] == "rifugio":
@@ -425,7 +452,8 @@ func valuta(m: Motore) -> float:
 		v -= float(o) * 1.1
 		if o > 0 and am > 0:
 			v -= float(mini(o, am)) * 0.5
-		v += float(mini(am, 4)) * 0.6
+		v += float(mini(am, 5)) * (2.6 if m.e_rifugio(l) else 1.6)
+	v -= _rischio_rifugi(m) * 42.0
 	if m.riserva_ombra < 10:
 		v -= float(10 - m.riserva_ombra) * 3.0
 	# conquiste e fortezze liberate
@@ -444,9 +472,178 @@ func valuta(m: Motore) -> float:
 		var t := _obiettivo_pg(m, p)
 		var d: float = _dist(m.pg[p]["luogo"]).get(t["luogo"], 30.0)
 		v -= d * 0.25 * clampf(t["v"], 0.0, 4.0)
-	# progressi sulle carte obiettivo
-	v += float(m.su_carta.get("sei", 0)) * 4.0 + float(m.eored.size()) * 5.0 + float(m.hobbit.size()) * 8.0 + float(m.nazgul_eowyn) * 8.0
+	# progressi verso gli obiettivi aperti: l'IA vede i passi intermedi (simboli raccolti, personaggi
+	# sul posto, truppe radunate, Ombra scacciata) e non solo l'obiettivo finito
+	for o in m.obiettivi:
+		if not o["fatto"] and o["codice"] != "anello":
+			v += _progresso(m, o["codice"]) * PESO_PROGRESSO
 	return v
+
+
+const PESO_PROGRESSO := 30.0
+
+
+## Probabilità che ogni linea di battaglia avanzi al prossimo turno dell'Ombra, dalle carte rimaste nel mazzo.
+func _prob_linee(m: Motore) -> Dictionary:
+	var r := {}
+	var n := m.mazzo_ombra.size()
+	if n == 0:
+		return r
+	var pesca := float(mini(n, m.valore_minaccia()))
+	for id in m.mazzo_ombra:
+		var lid: String = Dati.carta(id).get("linea", "")
+		if lid != "":
+			r[lid] = r.get(lid, 0.0) + 0.5 * pesca / float(n)
+	return r
+
+
+## Rischio (in rifugi attesi persi) che un rifugio cada al prossimo turno dell'Ombra: truppe ombra già lì
+## più quelle che le avanzate probabili porteranno, contro le truppe amiche che lo difendono.
+func _rischio_rifugi(m: Motore) -> float:
+	var pl := _prob_linee(m)
+	var arrivi := {}
+	for lid in pl:
+		var p: Array = Dati.linea(lid)["percorso"]
+		for k in range(1, p.size()):
+			var o: int = m.stato[p[k - 1]]["ombra"]
+			if o > 0 and m.e_rifugio(p[k]):
+				arrivi[p[k]] = arrivi.get(p[k], 0.0) + float(o) * minf(1.0, pl[lid])
+	var tot := 0.0
+	for h in arrivi:
+		var att: float = float(m.stato[h]["ombra"]) + arrivi[h]
+		var am := float(m.amiche(h))
+		tot += clampf((att - am * 0.9) / (att + 1.0), 0.0, 1.0) * minf(1.0, arrivi[h] + 0.3)
+	for h in m.stato:
+		if m.e_rifugio(h) and not arrivi.has(h) and m.stato[h]["ombra"] > 0:
+			var o := float(m.stato[h]["ombra"])
+			tot += clampf((o - float(m.amiche(h)) * 0.9) / (o + 1.0), 0.0, 1.0) * 0.5
+	return tot
+
+
+## Quanto un personaggio qualsiasi è vicino a un luogo (1 = è lì).
+func _vicinanza(m: Motore, l: String, esclusi: Array = []) -> float:
+	var best := 0.0
+	for p in m.pg:
+		if not m.in_gioco(p) or p in esclusi or (p == "frodo" and not m.solo):
+			continue
+		var d: float = _dist(m.pg[p]["luogo"]).get(l, 30.0)
+		best = maxf(best, 1.0 / (1.0 + d * 0.45))
+	return best
+
+
+## Due personaggi nello stesso luogo, uno dei quali paga il costo.
+func _prog_azione_luogo(m: Motore, l: String, costo: Dictionary) -> float:
+	var vic := 0.0
+	var secondo := 0.0
+	var pagare := 0.0
+	var vicini: Array = []
+	for p in m.pg:
+		if not m.in_gioco(p):
+			continue
+		var d: float = _dist(m.pg[p]["luogo"]).get(l, 30.0)
+		vicini.append(1.0 / (1.0 + d * 0.45))
+	vicini.sort()
+	vicini.reverse()
+	if vicini.size() > 0:
+		vic = vicini[0]
+	if vicini.size() > 1:
+		secondo = vicini[1]
+	var tot := 0
+	for s in costo:
+		tot += int(costo[s])
+	for i in m.giocatori.size():
+		var have := 0
+		for s in costo:
+			have += mini(int(costo[s]), m.disponibili(i, s))
+		pagare = maxf(pagare, float(have) / float(maxi(1, tot)))
+	return vic * 0.3 + secondo * 0.2 + pagare * 0.5
+
+
+## Ombra scacciata da una regione (1 = libera).
+func _prog_regione(m: Motore, r: String) -> float:
+	var o := 0.0
+	for l in Dati.d()["regioni"][r]["luoghi"]:
+		o += float(m.stato[l]["ombra"]) + (3.0 if m.e_fortezza(l) else 0.0)
+	return 1.0 / (1.0 + o * 0.35)
+
+
+## Truppe di una razza raccolte in un luogo (rispetto a quante ne servono).
+func _prog_truppe(m: Motore, l: String, a: String, n: int) -> float:
+	return minf(1.0, float(m.stato[l]["truppe"][a]) / float(n))
+
+
+## Un luogo da conquistare: Ombra assente o battibile, truppe amiche pronte.
+func _prog_conquista(m: Motore, l: String) -> float:
+	if m.e_rifugio(l):
+		return 1.0
+	var o := float(m.stato[l]["ombra"])
+	var am := float(m.amiche(l))
+	var vic := 0.0
+	for x in Dati.vicini(l):
+		vic = maxf(vic, float(m.amiche(x)))
+	return 0.15 / (1.0 + o * 0.5) + 0.25 * minf(1.0, maxf(am, vic * 0.6) / maxf(2.0, o + 1.0)) + 0.1 * _vicinanza(m, l)
+
+
+## Progresso (0..1) verso un obiettivo non ancora completato.
+func _progresso(m: Motore, cod: String) -> float:
+	match cod:
+		"benedizione":
+			return _prog_azione_luogo(m, "rivendell", {"amicizia": 3})
+		"theoden":
+			return _prog_azione_luogo(m, "edoras", {"amicizia": 2, "resistenza": 1})
+		"denethor":
+			return _prog_azione_luogo(m, "minas_tirith", {"furtivita": 2, "amicizia": 1, "valore": 1})
+		"stendardo":
+			var t: Dictionary = m.stato["minas_tirith"]["truppe"]
+			var razze := 0.0
+			for a in ["gondor", "rohirrim", "elfi", "nani"]:
+				razze += 0.25 if t[a] > 0 else 0.0
+			return razze * 0.6 + _vicinanza(m, "minas_tirith") * 0.4 if m.in_gioco("arwen") else 0.0
+		"sauron":
+			var l := "north_ithilien"
+			return (_prog_truppe(m, l, "rohirrim", 2) * 2.0 + _prog_truppe(m, l, "elfi", 2) * 2.0 + _prog_truppe(m, l, "gondor", 3) * 3.0) / 7.0 * 0.8 + _vicinanza(m, l) * 0.2
+		"saruman":
+			return _prog_conquista(m, "isengard") * 0.5 + _prog_regione(m, "rohan") * 0.5
+		"pozzi":
+			return _prog_conquista(m, "dol_guldur") * 0.6 + _prog_truppe(m, "dol_guldur", "elfi", 3) * 0.4
+		"balin":
+			return _prog_conquista(m, "moria") * 0.6 + _prog_truppe(m, "moria", "nani", 2) * 0.4
+		"freca":
+			return _prog_conquista(m, "dunland") * 0.6 + _prog_truppe(m, "dunland", "rohirrim", 2) * 0.4
+		"morgul":
+			return _prog_conquista(m, "minas_morgul")
+		"anduin":
+			return _prog_conquista(m, "osgiliath")
+		"umbar":
+			return _prog_conquista(m, "umbar")
+		"raminghi":
+			var luoghi: Array = Dati.d()["regioni"]["eriador"]["luoghi"]
+			var occ := 0.0
+			for l in luoghi:
+				occ += 1.0 if m.amiche(l) > 0 else 0.0
+			return _prog_regione(m, "eriador") * 0.5 + occ / float(luoghi.size()) * 0.5
+		"bosco_atro":
+			var luoghi: Array = Dati.d()["regioni"]["mirkwood"]["luoghi"]
+			var occ := 0.0
+			for l in luoghi:
+				occ += 1.0 if m.stato[l]["truppe"]["elfi"] > 0 else 0.0
+			return _prog_regione(m, "mirkwood") * 0.5 + occ / float(luoghi.size()) * 0.5
+		"nani":
+			var o: float = float(m.stato["ered_luin"]["ombra"])
+			return 0.3 / (1.0 + o) + _prog_truppe(m, "ered_luin", "nani", 4) * 0.4 + _prog_regione(m, "dale") * 0.3
+		"eowyn":
+			return float(mini(m.nazgul_eowyn, 2)) * 0.3 + _prog_regione(m, "rohan") * 0.4
+		"eored":
+			return float(mini(m.eored.size(), 4)) / 4.0
+		"sei":
+			return float(mini(int(m.su_carta.get("sei", 0)), 6)) / 6.0
+		"hobbit":
+			return float(mini(m.hobbit.size(), 2)) * 0.45
+		"spergiuri":
+			return (0.4 if m.aragorn_erech else 0.0) + _prog_regione(m, "gondor") * 0.6
+		"balrog":
+			return _vicinanza(m, "moria") * 0.6 if m.in_gioco("gandalf") else 0.0
+	return 0.0
 
 
 func _azione_euristica(m: Motore, p: String, op: Array) -> int:

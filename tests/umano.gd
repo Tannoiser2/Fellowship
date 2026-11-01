@@ -10,7 +10,7 @@ func _init() -> void:
 	var main = load("res://scenes/Main.tscn").instantiate()
 	root.add_child(main)
 	await process_frame
-	main.start_game({"giocatori": [{"nome": "Stefano", "ia": false}], "difficolta": "standard", "ritardo_ia": 0.0, "seme": 77})
+	main.start_game({"giocatori": [{"nome": "Stefano", "ia": false}], "difficolta": "standard", "ritardo_ia": 0.0, "seme": 77, "ritmo": 3})
 	await process_frame
 	var g = main.current
 	var ia := IA.new()

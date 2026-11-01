@@ -54,6 +54,9 @@ var esito := ""
 var fase := "preparazione"
 var registro: Array = []
 var storia: Array = []
+## Secondi di pausa (moltiplicatore) per far vedere sul tavolo la fase dell'Ombra; 0 = nessuna pausa
+## (simulazioni, copie dell'IA). Non cambia lo stato: le partite restano identiche online e nei salvataggi.
+var ritmo := 0.0
 var da_rigiocare: Array = []
 var ultima_ombra := -1             # ultima carta Ombra girata (per l'interfaccia)
 
@@ -291,6 +294,14 @@ func _log(t: String) -> void:
 	if registro.size() > 400:
 		registro.pop_front()
 	messaggio.emit(t)
+
+
+## Pausa per l'interfaccia: aggiorna la vista e aspetta che le animazioni si vedano.
+func pausa(s: float) -> void:
+	if ritmo <= 0.0 or not da_rigiocare.is_empty() or not is_inside_tree():
+		return
+	cambiato.emit()
+	await get_tree().create_timer(s * ritmo).timeout
 
 
 # =====================================================================================
@@ -1667,6 +1678,7 @@ func _carte_ombra() -> void:
 		ultima_ombra = id
 		risolte.append(id)
 		var c := Dati.carta(id)
+		await pausa(1.1)
 		if c.has("speciale"):
 			evento.emit("ombra", {"carta": id, "parte": "speciale"})
 			await _ombra_speciale(c)
@@ -1683,11 +1695,13 @@ func _carte_ombra() -> void:
 			else:
 				await rinforzo(c)
 		cambiato.emit()
+		await pausa(0.8)
 		if k < valore_minaccia() - 1:
 			await _finestra_libera("Fra una carta dell'Ombra e l'altra")
 	for id in risolte:
 		scarti_ombra.append(id)
 	risolte.clear()
+	await pausa(0.8)
 
 
 ## Momento in cui si possono giocare eventi e abilità gratuite fuori dalle azioni.
@@ -1717,6 +1731,8 @@ func avanzata(lid: String) -> void:
 	var li: Dictionary = Dati.linea(lid)
 	var p: Array = li["percorso"]
 	_log("AVANZATA lungo la linea da %s a %s." % [Dati.nome(p[0]), Dati.nome(p[-1])])
+	evento.emit("linea", {"linea": lid})
+	await pausa(1.2)
 	var mosse := false
 	for k in range(p.size() - 2, -1, -1):
 		var l: String = p[k]
@@ -1730,6 +1746,7 @@ func avanzata(lid: String) -> void:
 	evento.emit("avanzata", {"linea": lid})
 	if not mosse:
 		_log("Nessuna truppa ombra su questa linea.")
+	await pausa(1.8 if mosse else 0.6)
 	for k in range(p.size() - 1, -1, -1):
 		var l: String = p[k]
 		if stato[l]["ombra"] > 0 and amiche(l) > 0 and esito == "":
@@ -1744,6 +1761,7 @@ func rinforzo(c: Dictionary) -> void:
 	else:
 		_log("RINFORZO: +1 truppa ombra a %s." % Dati.nome(l))
 		await aggiungi_ombra(l, 1, true)
+		await pausa(1.0)
 	if esito != "":
 		return
 	match c["ordine"]:
