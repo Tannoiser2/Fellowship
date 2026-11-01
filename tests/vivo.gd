@@ -1,5 +1,5 @@
 extends SceneTree
-## Partita con l'interfaccia e schermate: xvfb-run godot --path . -s tests/vivo.gd -- <cartella> [3d]
+## Partita con l'interfaccia e schermate: xvfb-run godot --path . -s tests/vivo.gd -- <cartella> [3d] [ia] [n=1..5]
 
 var dir := "/tmp/vivo"
 
@@ -13,8 +13,15 @@ func _init() -> void:
 	root.add_child(main)
 	await _attendi(1.0)
 	await _foto("01_menu")
-	main.start_game({"giocatori": [{"nome": "Stefano", "ia": args.has("ia")}, {"nome": "Compagno", "ia": true}], "difficolta": "introduttivo",
-		"obiettivi": ["benedizione", "saruman", "sauron", "anello"], "personaggi": [["frodo", "legolas"], ["pipino", "eowyn"]],
+	var n_g := 2
+	for a in args:
+		if a.begins_with("n="):
+			n_g = int(a.substr(2))
+	var gg: Array = [{"nome": "Stefano", "ia": args.has("ia")}]
+	for k in n_g - 1:
+		gg.append({"nome": ["Compagno", "Anna", "Marco", "Giulia"][k], "ia": true})
+	main.start_game({"giocatori": gg, "difficolta": "introduttivo",
+		"obiettivi": ["benedizione", "saruman", "sauron", "anello"], "personaggi": preload("res://scripts/ui/menu.gd").PRIMA_PARTITA[n_g],
 		"primo_frodo": true, "ritardo_ia": 0.05, "seme": 4242, "vista3d": tre_d})
 	await _attendi(2.5)
 	await _foto("02_inizio")
@@ -29,9 +36,9 @@ func _init() -> void:
 	g._imposta_3d(true)
 	await _attendi(1.5)
 	await _foto("05_3d")
-	g.tavolo3d._dist = 14.0
-	g.tavolo3d._rot = Vector2(-0.7, 0.3)
-	g.tavolo3d.perno.position = Vector3(-8, 0, -6)
+	g.tavolo3d._dist = 8.0
+	g.tavolo3d._rot = Vector2(-0.55, 0.2)
+	g.tavolo3d.perno.position = Vector3(-4, 0, -2)
 	g.tavolo3d._aggiorna_camera()
 	await _attendi(0.5)
 	await _foto("06_3d_vicino")

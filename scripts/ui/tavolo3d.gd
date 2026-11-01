@@ -54,6 +54,11 @@ func _ready() -> void:
 	sole.light_color = Color(1.0, 0.9, 0.75)
 	sole.shadow_enabled = true
 	sv.add_child(sole)
+	var fill := DirectionalLight3D.new()
+	fill.rotation = Vector3(-0.5, PI, 0)
+	fill.light_energy = 0.55
+	fill.light_color = Color(0.8, 0.85, 1.0)
+	sv.add_child(fill)
 	perno = Node3D.new()
 	sv.add_child(perno)
 	cam = Camera3D.new()
@@ -181,6 +186,8 @@ func _gui_input(ev: InputEvent) -> void:
 			_rot.y -= ev.relative.x * 0.006
 			_rot.x -= ev.relative.y * 0.004
 			_aggiorna_camera()
+		else:
+			_puntamento(ev.position)
 	elif ev is InputEventPanGesture:
 		_sposta_vista(ev.delta * _dist * 0.02)
 		accept_event()
@@ -193,6 +200,34 @@ func _gui_input(ev: InputEvent) -> void:
 
 
 var _mosso := false
+var _ultimo_id := -1
+
+
+## Carta sotto il mouse (senza fisica: controllo dei rettangoli delle carte appoggiate).
+func _puntamento(pos: Vector2) -> void:
+	var from := cam.project_ray_origin(pos)
+	var dir := cam.project_ray_normal(pos)
+	var best := -1
+	var best_d := 1e9
+	for n in dinamici.get_children():
+		if not n.has_meta("carta"):
+			continue
+		var hit = Plane(Vector3.UP, n.global_position.y).intersects_ray(from, dir)
+		if hit == null:
+			continue
+		var loc: Vector3 = hit - n.global_position
+		var half: Vector2 = n.get_meta("mezza")
+		if abs(loc.x) <= half.x and abs(loc.z) <= half.y:
+			var d: float = from.distance_to(hit)
+			if d < best_d:
+				best_d = d
+				best = int(n.get_meta("carta"))
+	if best != _ultimo_id:
+		_ultimo_id = best
+		if best >= 0:
+			vista._mostra_zoom_a(best, get_global_rect().position + pos)
+		else:
+			vista._nascondi_zoom()
 
 
 ## Clic su un luogo: lo passa alla vista (come sulla mappa 2D).
@@ -266,6 +301,102 @@ func _sagoma(t: Texture2D, pos: Vector3, altezza: float) -> Node3D:
 	return n
 
 
+## Gettone sagomato come nel modulo: la forma viene dal contorno dell'immagine, con spessore e bordo.
+var _mesh_gettoni := {}
+
+
+func _mesh_gettone(t: Texture2D, spessore: float) -> Array:
+	var key := "%s|%.2f" % [t.resource_path, spessore]
+	if _mesh_gettoni.has(key):
+		return _mesh_gettoni[key]
+	var img := t.get_image()
+	if img.is_compressed():
+		img.decompress()
+	var w := img.get_width()
+	var h := img.get_height()
+	var scala: float = 96.0 / max(w, h)
+	var piccola := img.duplicate()
+	piccola.resize(int(w * scala), int(h * scala))
+	var bm := BitMap.new()
+	bm.create_from_image_alpha(piccola, 0.5)
+	var polys := bm.opaque_to_polygons(Rect2i(Vector2i.ZERO, bm.get_size()), 1.2)
+	var pw := float(piccola.get_width())
+	var ph := float(piccola.get_height())
+	var asp: float = pw / ph
+	var top := SurfaceTool.new()
+	top.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var lati := SurfaceTool.new()
+	lati.begin(Mesh.PRIMITIVE_TRIANGLES)
+	if polys.is_empty():
+		polys = [PackedVector2Array([Vector2(0, 0), Vector2(pw, 0), Vector2(pw, ph), Vector2(0, ph)])]
+	for poly in polys:
+		var idx := Geometry2D.triangulate_polygon(poly)
+		var pts: Array = []
+		for q in poly:
+			var u: float = q.x / pw
+			var v: float = q.y / ph
+			pts.append([Vector3((u - 0.5) * asp, spessore, v - 0.5), Vector2(u, v)])
+		for k in idx:
+			top.set_normal(Vector3.UP)
+			top.set_uv(pts[k][1])
+			top.add_vertex(pts[k][0])
+		for k in poly.size():
+			var a: Vector3 = pts[k][0]
+			var b: Vector3 = pts[(k + 1) % poly.size()][0]
+			var a0 := Vector3(a.x, 0, a.z)
+			var b0 := Vector3(b.x, 0, b.z)
+			var nrm := (b - a).cross(Vector3.DOWN).normalized()
+			for vv in [a, b, b0, a, b0, a0]:
+				lati.set_normal(nrm)
+				lati.add_vertex(vv)
+	var res := [top.commit(), lati.commit(), asp]
+	_mesh_gettoni[key] = res
+	return res
+
+
+## Gettone del modulo: dim = lato più lungo (piatto) oppure altezza (in piedi), in unità del tavolo.
+func _pezzo(t: Texture2D, pos: Vector3, dim: float, spessore := 0.08, bordo := Color(0.12, 0.1, 0.08), in_piedi := false) -> Node3D:
+	if t == null:
+		return null
+	var asp: float = float(t.get_width()) / max(1.0, float(t.get_height()))
+	var sc: float = dim if in_piedi else dim / max(asp, 1.0)
+	var m := _mesh_gettone(t, spessore / sc)
+	var n := Node3D.new()
+	var a := MeshInstance3D.new()
+	a.mesh = m[0]
+	a.material_override = _mat_tex(t)
+	a.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	n.add_child(a)
+	var b := MeshInstance3D.new()
+	b.mesh = m[1]
+	b.material_override = _colore(bordo)
+	n.add_child(b)
+	n.scale = Vector3.ONE * sc
+	if not in_piedi:
+		n.position = pos
+		dinamici.add_child(n)
+		return n
+	# in piedi su una basetta, sempre rivolto verso la camera
+	var p := Node3D.new()
+	p.position = pos
+	p.set_meta("sagoma", true)
+	n.rotation.x = PI / 2
+	n.position = Vector3(0, sc * 0.5 + 0.06, -spessore * 0.5)
+	p.add_child(n)
+	var base := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = minf(sc * asp * 0.4, sc * 0.26)
+	cm.bottom_radius = cm.top_radius
+	cm.height = 0.07
+	base.mesh = cm
+	base.position.y = 0.035
+	base.material_override = _colore(Color(0.1, 0.08, 0.06))
+	p.add_child(base)
+	p.rotation.y = _rot.y
+	dinamici.add_child(p)
+	return p
+
+
 ## Segnalino piatto appoggiato sul tabellone.
 func _gettone(t: Texture2D, pos: Vector3, lato: float) -> MeshInstance3D:
 	var mi := MeshInstance3D.new()
@@ -299,19 +430,34 @@ func _truppa(armata: String, pos: Vector3) -> void:
 	dinamici.add_child(testa)
 
 
+## Numero sospeso sopra il tavolo, sempre rivolto alla camera (cifre disegnate come immagini).
 func _scritta(testo: String, pos: Vector3, size := 64, col := UI.PERGAMENA) -> void:
-	var l := Label3D.new()
-	l.text = testo
-	l.font = UI.font_grassetto
-	l.font_size = size
-	l.pixel_size = 0.006
-	l.modulate = col
-	l.outline_size = 14
-	l.outline_modulate = Color(0, 0, 0, 0.9)
-	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	l.position = pos
-	l.no_depth_test = true
-	dinamici.add_child(l)
+	var n := Node3D.new()
+	n.position = pos
+	var h: float = 0.42 * size / 64.0
+	var w_tot := 0.0
+	var cifre: Array = []
+	for ch in testo:
+		var t := UI.tex("res://assets/ui/cifra_%s.png" % ch)
+		if t == null:
+			continue
+		var w: float = h * t.get_width() / float(t.get_height())
+		cifre.append([t, w])
+		w_tot += w * 0.92
+	var x := -w_tot / 2.0
+	for c in cifre:
+		var sp := Sprite3D.new()
+		sp.texture = c[0]
+		sp.pixel_size = h / float(c[0].get_height())
+		sp.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		sp.no_depth_test = true
+		sp.modulate = col
+		sp.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+		sp.render_priority = 10
+		sp.position = Vector3(x + c[1] / 2.0, 0, 0)
+		n.add_child(sp)
+		x += c[1] * 0.92
+	dinamici.add_child(n)
 
 
 func evento(tipo: String, dati: Dictionary) -> void:
@@ -319,34 +465,231 @@ func evento(tipo: String, dati: Dictionary) -> void:
 		vista._mostra_dadi(dati)
 
 
-func aggiorna(m: Motore) -> void:
+## Carta (o dorso) appoggiata sul tabellone: centro e altezza in pixel del tabellone, con la pila sotto.
+func _carta3d(t: Texture2D, c_px: Vector2, h_px: float, n := 1, id := -1) -> void:
+	if t == null:
+		return
+	var w_px: float = h_px * t.get_width() / max(1.0, float(t.get_height()))
+	var spess: float = 0.006 * clampi(n, 1, 40)
+	var pos := _a3d(c_px)
+	if n > 1:
+		var box := MeshInstance3D.new()
+		var bm := BoxMesh.new()
+		bm.size = Vector3(w_px * SCALA, spess, h_px * SCALA)
+		box.mesh = bm
+		box.position = pos + Vector3(0, spess / 2.0, 0)
+		box.material_override = _colore(Color(0.86, 0.82, 0.72))
+		dinamici.add_child(box)
+	var mi := MeshInstance3D.new()
+	var pm := PlaneMesh.new()
+	pm.size = Vector2(w_px, h_px) * SCALA
+	mi.mesh = pm
+	mi.position = pos + Vector3(0, spess + 0.004, 0)
+	mi.material_override = _mat_tex(t)
+	if id >= 0:
+		mi.set_meta("carta", id)
+		mi.set_meta("mezza", Vector2(w_px, h_px) * SCALA / 2.0)
+	dinamici.add_child(mi)
+	if n > 1:
+		_scritta(str(n), pos + Vector3(w_px * SCALA * 0.35, spess + 0.3, h_px * SCALA * 0.38), 70, Color.WHITE)
+
+
+var _nazgul_scena: PackedScene
+var _scene_truppe := {}
+var _mat_truppe := {}
+
+
+## Truppa: il modello 3D del pezzo (sagoma in rilievo), del colore della sua armata, rivolto verso la camera.
+func _truppa3d(a: String, pos: Vector3, h := 0.5) -> Node3D:
+	if not _scene_truppe.has(a):
+		var path := "res://assets/modelli/truppa_%s.glb" % a
+		_scene_truppe[a] = load(path) if ResourceLoader.exists(path) else null
+	if _scene_truppe[a] == null:
+		return _pezzo(UI.pedina("truppa_" + a), pos, h, 0.07)
+	if not _mat_truppe.has(a):
+		var mt := StandardMaterial3D.new()
+		mt.albedo_color = {"gondor": Color(0.25, 0.5, 0.85), "rohirrim": Color(0.55, 0.36, 0.2), "elfi": Color(0.3, 0.68, 0.3),
+			"nani": Color(0.55, 0.55, 0.58), "ombra": Color(0.75, 0.1, 0.08)}[a]
+		mt.roughness = 0.5
+		mt.rim_enabled = true
+		mt.rim = 0.35
+		mt.cull_mode = BaseMaterial3D.CULL_DISABLED
+		_mat_truppe[a] = mt
+	var p := Node3D.new()
+	p.position = pos
+	p.set_meta("sagoma", true)
+	p.rotation.y = _rot.y
+	var n: Node3D = _scene_truppe[a].instantiate()
+	n.scale = Vector3.ONE * h
+	p.add_child(n)
+	for mi in n.find_children("*", "MeshInstance3D", true, false):
+		mi.material_override = _mat_truppe[a]
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	dinamici.add_child(p)
+	return p
+
+
+func _nazgul(pos: Vector3, rot: float, k := 0) -> Node3D:
+	if _nazgul_scena == null and ResourceLoader.exists("res://assets/modelli/nazgul.glb"):
+		_nazgul_scena = load("res://assets/modelli/nazgul.glb")
+	if _nazgul_scena == null:
+		push_warning("modello del Nazgûl non trovato")
+		return _pezzo(UI.pedina("nazgul"), pos, 0.9, 0.08, Color(0.1, 0.1, 0.1), true)
+	var n: Node3D = _nazgul_scena.instantiate()
+	n.scale = Vector3.ONE * 0.85
+	n.position = pos
+	n.rotation.y = rot
+	dinamici.add_child(n)
+	for mi in n.find_children("*", "MeshInstance3D", true, false):
+		mi.material_override = _mat_nazgul(k)
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	return n
+
+
+var _mn: Array = []
+
+
+## Materiale della bestia alata: lo shader fa battere le ali, ognuna con la sua fase.
+func _mat_nazgul(k: int) -> Material:
+	if _mn.is_empty():
+		var sh: Shader = load("res://assets/shader/nazgul.gdshader")
+		for f in 5:
+			var m := ShaderMaterial.new()
+			m.shader = sh
+			m.set_shader_parameter("fase", f * 1.3)
+			m.set_shader_parameter("velocita", 3.0 + f * 0.25)
+			_mn.append(m)
+	return _mn[k % _mn.size()]
+
+
+## Segna un pezzo per poterlo ritrovare all'aggiornamento successivo e farlo scorrere.
+func _segna(n: Node3D, tipo: String, luogo := "") -> void:
+	if n == null:
+		return
+	n.set_meta("tipo", tipo)
+	n.set_meta("luogo", luogo)
+
+
+## Fa volare un pezzo dalla posizione precedente a quella nuova, con un arco.
+func _vola(n: Node3D, da: Vector3, arco: float) -> void:
+	var a := n.position
+	var d := da.distance_to(a)
+	if d < 0.02:
+		return
+	var dur := clampf(0.35 + d * 0.07, 0.35, 1.5)
+	var h := arco * clampf(d / 3.0, 0.25, 1.0)
+	n.position = da
+	var tw := n.create_tween()
+	tw.tween_method(func(t: float): n.position = da.lerp(a, t) + Vector3(0, sin(t * PI) * h, 0), 0.0, 1.0, dur).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+## Un pezzo nuovo (senza provenienza) compare crescendo.
+func _compari(n: Node3D) -> void:
+	var sc := n.scale
+	n.scale = sc * 0.01
+	var tw := n.create_tween()
+	tw.tween_property(n, "scale", sc, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## Confronta i pezzi di prima con quelli nuovi e anima gli spostamenti.
+func _anima_spostamenti(vecchi: Dictionary) -> void:
+	if vecchi.is_empty():
+		return
+	var nuovi := {}
+	for c in dinamici.get_children():
+		if c.is_queued_for_deletion() or not c.has_meta("tipo"):
+			continue
+		var tipo: String = c.get_meta("tipo")
+		var l: String = c.get_meta("luogo")
+		if not nuovi.has(tipo):
+			nuovi[tipo] = {}
+		if not nuovi[tipo].has(l):
+			nuovi[tipo][l] = []
+		nuovi[tipo][l].append(c)
+	for tipo in nuovi:
+		var prima: Dictionary = vecchi.get(tipo, {})
+		var arco := 2.2 if tipo == "nazgul" else (0.6 if tipo.begins_with("truppa") else 1.0)
+		# posizioni lasciate libere (pezzi andati via da un luogo)
+		var liberi: Array = []
+		for l in prima:
+			var n_dopo: int = nuovi[tipo].get(l, []).size()
+			for k in range(n_dopo, prima[l].size()):
+				liberi.append(prima[l][k])
+		for l in nuovi[tipo]:
+			var lista: Array = nuovi[tipo][l]
+			var vecchie: Array = prima.get(l, [])
+			for k in lista.size():
+				var n: Node3D = lista[k]
+				if k < vecchie.size():
+					_vola(n, vecchie[k], arco if l == "" else arco * 0.3)
+				elif not liberi.is_empty():
+					var best := 0
+					for q in liberi.size():
+						if liberi[q].distance_to(n.position) < liberi[best].distance_to(n.position):
+							best = q
+					_vola(n, liberi[best], arco)
+					liberi.remove_at(best)
+				elif not prima.is_empty() or tipo.begins_with("truppa"):
+					_compari(n)
+
+
+func aggiorna(m: Motore, anima := true) -> void:
 	if dinamici == null:
 		return
+	var vecchi := {}
 	for c in dinamici.get_children():
+		if c.has_meta("tipo") and not c.is_queued_for_deletion():
+			var tipo: String = c.get_meta("tipo")
+			var l: String = c.get_meta("luogo")
+			if not vecchi.has(tipo):
+				vecchi[tipo] = {}
+			if not vecchi[tipo].has(l):
+				vecchi[tipo][l] = []
+			vecchi[tipo][l].append(c.position)
 		c.queue_free()
 	occhio3d = null
+	const MAPPA := preload("res://scripts/ui/mappa.gd")
+	# minaccia e speranza sulle tracce
+	_segna(_pezzo(UI.pedina("minaccia"), _a3d(MAPPA.pos_minaccia(m.minaccia)), 0.9, 0.12), "minaccia")
+	_segna(_pezzo(UI.pedina("speranza"), _a3d(MAPPA.pos_speranza(m.speranza)), 0.9, 0.12), "speranza")
+	# riserve delle razze
+	for a in MAPPA.RISERVE:
+		var n: int = m.riserva_truppe[a]
+		for k in min(n, 6):
+			_segna(_truppa3d(a, _a3d(MAPPA.RISERVE[a]) + Vector3(-0.4 + (k % 3) * 0.4, 0, -0.2 + (k / 3) * 0.4), 0.5), "truppa_" + a, "riserva")
+		_scritta(str(n), _a3d(MAPPA.RISERVE[a], 0.9) + Vector3(0.75, 0, 0.1), 70)
+	# mazzi
+	if not m.mazzo_ombra.is_empty():
+		var dorso: String = "dorso_" + Dati.carta(m.mazzo_ombra.back())["retro"]
+		_carta3d(UI.tex("res://assets/carte/%s.webp" % dorso), MAPPA.OMBRA_PESCA, MAPPA.H_OMBRA, m.mazzo_ombra.size())
+	for k in m.risolte.size():
+		_carta3d(UI.carta_tex(m.risolte[k]), MAPPA.OMBRA_RISOLVI + Vector2(k * 14, k * 22), MAPPA.H_OMBRA, k + 1, m.risolte[k])
+	if not m.scarti_ombra.is_empty():
+		_carta3d(UI.carta_tex(m.scarti_ombra.back()), MAPPA.OMBRA_SCARTI, MAPPA.H_OMBRA, m.scarti_ombra.size(), m.scarti_ombra.back())
+	if not m.mazzo.is_empty():
+		_carta3d(UI.tex("res://assets/carte/dorso_giocatori.webp"), MAPPA.GIOC_PESCA, MAPPA.H_GIOC, m.mazzo.size())
+	if not m.scarti.is_empty():
+		_carta3d(UI.carta_tex(m.scarti.back()), MAPPA.GIOC_SCARTI, MAPPA.H_GIOC, m.scarti.size(), m.scarti.back())
 	# rifugi conquistati e caduti
 	for l in m.stato:
 		var orig: String = Dati.luogo(l)["tipo"]
 		var t: String = m.stato[l]["tipo"]
 		if t == "rifugio" and orig != "rifugio":
-			_gettone(UI.pedina("rifugio"), _luogo3d(l, 0.02), 1.15)
+			_pezzo(UI.pedina("rifugio"), _luogo3d(l, 0.01), 0.8, 0.08)
 		elif t == "fortezza" and orig == "rifugio":
-			_gettone(UI.pedina("fortezza"), _luogo3d(l, 0.02), 1.2)
-		# truppe amiche in fila, Ombra in un mucchio rosso
-		var k := 0
+			_pezzo(UI.pedina("fortezza"), _luogo3d(l, 0.01), 0.85, 0.08)
+		# truppe amiche a sinistra in pile per razza, Ombra a destra in pila
+		var k_am := 0
 		for a in Dati.ARMATE:
 			for j in m.stato[l]["truppe"][a]:
-				var off := Vector3(-0.55 + (k % 4) * 0.36, 0.0, 0.42 + (k / 4) * 0.3)
-				_truppa(a, _luogo3d(l) + off)
-				k += 1
-		var n: int = m.stato[l]["ombra"]
-		for j in min(n, 8):
-			var off := Vector3(0.45 + (j % 3) * 0.34, 0.0, -0.45 + (j / 3) * 0.28)
-			_truppa("ombra", _luogo3d(l) + off)
-		if n > 8:
-			_scritta("%d" % n, _luogo3d(l, 1.2) + Vector3(0.8, 0, -0.4), 90, Color(1, 0.4, 0.3))
-	# personaggi
+				_segna(_truppa3d(a, _luogo3d(l) + Vector3(-0.75 + (k_am % 4) * 0.3, 0, 0.45 + (k_am / 4) * 0.32), 0.6), "truppa_" + a, l)
+				k_am += 1
+		var no: int = m.stato[l]["ombra"]
+		for k in min(no, 9):
+			_segna(_truppa3d("ombra", _luogo3d(l) + Vector3(0.45 + (k % 3) * 0.3, 0, -0.55 + (k / 3) * 0.3), 0.58), "truppa_ombra", l)
+		if no > 3:
+			_scritta(str(no), _luogo3d(l, 0.9) + Vector3(0.9, 0, -0.45), 70, Color(1, 0.45, 0.35))
+	# personaggi in piedi
 	var per_luogo := {}
 	for p in m.pg:
 		if m.pg[p]["fuori"]:
@@ -360,15 +703,17 @@ func aggiorna(m: Motore) -> void:
 		for k in lista.size():
 			var p: String = lista[k]
 			var tex := UI.pedina("gandalf_bianco" if p == "gandalf" and m.pg[p]["bianco"] else p)
-			var pos := _luogo3d(l) + Vector3((k - (lista.size() - 1) / 2.0) * 0.55, 0, -0.1)
-			_sagoma(tex, pos, 1.7 if p != m.attivo else 2.0)
-	# Nazgûl sulle regioni
+			var pos := _luogo3d(l) + Vector3((k - (lista.size() - 1) / 2.0) * 0.6, 0, -0.1)
+			_segna(_pezzo(tex, pos, 1.45 if p != m.attivo else 1.75, 0.09, Color(0.1, 0.08, 0.06), true), "pg_" + p)
+	# Nazgûl: il modello 3D sulle regioni
 	for r in m.nazgul:
 		var n: int = m.nazgul[r]
 		var rr: Dictionary = Dati.d()["regioni"][r]
 		for k in n:
-			var pos := _a3d(Vector2(rr["x"], rr["y"])) + Vector3((k - (n - 1) / 2.0) * 0.75, 0, 0.25 * (k % 2))
-			_sagoma(UI.pedina("nazgul"), pos, 0.95)
+			var col := k % 3
+			var riga := k / 3
+			var pos := _a3d(Vector2(rr["x"], rr["y"])) + Vector3((col - 1) * 1.2 + riga * 0.55, 0, riga * 0.95)
+			_segna(_nazgul(pos, 0.4 + k * 0.7, k), "nazgul", r)
 	# Occhio di Sauron sospeso sopra la regione
 	var ro: Dictionary = Dati.d()["regioni"][m.occhio]
 	occhio3d = Node3D.new()
@@ -385,4 +730,7 @@ func aggiorna(m: Motore) -> void:
 	luce.omni_range = 6.0
 	occhio3d.add_child(luce)
 	dinamici.add_child(occhio3d)
+	_segna(occhio3d, "occhio")
+	if anima:
+		_anima_spostamenti(vecchi)
 	_aggiorna_camera()

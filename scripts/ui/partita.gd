@@ -30,6 +30,7 @@ var zoom_img: TextureRect
 var zoom_testo: Label
 var overlay_dadi: Control
 var stato_online: Label
+var box_info: HBoxContainer
 var b3d: Button
 
 var _richiesta := {}
@@ -37,6 +38,8 @@ var _in_attesa := false
 var _da_aggiornare := false
 var _ripresa := false
 const SALVATAGGIO := "user://partita_in_corso.json"
+const LARGHEZZA_SX := 400
+const LARGHEZZA_DX := 400
 
 
 func _ready() -> void:
@@ -96,11 +99,12 @@ func _costruisci() -> void:
 	add_child(radice)
 	# ---- colonna sinistra: stato della Terra di Mezzo
 	var ps := UI.pannello(Color(0.10, 0.08, 0.06, 0.97))
-	ps.custom_minimum_size.x = 300
+	ps.custom_minimum_size.x = LARGHEZZA_SX
 	radice.add_child(ps)
 	var scs := ScrollContainer.new()
 	scs.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	ps.add_child(scs)
+	scs.resized.connect(_segna_aggiornamento)
 	col_sx = VBoxContainer.new()
 	col_sx.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	col_sx.add_theme_constant_override("separation", 8)
@@ -115,27 +119,31 @@ func _costruisci() -> void:
 	var hb := HBoxContainer.new()
 	hb.add_theme_constant_override("separation", 14)
 	barra.add_child(hb)
-	lbl_turno = UI.titolo("", 24, UI.ORO)
+	lbl_turno = UI.titolo("", 21, UI.ORO)
+	lbl_turno.clip_text = true
+	lbl_turno.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	lbl_turno.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lbl_turno.mouse_filter = Control.MOUSE_FILTER_PASS
 	hb.add_child(lbl_turno)
-	var sp := Control.new()
-	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hb.add_child(sp)
+	box_info = HBoxContainer.new()
+	box_info.add_theme_constant_override("separation", 9)
+	hb.add_child(box_info)
 	stato_online = UI.etichetta("", 18, UI.ORO)
 	hb.add_child(stato_online)
-	b3d = UI.bottone("Tavolo 3D", 17)
+	b3d = UI.bottone("Tavolo 3D", 15)
 	b3d.toggle_mode = true
 	b3d.toggled.connect(_imposta_3d)
 	hb.add_child(b3d)
-	var bc := UI.bottone("Centra", 17)
+	var bc := UI.bottone("Centra", 15)
 	bc.pressed.connect(func():
 		mappa._adatta()
 		if tavolo3d != null:
 			tavolo3d.reimposta_vista())
 	hb.add_child(bc)
-	var br := UI.bottone("Regole", 17)
+	var br := UI.bottone("Regole", 15)
 	br.pressed.connect(_mostra_regole)
 	hb.add_child(br)
-	var bm := UI.bottone("Menu", 17)
+	var bm := UI.bottone("Menu", 15)
 	bm.pressed.connect(_torna_menu)
 	hb.add_child(bm)
 	centro = Control.new()
@@ -182,11 +190,12 @@ func _costruisci() -> void:
 	hc.add_child(registro)
 	# ---- colonna destra: giocatori
 	var pd := UI.pannello(Color(0.10, 0.08, 0.06, 0.97))
-	pd.custom_minimum_size.x = 360
+	pd.custom_minimum_size.x = LARGHEZZA_DX
 	radice.add_child(pd)
 	var scd := ScrollContainer.new()
 	scd.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	pd.add_child(scd)
+	scd.resized.connect(_segna_aggiornamento)
 	col_dx = VBoxContainer.new()
 	col_dx.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	col_dx.add_theme_constant_override("separation", 10)
@@ -251,10 +260,13 @@ func _aggiorna() -> void:
 	if motore == null or motore.giocatori.is_empty():
 		return
 	var g: Dictionary = motore.giocatori[motore.turno_di]
-	var fasi := {"azioni": "azioni", "pesca": "si pescano le carte", "ombra": "carte dell'Ombra", "fine": "fine"}
+	var fasi := {"azioni": "azioni", "pesca": "pesca", "ombra": "carte dell'Ombra", "fine": "fine"}
 	lbl_turno.text = "Turno %d — %s — %s" % [max(1, motore.turno), g["nome"], fasi.get(motore.fase, "")]
+	lbl_turno.tooltip_text = lbl_turno.text
+	_aggiorna_info()
 	_aggiorna_sx()
 	_aggiorna_dx()
+	mappa.registra()
 	mappa.queue_redraw()
 	if tavolo3d != null and vista3d:
 		tavolo3d.aggiorna(motore)
@@ -273,117 +285,131 @@ func _sezione(dove: VBoxContainer, titolo: String) -> void:
 
 func _aggiorna_sx() -> void:
 	_svuota(col_sx)
-	# speranza
-	_sezione(col_sx, "Speranza")
-	var hs := HFlowContainer.new()
-	for k in Dati.SPERANZA_MAX:
-		var im := UI.immagine(UI.pedina("speranza"), 30, 30)
-		if k >= motore.speranza:
-			im.modulate = Color(0.3, 0.25, 0.2, 0.5)
-		hs.add_child(im)
-	hs.tooltip_text = "Speranza di Frodo: %d su %d. A 0 la partita è persa." % [motore.speranza, Dati.SPERANZA_MAX]
-	hs.mouse_filter = Control.MOUSE_FILTER_PASS
-	col_sx.add_child(hs)
-	# minaccia
-	_sezione(col_sx, "Minaccia")
-	var hm := HBoxContainer.new()
-	hm.add_theme_constant_override("separation", 4)
-	for k in Dati.MINACCIA.size():
-		var pnl := PanelContainer.new()
-		var st := StyleBoxFlat.new()
-		st.bg_color = UI.ROSSO_SCURO if k == motore.minaccia else Color(0.18, 0.14, 0.1)
-		st.border_color = UI.ORO if k == motore.minaccia else UI.ORO_SCURO
-		st.set_border_width_all(1)
-		st.set_corner_radius_all(16)
-		st.content_margin_left = 9
-		st.content_margin_right = 9
-		pnl.add_theme_stylebox_override("panel", st)
-		pnl.add_child(UI.etichetta(str(Dati.MINACCIA[k]), 18, UI.PERGAMENA, true))
-		hm.add_child(pnl)
-	hm.tooltip_text = "Si girano %d carte dell'Ombra a fine turno. Sale di uno a ogni «Oscuramento dei Cieli»." % motore.valore_minaccia()
-	hm.mouse_filter = Control.MOUSE_FILTER_PASS
-	col_sx.add_child(hm)
-	var occ := UI.etichetta("L'Occhio è su: %s" % Dati.nome_regione(motore.occhio), 18, Color(1, 0.6, 0.3))
-	col_sx.add_child(occ)
-	if motore.in_gioco("frodo"):
-		var n := motore.dadi_ricerca()
-		col_sx.add_child(UI.etichetta("Frodo: %s (%d dad%s di ricerca)" % [Dati.nome(motore.luogo_frodo()), n, "o" if n == 1 else "i"], 17, UI.PERGAMENA))
-	# obiettivi
 	_sezione(col_sx, "Obiettivi")
-	var hob := HFlowContainer.new()
-	hob.add_theme_constant_override("h_separation", 4)
-	hob.add_theme_constant_override("v_separation", 4)
-	col_sx.add_child(hob)
+	var griglia := GridContainer.new()
+	griglia.columns = 2
+	griglia.add_theme_constant_override("h_separation", 6)
+	griglia.add_theme_constant_override("v_separation", 6)
+	col_sx.add_child(griglia)
+	var w_col: float = LARGHEZZA_SX - 30.0
+	var w: float = floorf((w_col - 6) / 2.0)
+	# se le righe non stanno in altezza, le carte si rimpiccioliscono
+	var righe: int = int(ceil(motore.obiettivi.size() / 2.0))
+	var h_disp: float = (col_sx.get_parent().size.y if col_sx.get_parent().size.y > 100 else 900.0) - 40
+	var h: float = minf(w * 1.51, (h_disp - righe * 32) / max(1, righe))
+	w = h / 1.51
 	for o in motore.obiettivi:
 		var ob := Dati.obiettivo(o["codice"])
-		var t := _carta_ui(int(ob["id"]), 128, 88, true)
+		var cella := VBoxContainer.new()
+		cella.add_theme_constant_override("separation", 0)
+		var t := _carta_ui(int(ob["id"]), w, h)
 		if o["fatto"]:
-			t.modulate = Color(0.55, 0.55, 0.5, 0.85)
-			var spunta := UI.etichetta("Fatto", 16, UI.VERDE, true)
-			spunta.position = Vector2(4, 60)
-			t.add_child(spunta)
+			t.modulate = Color(0.5, 0.5, 0.46, 0.9)
+			var fatto := UI.titolo("Completato", 20, UI.VERDE)
+			fatto.position = Vector2(w * 0.08, h * 0.42)
+			fatto.rotation = -0.35
+			t.add_child(fatto)
 		var extra := ""
-		if motore.su_carta.has(o["codice"]):
-			extra = " — sulla carta: %d" % int(motore.su_carta[o["codice"]])
-		if o["codice"] == "hobbit":
-			extra = " — simboli coperti: %d/2" % motore.hobbit.size()
-		if o["codice"] == "eowyn":
-			extra = " — Nazgûl distrutti: %d/2" % motore.nazgul_eowyn
-		t.tooltip_text = "%s%s\n%s\nCompletato se: %s\nEffetto: %s" % [ob["nome"], extra, ob["preparazione"], ob["condizione"], ob["effetto"]]
-		hob.add_child(t)
-	# mazzi
-	_sezione(col_sx, "Mazzi")
-	var hmz := HBoxContainer.new()
-	hmz.add_theme_constant_override("separation", 8)
-	col_sx.add_child(hmz)
-	var dg := _dorso_ui("dorso_giocatori", 62, 90, "Mazzo dei giocatori: %d carte" % motore.mazzo.size(), motore.mazzo.size())
-	hmz.add_child(dg)
-	var top_ombra := "dorso_bandiera"
-	if not motore.mazzo_ombra.is_empty():
-		top_ombra = "dorso_" + Dati.carta(motore.mazzo_ombra.back())["retro"]
-	var do := _dorso_ui(top_ombra, 62, 90, "Mazzo dell'Ombra: %d carte. Il dorso in cima decide quale metà della prossima carta si risolve: bandiera rossa = avanzata, stendardo nero = rinforzo." % motore.mazzo_ombra.size(), motore.mazzo_ombra.size())
-	hmz.add_child(do)
-	if motore.ultima_ombra >= 0:
-		var u := _carta_ui(motore.ultima_ombra, 62, 90)
-		hmz.add_child(u)
-	# riserve
-	_sezione(col_sx, "Riserva")
-	var hr := HFlowContainer.new()
-	hr.add_theme_constant_override("h_separation", 8)
-	col_sx.add_child(hr)
-	for a in Dati.ARMATE:
-		hr.add_child(UI.contatore(UI.pedina("truppa_" + a), motore.riserva_truppe[a], 17, "Truppe %s nella riserva" % Dati.NOMI_ARMATE[a]))
-	hr.add_child(UI.contatore(UI.pedina("truppa_ombra"), motore.riserva_ombra, 17, "Truppe ombra nella riserva"))
-	var hsimb := HFlowContainer.new()
-	hsimb.add_theme_constant_override("h_separation", 8)
-	col_sx.add_child(hsimb)
+		if motore.su_carta.has(o["codice"]) and int(motore.su_carta[o["codice"]]) > 0:
+			extra = "Sulla carta: %d" % int(motore.su_carta[o["codice"]])
+		if o["codice"] == "hobbit" and not motore.hobbit.is_empty():
+			extra = "Simboli coperti: %d/2" % motore.hobbit.size()
+		if o["codice"] == "eowyn" and motore.nazgul_eowyn > 0:
+			extra = "Nazgûl distrutti: %d/2" % motore.nazgul_eowyn
+		cella.add_child(t)
+		var le := UI.etichetta(extra, 14, UI.ORO, true)
+		le.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		le.custom_minimum_size.x = w
+		cella.add_child(le)
+		griglia.add_child(cella)
+
+
+func _aggiorna_info() -> void:
+	_svuota(box_info)
+	var n := motore.dadi_ricerca()
+	var l := UI.etichetta("Occhio: %s" % Dati.nome_regione(motore.occhio), 16, Color(1, 0.6, 0.3))
+	l.tooltip_text = "L'Occhio di Sauron è su questa regione."
+	l.mouse_filter = Control.MOUSE_FILTER_PASS
+	box_info.add_child(l)
+	if motore.in_gioco("frodo"):
+		var lr := UI.etichetta("Ricerca: %d dad%s" % [n, "o" if n == 1 else "i"], 16, UI.PERGAMENA)
+		lr.tooltip_text = "Dadi che l'Ombra tira per cercare Frodo."
+		lr.mouse_filter = Control.MOUSE_FILTER_PASS
+		box_info.add_child(lr)
+	box_info.add_child(UI.contatore(UI.pedina("truppa_ombra"), motore.riserva_ombra, 16, "Truppe ombra nella riserva"))
 	for s in Dati.SIMBOLI:
-		hsimb.add_child(UI.contatore(UI.pedina(s), motore.riserva_simboli[s], 17, "Segnalini %s nella riserva" % Dati.NOMI_SIMBOLI[s]))
+		box_info.add_child(UI.contatore(UI.pedina(s), motore.riserva_simboli[s], 16, "Segnalini %s nella riserva" % Dati.NOMI_SIMBOLI[s]))
+
+
+var _scheda := 0            # giocatore mostrato nella colonna destra (versione a schede)
+var _turno_visto := -1
+
+
+## Personaggi mostrati per il giocatore i (nel solitario Frodo e Sam più i quattro compagni).
+func _pg_di(i: int) -> Array:
+	if motore.solo:
+		return ["frodo"] + motore._ordine_solo()
+	return motore.giocatori[i]["pg"]
 
 
 func _aggiorna_dx() -> void:
 	_svuota(col_dx)
-	for i in motore.giocatori.size():
-		col_dx.add_child(_area_giocatore(i))
+	var n_g: int = motore.giocatori.size()
+	var w_col: float = LARGHEZZA_DX - 36.0
+	var h_col: float = col_dx.get_parent().size.y if col_dx.get_parent().size.y > 100 else 1000.0
+	# altezza delle carte personaggio se tutti i giocatori stanno nella colonna
+	var n_pg := 0
+	var extra := 0.0
+	for i in n_g:
+		n_pg += _pg_di(i).size()
+		extra += 150.0 + ceil(motore.giocatori[i]["mano"].size() / 6.0) * 79.0
+	var h_tutti: float = (h_col - extra - n_g * 10) / max(1, n_pg) - 6
+	var schede := n_g > 1 and h_tutti < 120.0
+	if not schede:
+		for i in n_g:
+			col_dx.add_child(_area_giocatore(i, h_tutti, w_col))
+		return
+	# versione a schede: una per giocatore, si apre da sola quando tocca a lui
+	if motore.turno_di != _turno_visto:
+		_turno_visto = motore.turno_di
+		_scheda = motore.turno_di
+	_scheda = clampi(_scheda, 0, n_g - 1)
+	var barra := HBoxContainer.new()
+	barra.add_theme_constant_override("separation", 3)
+	col_dx.add_child(barra)
+	for i in n_g:
+		var g: Dictionary = motore.giocatori[i]
+		var b := UI.bottone(g["nome"], 15)
+		b.toggle_mode = true
+		b.button_pressed = i == _scheda
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.clip_text = true
+		if i == motore.turno_di:
+			b.add_theme_color_override("font_color", UI.ORO)
+			b.add_theme_color_override("font_pressed_color", UI.ORO)
+		b.tooltip_text = g["nome"] + (" (di turno)" if i == motore.turno_di else "")
+		b.pressed.connect(func():
+			_scheda = i
+			_aggiorna_dx())
+		barra.add_child(b)
+	var g2: Dictionary = motore.giocatori[_scheda]
+	var h_uno: float = (h_col - 45 - 150.0 - ceil(g2["mano"].size() / 6.0) * 79.0) / max(1, _pg_di(_scheda).size()) - 6
+	col_dx.add_child(_area_giocatore(_scheda, h_uno, w_col))
 
 
-func _area_giocatore(i: int) -> Control:
+func _area_giocatore(i: int, h_carta: float, w_col: float) -> Control:
 	var g: Dictionary = motore.giocatori[i]
 	var mio := i == motore.turno_di
 	var p := UI.pannello(Color(0.16, 0.12, 0.08, 0.95) if mio else Color(0.12, 0.10, 0.07, 0.9), UI.ORO if mio else UI.ORO_SCURO)
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 5)
 	p.add_child(v)
-	var h := HBoxContainer.new()
-	v.add_child(h)
-	h.add_child(UI.titolo(g["nome"] + (" (IA)" if g["ia"] else ""), 20, UI.ORO if mio else UI.PERGAMENA))
-	# personaggi
-	var hp := HBoxContainer.new()
-	hp.add_theme_constant_override("separation", 6)
-	v.add_child(hp)
-	var lista: Array = g["pg"]
-	if motore.solo:
-		lista = ["frodo"] + motore._ordine_solo()
+	v.add_child(UI.titolo(g["nome"] + (" (IA)" if g["ia"] else ""), 20, UI.ORO if mio else UI.PERGAMENA))
+	# personaggi, uno sopra l'altro
+	var lista: Array = _pg_di(i)
+	var w_max: float = w_col - 24
+	var hc: float = clampf(h_carta, 60.0, w_max / 1.5)
+	var wc: float = hc * 1.5
 	for k in lista.size():
 		var pid: String = lista[k]
 		if not motore.pg.has(pid):
@@ -392,23 +418,27 @@ func _area_giocatore(i: int) -> Control:
 		var carta := int(pc["carta"])
 		if pid == "gandalf" and motore.pg[pid]["bianco"]:
 			carta = 4500
-		var box := VBoxContainer.new()
-		box.add_theme_constant_override("separation", 0)
-		var t := _carta_ui(carta, 96 if not motore.solo else 62, 64 if not motore.solo else 42, true)
+		var cornice := PanelContainer.new()
+		var st := StyleBoxFlat.new()
+		st.bg_color = Color(0, 0, 0, 0)
+		st.set_border_width_all(3)
+		st.border_color = UI.ORO if pid == motore.attivo else Color(0, 0, 0, 0)
+		st.set_corner_radius_all(6)
+		cornice.add_theme_stylebox_override("panel", st)
+		cornice.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		var t := _carta_ui(carta, wc, hc, true)
 		if motore.pg[pid]["fuori"]:
 			t.modulate = Color(0.4, 0.4, 0.4, 0.7)
-		var tip := "%s — %s\n" % [motore.nome_pg(pid), Dati.nome(motore.pg[pid]["luogo"])]
-		for a in pc["abilita"]:
-			tip += "\n%s: %s" % [a["nome"], a["testo"]]
-		t.tooltip_text = tip
-		box.add_child(t)
-		var lb := UI.etichetta(motore.nome_pg(pid).split(" ")[0], 14, UI.ORO if pid == motore.attivo else UI.CENERE, pid == motore.attivo)
-		lb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cornice.add_child(t)
 		if motore.solo and k > 0 and k - 1 == motore.solo_indice % motore._ordine_solo().size():
-			lb.text += " *"
-			lb.tooltip_text = "Ha il segnalino del solitario: fa 4 azioni in questo turno."
-		box.add_child(lb)
-		hp.add_child(box)
+			var seg := UI.etichetta("4 azioni", 15, UI.ORO, true)
+			seg.add_theme_color_override("font_outline_color", Color.BLACK)
+			seg.add_theme_constant_override("outline_size", 6)
+			seg.position = Vector2(wc - 72, 4)
+			seg.tooltip_text = "Ha il segnalino del solitario: fa 4 azioni in questo turno."
+			seg.mouse_filter = Control.MOUSE_FILTER_PASS
+			t.add_child(seg)
+		v.add_child(cornice)
 	# segnalini
 	var hs := HBoxContainer.new()
 	hs.add_theme_constant_override("separation", 10)
@@ -434,10 +464,6 @@ func _carta_ui(id: int, w: float, h: float, orizzontale := false) -> TextureRect
 	t.mouse_filter = Control.MOUSE_FILTER_PASS
 	t.mouse_entered.connect(_mostra_zoom.bind(id, t))
 	t.mouse_exited.connect(_nascondi_zoom)
-	if t.tooltip_text == "":
-		var c := Dati.carta(id)
-		if c.get("tipo", "") == "evento":
-			t.tooltip_text = "%s\n%s" % [c["nome"], c["testo"]]
 	return t
 
 
@@ -454,37 +480,32 @@ func _dorso_ui(nome: String, w: float, h: float, tip: String, n: int) -> Control
 
 
 func _mostra_zoom(id: int, sorgente: Control) -> void:
+	_mostra_zoom_rect(id, sorgente.get_global_rect())
+
+
+func _mostra_zoom_a(id: int, pos: Vector2) -> void:
+	_mostra_zoom_rect(id, Rect2(pos, Vector2(24, 24)))
+
+
+## Ingrandimento della carta (solo l'immagine: le carte sono già in italiano).
+func _mostra_zoom_rect(id: int, r: Rect2) -> void:
 	var c := Dati.carta(id)
 	var tx := UI.carta_tex(id)
 	if tx == null:
 		return
 	var orizz := tx.get_width() > tx.get_height()
-	zoom_img.custom_minimum_size = Vector2(560, 370) if orizz else Vector2(330, 480)
+	zoom_img.custom_minimum_size = Vector2(620, 410) if orizz else Vector2(380, 560)
 	zoom_img.texture = tx
-	var testo := ""
-	match c.get("tipo", ""):
-		"evento":
-			testo = "%s — %s" % [c["nome"], c["testo"]]
-		"obiettivo":
-			testo = "%s\n%s\nCompletato se: %s\nEffetto: %s" % [c["nome"], c["preparazione"], c["condizione"], c["effetto"]]
-		"ombra":
-			testo = motore.descrivi_ombra(id) if not c.has("speciale") else "%s — %s" % [c["nome"], c["testo"]]
-			if not c.has("speciale"):
-				var ordini := {"occhio": "L'Occhio si volge sulla regione di Frodo (se c'è già, ricerca).", "nazgul2": "2 Nazgûl si avvicinano a Frodo.", "nazgul3": "3 Nazgûl da Mordor all'Occhio."}
-				testo = "Sopra (bandiera rossa in cima al mazzo): avanzata lungo la linea %s.\nSotto (stendardo nero): +1 truppa ombra a %s, poi: %s" % [testo.split(" / ")[0], Dati.nome(c["rinforzo"]), ordini[c["ordine"]]]
-				mappa.evidenzia({c["rinforzo"]: Color(0.9, 0.1, 0.1)}, c["linea"])
-		"regione":
-			testo = "%s — %s" % [Dati.nome_regione(c["regione"]), Dati.NOMI_SIMBOLI[c["simbolo"]]]
-			var luoghi := {}
-			for l in Dati.d()["regioni"][c["regione"]]["luoghi"]:
-				luoghi[l] = Color(1, 0.85, 0.3)
-			mappa.evidenzia(luoghi)
-		"cieli":
-			testo = "Oscuramento dei Cieli: la minaccia sale, l'Occhio cerca Frodo (se c'è già, -2 speranza), 3 truppe ombra a %s, poi si rimescolano gli scarti dell'Ombra sul mazzo." % Dati.nome(c["luogo"])
-	zoom_testo.text = testo
+	zoom_testo.visible = false
+	if c.get("tipo", "") == "ombra" and not c.has("speciale"):
+		mappa.evidenzia({c["rinforzo"]: Color(0.9, 0.1, 0.1)}, c["linea"])
+	elif c.get("tipo", "") == "regione":
+		var luoghi := {}
+		for l in Dati.d()["regioni"][c["regione"]]["luoghi"]:
+			luoghi[l] = Color(1, 0.85, 0.3)
+		mappa.evidenzia(luoghi)
 	zoom.visible = true
 	zoom.reset_size()
-	var r := sorgente.get_global_rect()
 	var pos := r.position + Vector2(r.size.x + 12, 0)
 	if pos.x + zoom.size.x > size.x:
 		pos.x = r.position.x - zoom.size.x - 12
@@ -777,7 +798,7 @@ func _imposta_3d(on: bool) -> void:
 	if tavolo3d != null:
 		tavolo3d.visible = on
 		if on:
-			tavolo3d.aggiorna(motore)
+			tavolo3d.aggiorna(motore, false)
 	mappa.visible = not on
 
 
