@@ -36,9 +36,10 @@ func _init() -> void:
 	g._imposta_3d(true)
 	await _attendi(1.5)
 	await _foto("05_3d")
-	g.tavolo3d._dist = 8.0
-	g.tavolo3d._rot = Vector2(-0.55, 0.2)
-	g.tavolo3d.perno.position = Vector3(-4, 0, -2)
+	var ro: Dictionary = Dati.d()["regioni"][g.motore.occhio]
+	g.tavolo3d._dist = 9.0
+	g.tavolo3d._rot = Vector2(-0.45, 0.2)
+	g.tavolo3d.perno.position = g.tavolo3d._a3d(Vector2(ro["x"], ro["y"]))
 	g.tavolo3d._aggiorna_camera()
 	await _attendi(0.5)
 	await _foto("06_3d_vicino")

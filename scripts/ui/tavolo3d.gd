@@ -680,6 +680,7 @@ func _volteggia(p: Node3D) -> void:
 
 var _mn: Array = []
 var _mc: ShaderMaterial
+var _mpozza: ShaderMaterial
 
 
 func _mat_cono() -> ShaderMaterial:
@@ -905,13 +906,26 @@ func aggiorna(m: Motore, anima := true) -> void:
 	occhio3d.add_child(cono)
 	var faro := SpotLight3D.new()
 	faro.light_color = Color(1, 0.55, 0.2)
-	faro.light_energy = 2.0
+	faro.light_energy = 4.5
 	faro.spot_range = 6.0
 	faro.spot_angle = 30.0
-	faro.spot_angle_attenuation = 2.5
+	faro.spot_angle_attenuation = 1.5
 	faro.rotation.x = -PI / 2
 	occhio3d.add_child(faro)
 	dinamici.add_child(occhio3d)
+	# chiazza di luce sul tabellone, dove arriva il cono
+	var pozza := MeshInstance3D.new()
+	var pm := PlaneMesh.new()
+	pm.size = Vector2(4.6, 4.6)
+	pozza.mesh = pm
+	pozza.position = _a3d(Vector2(ro["x"], ro["y"]), 0.03)
+	pozza.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	if _mpozza == null:
+		_mpozza = ShaderMaterial.new()
+		_mpozza.shader = load("res://assets/shader/pozza_occhio.gdshader")
+	pozza.material_override = _mpozza
+	dinamici.add_child(pozza)
+	_segna(pozza, "occhio_luce")
 	_segna(occhio3d, "occhio")
 	if anima:
 		_anima_spostamenti(vecchi)
