@@ -1,0 +1,52 @@
+LINES = {
+ "dg_erebor":("teal",["dol_guldur","southern_mirkwood","old_forest_road","woodland_realm","erebor"]),
+ "dg_helms":("verde",["dol_guldur","gladden_fields","lorien","fangorn","eastemnet","helms_deep"]),
+ "dg_mt":("giallo",["dol_guldur","southern_mirkwood","dagorlad","north_ithilien","osgiliath","minas_tirith"]),
+ "dun_gh":("blu",["dunland","tharbad","sarn_ford","bree","the_shire","ered_luin","grey_havens"]),
+ "dun_helms":("arancio",["dunland","druwaith_iaur","fords_of_isen","helms_deep"]),
+ "dun_riv":("verdechiaro",["dunland","hollin","tharbad","bree","weather_hills","rivendell"]),
+ "ise_gh":("rosa",["isengard","fords_of_isen","helms_deep","edoras","druadan_forest","minas_tirith","osgiliath","south_ithilien","pelargir","dol_amroth","grey_havens"]),
+ "ise_helms":("arancio",["isengard","fords_of_isen","helms_deep"]),
+ "ise_riv":("verdechiaro",["isengard","fords_of_isen","dunland","hollin","tharbad","bree","weather_hills","rivendell"]),
+ "mor_erebor":("teal",["moria","gladden_fields","carrock","old_forest_road","woodland_realm","erebor"]),
+ "mor_mt":("giallo",["moria","gladden_fields","dol_guldur","southern_mirkwood","dagorlad","north_ithilien","osgiliath","minas_tirith"]),
+ "mor_riv":("verdechiaro",["moria","hollin","tharbad","bree","weather_hills","rivendell"]),
+ "nh_erebor":("teal",["near_harad","harondor","south_ithilien","osgiliath","north_ithilien","dagorlad","emyn_muil","brown_lands","dol_guldur","southern_mirkwood","old_forest_road","woodland_realm","erebor"]),
+ "nh_helms_blu":("blu",["near_harad","harondor","south_ithilien","osgiliath","minas_tirith","druadan_forest","edoras","helms_deep"]),
+ "nh_helms_ar":("arancio",["near_harad","harondor","pelargir","lamedon","erech","pinnath_gelin","druwaith_iaur","fords_of_isen","helms_deep"]),
+ "nurn_erebor":("teal",["nurn","gorgoroth","barad_dur","udun","north_ithilien","dagorlad","emyn_muil","brown_lands","dol_guldur","southern_mirkwood","old_forest_road","woodland_realm","erebor"]),
+ "nurn_helms":("blu",["nurn","gorgoroth","minas_morgul","south_ithilien","osgiliath","minas_tirith","druadan_forest","edoras","helms_deep"]),
+ "nurn_mt":("giallo",["nurn","gorgoroth","mount_doom","udun","north_ithilien","osgiliath","minas_tirith"]),
+ "rhun_mt":("giallo",["rhun","dagorlad","north_ithilien","osgiliath","minas_tirith"]),
+ "rhun_wr_ar":("arancio",["rhun","dorwinion","southern_mirkwood","old_forest_road","lake_town","erebor","woodland_realm"]),
+ "rhun_wr_rosa":("rosa",["rhun","dorwinion","lake_town","iron_hills","erebor","woodland_realm"]),
+ "umb_gh":("rosa",["umbar","harondor","pelargir","dol_amroth","grey_havens"]),
+ "umb_helms_ar":("arancio",["umbar","harondor","pelargir","lamedon","erech","pinnath_gelin","druwaith_iaur","fords_of_isen","helms_deep"]),
+ "umb_helms_blu":("blu",["umbar","pelargir","south_ithilien","osgiliath","minas_tirith","druadan_forest","edoras","helms_deep"]),
+}
+# card -> line
+CARD_LINE = {}
+NORMAL = [("grey_havens","the_shire"),("the_shire","sarn_ford"),("weather_hills","hollin"),("hollin","rivendell"),
+ ("lorien","dol_guldur"),("fangorn","helms_deep"),("eastemnet","emyn_muil"),("eastemnet","edoras"),("lamedon","dol_amroth"),
+ ("brown_lands","dagorlad"),("dorwinion","dagorlad"),("dorwinion","iron_hills"),("udun","minas_morgul"),("barad_dur","mount_doom"),
+ ("woodland_realm","lake_town")]
+# percorsi speciali: (a,b,simbolo,costo) simboli: amicizia, valore, furtivita, resistenza
+SPECIAL = [("rivendell","carrock","furtivita",1),("hollin","gladden_fields","resistenza",1),("hollin","moria","amicizia",1),
+ ("isengard","fangorn","furtivita",1),("lorien","emyn_muil","amicizia",1),("erech","edoras","furtivita",1),
+ ("emyn_muil","north_ithilien","resistenza",1),("north_ithilien","udun","furtivita",4),("udun","mount_doom","furtivita",3),
+ ("mount_doom","gorgoroth","furtivita",2),("minas_morgul","gorgoroth","furtivita",1),("minas_morgul","south_ithilien","furtivita",2),
+ ("barad_dur","udun","furtivita",1),("grey_havens","dol_amroth","amicizia",2)]
+REGIONS = {
+ "eriador":["ered_luin","the_shire","grey_havens","bree","weather_hills","sarn_ford","tharbad"],
+ "rhudaur":["rivendell","hollin"],
+ "enedwaith":["dunland","druwaith_iaur"],
+ "misty_mountains":["carrock","gladden_fields","moria","lorien","isengard","fangorn"],
+ "rohan":["fords_of_isen","helms_deep","edoras","eastemnet"],
+ "gondor":["pinnath_gelin","erech","dol_amroth","lamedon","pelargir","minas_tirith","druadan_forest"],
+ "ithilien":["north_ithilien","osgiliath","south_ithilien"],
+ "haradwaith":["harondor","umbar","near_harad"],
+ "mordor":["udun","barad_dur","mount_doom","gorgoroth","minas_morgul","nurn"],
+ "mirkwood":["woodland_realm","old_forest_road","dol_guldur","southern_mirkwood"],
+ "dale":["erebor","iron_hills","lake_town"],
+ "rhovanion":["dorwinion","rhun","brown_lands","dagorlad","emyn_muil"],
+}

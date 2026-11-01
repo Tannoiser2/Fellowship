@@ -1,0 +1,482 @@
+[
+ {
+  "id": 2900,
+  "linea": [
+   "moria",
+   "erebor"
+  ],
+  "rinforzo": "moria",
+  "ordine": "occhio",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2901,
+  "linea": [
+   "moria",
+   "rivendell"
+  ],
+  "rinforzo": "moria",
+  "ordine": "nazgul3",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2902,
+  "linea": [
+   "moria",
+   "minas_tirith"
+  ],
+  "rinforzo": "moria",
+  "ordine": "nazgul2",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2903,
+  "linea": [
+   "moria",
+   "erebor"
+  ],
+  "rinforzo": "moria",
+  "ordine": "nazgul2",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2904,
+  "linea": [
+   "dol_guldur",
+   "minas_tirith"
+  ],
+  "rinforzo": "dol_guldur",
+  "ordine": "nazgul2",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2905,
+  "linea": [
+   "dunland",
+   "grey_havens"
+  ],
+  "rinforzo": "dunland",
+  "ordine": "nazgul2",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2906,
+  "linea": [
+   "isengard",
+   "helms_deep"
+  ],
+  "rinforzo": "isengard",
+  "ordine": "occhio",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2907,
+  "linea": [
+   "rhun",
+   "woodland_realm"
+  ],
+  "rinforzo": "rhun",
+  "ordine": "occhio",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2908,
+  "linea": [
+   "near_harad",
+   "helms_deep"
+  ],
+  "rinforzo": "near_harad",
+  "ordine": "occhio",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2909,
+  "linea": [
+   "nurn",
+   "minas_tirith"
+  ],
+  "rinforzo": "nurn",
+  "ordine": "nazgul2",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2910,
+  "linea": [
+   "moria",
+   "rivendell"
+  ],
+  "rinforzo": "moria",
+  "ordine": "occhio",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2911,
+  "linea": [
+   "moria",
+   "minas_tirith"
+  ],
+  "rinforzo": "moria",
+  "ordine": "nazgul3",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2912,
+  "linea": [
+   "dol_guldur",
+   "erebor"
+  ],
+  "rinforzo": "dol_guldur",
+  "ordine": "occhio",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2913,
+  "linea": [
+   "dol_guldur",
+   "helms_deep"
+  ],
+  "rinforzo": "dol_guldur",
+  "ordine": "nazgul3",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2914,
+  "linea": [
+   "dol_guldur",
+   "erebor"
+  ],
+  "rinforzo": "dol_guldur",
+  "ordine": "nazgul2",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2915,
+  "linea": [
+   "dunland",
+   "rivendell"
+  ],
+  "rinforzo": "dunland",
+  "ordine": "occhio",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2916,
+  "linea": [
+   "isengard",
+   "grey_havens"
+  ],
+  "rinforzo": "isengard",
+  "ordine": "nazgul3",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2917,
+  "linea": [
+   "rhun",
+   "minas_tirith"
+  ],
+  "rinforzo": "rhun",
+  "ordine": "nazgul3",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2918,
+  "linea": [
+   "near_harad",
+   "helms_deep"
+  ],
+  "rinforzo": "near_harad",
+  "ordine": "nazgul3",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2919,
+  "linea": [
+   "nurn",
+   "helms_deep"
+  ],
+  "rinforzo": "nurn",
+  "ordine": "occhio",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2920,
+  "linea": [
+   "dol_guldur",
+   "helms_deep"
+  ],
+  "rinforzo": "dol_guldur",
+  "ordine": "occhio",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2921,
+  "linea": [
+   "dol_guldur",
+   "minas_tirith"
+  ],
+  "rinforzo": "dol_guldur",
+  "ordine": "nazgul3",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2922,
+  "linea": [
+   "dunland",
+   "grey_havens"
+  ],
+  "rinforzo": "dunland",
+  "ordine": "occhio",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2923,
+  "linea": [
+   "dunland",
+   "helms_deep"
+  ],
+  "rinforzo": "dunland",
+  "ordine": "nazgul2",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2924,
+  "linea": [
+   "dunland",
+   "rivendell"
+  ],
+  "rinforzo": "dunland",
+  "ordine": "nazgul3",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2925,
+  "linea": [
+   "dunland",
+   "helms_deep"
+  ],
+  "rinforzo": "dunland",
+  "ordine": "nazgul3",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2926,
+  "linea": [
+   "isengard",
+   "rivendell"
+  ],
+  "rinforzo": "isengard",
+  "ordine": "nazgul2",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2927,
+  "linea": [
+   "umbar",
+   "helms_deep"
+  ],
+  "rinforzo": "umbar",
+  "ordine": "occhio",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2928,
+  "linea": [
+   "nurn",
+   "minas_tirith"
+  ],
+  "rinforzo": "nurn",
+  "ordine": "occhio",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2929,
+  "linea": [
+   "nurn",
+   "erebor"
+  ],
+  "rinforzo": "nurn",
+  "ordine": "nazgul3",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2930,
+  "linea": [
+   "isengard",
+   "helms_deep"
+  ],
+  "rinforzo": "isengard",
+  "ordine": "nazgul2",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2931,
+  "linea": [
+   "isengard",
+   "grey_havens"
+  ],
+  "rinforzo": "isengard",
+  "ordine": "occhio",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2932,
+  "linea": [
+   "isengard",
+   "rivendell"
+  ],
+  "rinforzo": "isengard",
+  "ordine": "nazgul3",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2933,
+  "linea": [
+   "rhun",
+   "woodland_realm"
+  ],
+  "rinforzo": "rhun",
+  "ordine": "nazgul3",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2934,
+  "linea": [
+   "rhun",
+   "woodland_realm"
+  ],
+  "rinforzo": "rhun",
+  "ordine": "occhio",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2935,
+  "linea": [
+   "rhun",
+   "minas_tirith"
+  ],
+  "rinforzo": "rhun",
+  "ordine": "nazgul2",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2936,
+  "linea": [
+   "rhun",
+   "woodland_realm"
+  ],
+  "rinforzo": "rhun",
+  "ordine": "nazgul2",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2937,
+  "linea": [
+   "umbar",
+   "grey_havens"
+  ],
+  "rinforzo": "umbar",
+  "ordine": "nazgul3",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2938,
+  "linea": [
+   "nurn",
+   "helms_deep"
+  ],
+  "rinforzo": "nurn",
+  "ordine": "nazgul3",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2940,
+  "linea": [
+   "umbar",
+   "helms_deep"
+  ],
+  "rinforzo": "umbar",
+  "ordine": "nazgul2",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2941,
+  "linea": [
+   "umbar",
+   "helms_deep"
+  ],
+  "rinforzo": "umbar",
+  "ordine": "nazgul2",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2942,
+  "linea": [
+   "umbar",
+   "grey_havens"
+  ],
+  "rinforzo": "umbar",
+  "ordine": "occhio",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2943,
+  "linea": [
+   "umbar",
+   "helms_deep"
+  ],
+  "rinforzo": "umbar",
+  "ordine": "nazgul3",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2944,
+  "linea": [
+   "near_harad",
+   "erebor"
+  ],
+  "rinforzo": "near_harad",
+  "ordine": "occhio",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2945,
+  "linea": [
+   "near_harad",
+   "helms_deep"
+  ],
+  "rinforzo": "near_harad",
+  "ordine": "nazgul3",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2946,
+  "linea": [
+   "near_harad",
+   "helms_deep"
+  ],
+  "rinforzo": "near_harad",
+  "ordine": "nazgul2",
+  "retro": "stendardo"
+ },
+ {
+  "id": 2947,
+  "linea": [
+   "near_harad",
+   "erebor"
+  ],
+  "rinforzo": "near_harad",
+  "ordine": "nazgul2",
+  "retro": "bandiera"
+ },
+ {
+  "id": 2948,
+  "linea": [
+   "nurn",
+   "erebor"
+  ],
+  "rinforzo": "nurn",
+  "ordine": "nazgul2",
+  "retro": "stendardo"
+ }
+]

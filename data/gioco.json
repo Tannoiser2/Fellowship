@@ -1,0 +1,3075 @@
+{
+ "luoghi": {
+  "ered_luin": {
+   "nome": "Monti Azzurri",
+   "x": 286,
+   "y": 330,
+   "regione": "eriador",
+   "tipo": "normale",
+   "arruolo": "nani"
+  },
+  "the_shire": {
+   "nome": "La Contea",
+   "x": 514,
+   "y": 444,
+   "regione": "eriador",
+   "tipo": "rifugio",
+   "arruolo": ""
+  },
+  "grey_havens": {
+   "nome": "Porti Grigi",
+   "x": 324,
+   "y": 542,
+   "regione": "eriador",
+   "tipo": "rifugio",
+   "arruolo": "elfi"
+  },
+  "bree": {
+   "nome": "Brea",
+   "x": 748,
+   "y": 520,
+   "regione": "eriador",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "weather_hills": {
+   "nome": "Colli Ventosi",
+   "x": 954,
+   "y": 466,
+   "regione": "eriador",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "sarn_ford": {
+   "nome": "Guado Sarn",
+   "x": 604,
+   "y": 738,
+   "regione": "eriador",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "tharbad": {
+   "nome": "Tharbad",
+   "x": 958,
+   "y": 720,
+   "regione": "eriador",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "rivendell": {
+   "nome": "Gran Burrone",
+   "x": 1370,
+   "y": 302,
+   "regione": "rhudaur",
+   "tipo": "rifugio",
+   "arruolo": "elfi"
+  },
+  "hollin": {
+   "nome": "Agrifogliere",
+   "x": 1308,
+   "y": 572,
+   "regione": "rhudaur",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "moria": {
+   "nome": "Moria",
+   "x": 1570,
+   "y": 616,
+   "regione": "misty_mountains",
+   "tipo": "fortezza",
+   "arruolo": ""
+  },
+  "dunland": {
+   "nome": "Dunland",
+   "x": 1166,
+   "y": 840,
+   "regione": "enedwaith",
+   "tipo": "ombra",
+   "arruolo": ""
+  },
+  "isengard": {
+   "nome": "Isengard",
+   "x": 1338,
+   "y": 982,
+   "regione": "misty_mountains",
+   "tipo": "fortezza",
+   "arruolo": ""
+  },
+  "fangorn": {
+   "nome": "Foresta di Fangorn",
+   "x": 1490,
+   "y": 982,
+   "regione": "misty_mountains",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "lorien": {
+   "nome": "Lórien",
+   "x": 1616,
+   "y": 808,
+   "regione": "misty_mountains",
+   "tipo": "rifugio",
+   "arruolo": "elfi"
+  },
+  "carrock": {
+   "nome": "Carroccia",
+   "x": 1686,
+   "y": 308,
+   "regione": "misty_mountains",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "gladden_fields": {
+   "nome": "Campo Gaggiolo",
+   "x": 1774,
+   "y": 570,
+   "regione": "misty_mountains",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "woodland_realm": {
+   "nome": "Reame Boscoso",
+   "x": 1960,
+   "y": 218,
+   "regione": "mirkwood",
+   "tipo": "rifugio",
+   "arruolo": "elfi"
+  },
+  "erebor": {
+   "nome": "Erebor",
+   "x": 2238,
+   "y": 212,
+   "regione": "dale",
+   "tipo": "rifugio",
+   "arruolo": "nani"
+  },
+  "iron_hills": {
+   "nome": "Colli Ferrosi",
+   "x": 2576,
+   "y": 284,
+   "regione": "dale",
+   "tipo": "normale",
+   "arruolo": "nani"
+  },
+  "lake_town": {
+   "nome": "Pontelagolungo",
+   "x": 2318,
+   "y": 386,
+   "regione": "dale",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "old_forest_road": {
+   "nome": "Vecchia Via della Foresta",
+   "x": 2050,
+   "y": 364,
+   "regione": "mirkwood",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "southern_mirkwood": {
+   "nome": "Bosco Atro Meridionale",
+   "x": 2208,
+   "y": 698,
+   "regione": "mirkwood",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "dol_guldur": {
+   "nome": "Dol Guldur",
+   "x": 1942,
+   "y": 824,
+   "regione": "mirkwood",
+   "tipo": "fortezza",
+   "arruolo": ""
+  },
+  "dorwinion": {
+   "nome": "Dorwinion",
+   "x": 2612,
+   "y": 668,
+   "regione": "rhovanion",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "rhun": {
+   "nome": "Rhûn",
+   "x": 3080,
+   "y": 946,
+   "regione": "rhovanion",
+   "tipo": "ombra",
+   "arruolo": ""
+  },
+  "brown_lands": {
+   "nome": "Terre Brune",
+   "x": 2180,
+   "y": 1018,
+   "regione": "rhovanion",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "emyn_muil": {
+   "nome": "Emyn Muil",
+   "x": 1994,
+   "y": 1142,
+   "regione": "rhovanion",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "dagorlad": {
+   "nome": "Dagorlad",
+   "x": 2318,
+   "y": 1136,
+   "regione": "rhovanion",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "eastemnet": {
+   "nome": "Estemnet",
+   "x": 1722,
+   "y": 1148,
+   "regione": "rohan",
+   "tipo": "normale",
+   "arruolo": "rohirrim"
+  },
+  "druwaith_iaur": {
+   "nome": "Drúwaith Iaur",
+   "x": 888,
+   "y": 1192,
+   "regione": "enedwaith",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "fords_of_isen": {
+   "nome": "Guadi dell'Isen",
+   "x": 1152,
+   "y": 1216,
+   "regione": "rohan",
+   "tipo": "normale",
+   "arruolo": "rohirrim"
+  },
+  "helms_deep": {
+   "nome": "Fosso di Helm",
+   "x": 1402,
+   "y": 1260,
+   "regione": "rohan",
+   "tipo": "rifugio",
+   "arruolo": "rohirrim"
+  },
+  "edoras": {
+   "nome": "Edoras",
+   "x": 1576,
+   "y": 1324,
+   "regione": "rohan",
+   "tipo": "normale",
+   "arruolo": "rohirrim"
+  },
+  "erech": {
+   "nome": "Erech",
+   "x": 1392,
+   "y": 1490,
+   "regione": "gondor",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "pinnath_gelin": {
+   "nome": "Pinnath Gelin",
+   "x": 880,
+   "y": 1640,
+   "regione": "gondor",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "dol_amroth": {
+   "nome": "Dol Amroth",
+   "x": 1416,
+   "y": 1804,
+   "regione": "gondor",
+   "tipo": "rifugio",
+   "arruolo": "gondor"
+  },
+  "lamedon": {
+   "nome": "Lamedon",
+   "x": 1664,
+   "y": 1660,
+   "regione": "gondor",
+   "tipo": "normale",
+   "arruolo": "gondor"
+  },
+  "druadan_forest": {
+   "nome": "Foresta di Drúadan",
+   "x": 1798,
+   "y": 1488,
+   "regione": "gondor",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "minas_tirith": {
+   "nome": "Minas Tirith",
+   "x": 1944,
+   "y": 1570,
+   "regione": "gondor",
+   "tipo": "rifugio",
+   "arruolo": "gondor"
+  },
+  "pelargir": {
+   "nome": "Pelargir",
+   "x": 1922,
+   "y": 1766,
+   "regione": "gondor",
+   "tipo": "normale",
+   "arruolo": "gondor"
+  },
+  "north_ithilien": {
+   "nome": "Ithilien del Nord",
+   "x": 2040,
+   "y": 1364,
+   "regione": "ithilien",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "osgiliath": {
+   "nome": "Osgiliath",
+   "x": 2166,
+   "y": 1530,
+   "regione": "ithilien",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "south_ithilien": {
+   "nome": "Ithilien del Sud",
+   "x": 2148,
+   "y": 1740,
+   "regione": "ithilien",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "udun": {
+   "nome": "Udûn",
+   "x": 2272,
+   "y": 1338,
+   "regione": "mordor",
+   "tipo": "fortezza",
+   "arruolo": ""
+  },
+  "barad_dur": {
+   "nome": "Barad-dûr",
+   "x": 2612,
+   "y": 1350,
+   "regione": "mordor",
+   "tipo": "fortezza",
+   "arruolo": ""
+  },
+  "mount_doom": {
+   "nome": "Monte Fato",
+   "x": 2450,
+   "y": 1472,
+   "regione": "mordor",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "gorgoroth": {
+   "nome": "Pianoro di Gorgoroth",
+   "x": 2692,
+   "y": 1560,
+   "regione": "mordor",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "minas_morgul": {
+   "nome": "Minas Morgul",
+   "x": 2396,
+   "y": 1692,
+   "regione": "mordor",
+   "tipo": "fortezza",
+   "arruolo": ""
+  },
+  "nurn": {
+   "nome": "Nurn",
+   "x": 3010,
+   "y": 1598,
+   "regione": "mordor",
+   "tipo": "ombra",
+   "arruolo": ""
+  },
+  "harondor": {
+   "nome": "Harondor",
+   "x": 2196,
+   "y": 2160,
+   "regione": "haradwaith",
+   "tipo": "normale",
+   "arruolo": ""
+  },
+  "umbar": {
+   "nome": "Umbar",
+   "x": 2046,
+   "y": 2494,
+   "regione": "haradwaith",
+   "tipo": "fortezza",
+   "arruolo": ""
+  },
+  "near_harad": {
+   "nome": "Vicino Harad",
+   "x": 2374,
+   "y": 2452,
+   "regione": "haradwaith",
+   "tipo": "ombra",
+   "arruolo": ""
+  }
+ },
+ "regioni": {
+  "eriador": {
+   "nome": "Eriador",
+   "luoghi": [
+    "ered_luin",
+    "the_shire",
+    "grey_havens",
+    "bree",
+    "weather_hills",
+    "sarn_ford",
+    "tharbad"
+   ],
+   "x": 560,
+   "y": 860
+  },
+  "rhudaur": {
+   "nome": "Rhudaur",
+   "luoghi": [
+    "rivendell",
+    "hollin"
+   ],
+   "x": 1240,
+   "y": 430
+  },
+  "enedwaith": {
+   "nome": "Enedwaith",
+   "luoghi": [
+    "dunland",
+    "druwaith_iaur"
+   ],
+   "x": 760,
+   "y": 1000
+  },
+  "misty_mountains": {
+   "nome": "Montagne Nebbiose",
+   "luoghi": [
+    "carrock",
+    "gladden_fields",
+    "moria",
+    "lorien",
+    "isengard",
+    "fangorn"
+   ],
+   "x": 1430,
+   "y": 720
+  },
+  "rohan": {
+   "nome": "Rohan",
+   "luoghi": [
+    "fords_of_isen",
+    "helms_deep",
+    "edoras",
+    "eastemnet"
+   ],
+   "x": 1720,
+   "y": 1010
+  },
+  "gondor": {
+   "nome": "Gondor",
+   "luoghi": [
+    "pinnath_gelin",
+    "erech",
+    "dol_amroth",
+    "lamedon",
+    "pelargir",
+    "minas_tirith",
+    "druadan_forest"
+   ],
+   "x": 1140,
+   "y": 1700
+  },
+  "ithilien": {
+   "nome": "Ithilien",
+   "luoghi": [
+    "north_ithilien",
+    "osgiliath",
+    "south_ithilien"
+   ],
+   "x": 2260,
+   "y": 1950
+  },
+  "haradwaith": {
+   "nome": "Haradwaith",
+   "luoghi": [
+    "harondor",
+    "umbar",
+    "near_harad"
+   ],
+   "x": 1850,
+   "y": 2280
+  },
+  "mordor": {
+   "nome": "Mordor",
+   "luoghi": [
+    "udun",
+    "barad_dur",
+    "mount_doom",
+    "gorgoroth",
+    "minas_morgul",
+    "nurn"
+   ],
+   "x": 2780,
+   "y": 1900
+  },
+  "mirkwood": {
+   "nome": "Bosco Atro",
+   "luoghi": [
+    "woodland_realm",
+    "old_forest_road",
+    "dol_guldur",
+    "southern_mirkwood"
+   ],
+   "x": 2050,
+   "y": 560
+  },
+  "dale": {
+   "nome": "Dale",
+   "luoghi": [
+    "erebor",
+    "iron_hills",
+    "lake_town"
+   ],
+   "x": 2490,
+   "y": 150
+  },
+  "rhovanion": {
+   "nome": "Rhovanion",
+   "luoghi": [
+    "dorwinion",
+    "rhun",
+    "brown_lands",
+    "dagorlad",
+    "emyn_muil"
+   ],
+   "x": 2600,
+   "y": 900
+  }
+ },
+ "collegamenti": [
+  {
+   "a": "dol_guldur",
+   "b": "southern_mirkwood",
+   "costo": {},
+   "linee": [
+    "dg_erebor",
+    "dg_mt",
+    "mor_mt",
+    "nh_erebor",
+    "nurn_erebor"
+   ]
+  },
+  {
+   "a": "old_forest_road",
+   "b": "southern_mirkwood",
+   "costo": {},
+   "linee": [
+    "dg_erebor",
+    "nh_erebor",
+    "nurn_erebor",
+    "rhun_wr_ar"
+   ]
+  },
+  {
+   "a": "old_forest_road",
+   "b": "woodland_realm",
+   "costo": {},
+   "linee": [
+    "dg_erebor",
+    "mor_erebor",
+    "nh_erebor",
+    "nurn_erebor"
+   ]
+  },
+  {
+   "a": "erebor",
+   "b": "woodland_realm",
+   "costo": {},
+   "linee": [
+    "dg_erebor",
+    "mor_erebor",
+    "nh_erebor",
+    "nurn_erebor",
+    "rhun_wr_ar",
+    "rhun_wr_rosa"
+   ]
+  },
+  {
+   "a": "dol_guldur",
+   "b": "gladden_fields",
+   "costo": {},
+   "linee": [
+    "dg_helms",
+    "mor_mt"
+   ]
+  },
+  {
+   "a": "gladden_fields",
+   "b": "lorien",
+   "costo": {},
+   "linee": [
+    "dg_helms"
+   ]
+  },
+  {
+   "a": "fangorn",
+   "b": "lorien",
+   "costo": {},
+   "linee": [
+    "dg_helms"
+   ]
+  },
+  {
+   "a": "eastemnet",
+   "b": "fangorn",
+   "costo": {},
+   "linee": [
+    "dg_helms"
+   ]
+  },
+  {
+   "a": "eastemnet",
+   "b": "helms_deep",
+   "costo": {},
+   "linee": [
+    "dg_helms"
+   ]
+  },
+  {
+   "a": "dagorlad",
+   "b": "southern_mirkwood",
+   "costo": {},
+   "linee": [
+    "dg_mt",
+    "mor_mt"
+   ]
+  },
+  {
+   "a": "dagorlad",
+   "b": "north_ithilien",
+   "costo": {},
+   "linee": [
+    "dg_mt",
+    "mor_mt",
+    "nh_erebor",
+    "nurn_erebor",
+    "rhun_mt"
+   ]
+  },
+  {
+   "a": "north_ithilien",
+   "b": "osgiliath",
+   "costo": {},
+   "linee": [
+    "dg_mt",
+    "mor_mt",
+    "nh_erebor",
+    "nurn_mt",
+    "rhun_mt"
+   ]
+  },
+  {
+   "a": "minas_tirith",
+   "b": "osgiliath",
+   "costo": {},
+   "linee": [
+    "dg_mt",
+    "ise_gh",
+    "mor_mt",
+    "nh_helms_blu",
+    "nurn_helms",
+    "nurn_mt",
+    "rhun_mt",
+    "umb_helms_blu"
+   ]
+  },
+  {
+   "a": "dunland",
+   "b": "tharbad",
+   "costo": {},
+   "linee": [
+    "dun_gh"
+   ]
+  },
+  {
+   "a": "sarn_ford",
+   "b": "tharbad",
+   "costo": {},
+   "linee": [
+    "dun_gh"
+   ]
+  },
+  {
+   "a": "bree",
+   "b": "sarn_ford",
+   "costo": {},
+   "linee": [
+    "dun_gh"
+   ]
+  },
+  {
+   "a": "bree",
+   "b": "the_shire",
+   "costo": {},
+   "linee": [
+    "dun_gh"
+   ]
+  },
+  {
+   "a": "ered_luin",
+   "b": "the_shire",
+   "costo": {},
+   "linee": [
+    "dun_gh"
+   ]
+  },
+  {
+   "a": "ered_luin",
+   "b": "grey_havens",
+   "costo": {},
+   "linee": [
+    "dun_gh"
+   ]
+  },
+  {
+   "a": "druwaith_iaur",
+   "b": "dunland",
+   "costo": {},
+   "linee": [
+    "dun_helms"
+   ]
+  },
+  {
+   "a": "druwaith_iaur",
+   "b": "fords_of_isen",
+   "costo": {},
+   "linee": [
+    "dun_helms",
+    "nh_helms_ar",
+    "umb_helms_ar"
+   ]
+  },
+  {
+   "a": "fords_of_isen",
+   "b": "helms_deep",
+   "costo": {},
+   "linee": [
+    "dun_helms",
+    "ise_gh",
+    "ise_helms",
+    "nh_helms_ar",
+    "umb_helms_ar"
+   ]
+  },
+  {
+   "a": "dunland",
+   "b": "hollin",
+   "costo": {},
+   "linee": [
+    "dun_riv",
+    "ise_riv"
+   ]
+  },
+  {
+   "a": "hollin",
+   "b": "tharbad",
+   "costo": {},
+   "linee": [
+    "dun_riv",
+    "ise_riv",
+    "mor_riv"
+   ]
+  },
+  {
+   "a": "bree",
+   "b": "tharbad",
+   "costo": {},
+   "linee": [
+    "dun_riv",
+    "ise_riv",
+    "mor_riv"
+   ]
+  },
+  {
+   "a": "bree",
+   "b": "weather_hills",
+   "costo": {},
+   "linee": [
+    "dun_riv",
+    "ise_riv",
+    "mor_riv"
+   ]
+  },
+  {
+   "a": "rivendell",
+   "b": "weather_hills",
+   "costo": {},
+   "linee": [
+    "dun_riv",
+    "ise_riv",
+    "mor_riv"
+   ]
+  },
+  {
+   "a": "fords_of_isen",
+   "b": "isengard",
+   "costo": {},
+   "linee": [
+    "ise_gh",
+    "ise_helms",
+    "ise_riv"
+   ]
+  },
+  {
+   "a": "edoras",
+   "b": "helms_deep",
+   "costo": {},
+   "linee": [
+    "ise_gh",
+    "nh_helms_blu",
+    "nurn_helms",
+    "umb_helms_blu"
+   ]
+  },
+  {
+   "a": "druadan_forest",
+   "b": "edoras",
+   "costo": {},
+   "linee": [
+    "ise_gh",
+    "nh_helms_blu",
+    "nurn_helms",
+    "umb_helms_blu"
+   ]
+  },
+  {
+   "a": "druadan_forest",
+   "b": "minas_tirith",
+   "costo": {},
+   "linee": [
+    "ise_gh",
+    "nh_helms_blu",
+    "nurn_helms",
+    "umb_helms_blu"
+   ]
+  },
+  {
+   "a": "osgiliath",
+   "b": "south_ithilien",
+   "costo": {},
+   "linee": [
+    "ise_gh",
+    "nh_erebor",
+    "nh_helms_blu",
+    "nurn_helms",
+    "umb_helms_blu"
+   ]
+  },
+  {
+   "a": "pelargir",
+   "b": "south_ithilien",
+   "costo": {},
+   "linee": [
+    "ise_gh",
+    "umb_helms_blu"
+   ]
+  },
+  {
+   "a": "dol_amroth",
+   "b": "pelargir",
+   "costo": {},
+   "linee": [
+    "ise_gh",
+    "umb_gh"
+   ]
+  },
+  {
+   "a": "dol_amroth",
+   "b": "grey_havens",
+   "costo": {
+    "amicizia": 2
+   },
+   "linee": [
+    "ise_gh",
+    "umb_gh"
+   ]
+  },
+  {
+   "a": "dunland",
+   "b": "fords_of_isen",
+   "costo": {},
+   "linee": [
+    "ise_riv"
+   ]
+  },
+  {
+   "a": "gladden_fields",
+   "b": "moria",
+   "costo": {},
+   "linee": [
+    "mor_erebor",
+    "mor_mt"
+   ]
+  },
+  {
+   "a": "carrock",
+   "b": "gladden_fields",
+   "costo": {},
+   "linee": [
+    "mor_erebor"
+   ]
+  },
+  {
+   "a": "carrock",
+   "b": "old_forest_road",
+   "costo": {},
+   "linee": [
+    "mor_erebor"
+   ]
+  },
+  {
+   "a": "hollin",
+   "b": "moria",
+   "costo": {
+    "amicizia": 1
+   },
+   "linee": [
+    "mor_riv"
+   ]
+  },
+  {
+   "a": "harondor",
+   "b": "near_harad",
+   "costo": {},
+   "linee": [
+    "nh_erebor",
+    "nh_helms_blu",
+    "nh_helms_ar"
+   ]
+  },
+  {
+   "a": "harondor",
+   "b": "south_ithilien",
+   "costo": {},
+   "linee": [
+    "nh_erebor",
+    "nh_helms_blu"
+   ]
+  },
+  {
+   "a": "dagorlad",
+   "b": "emyn_muil",
+   "costo": {},
+   "linee": [
+    "nh_erebor",
+    "nurn_erebor"
+   ]
+  },
+  {
+   "a": "brown_lands",
+   "b": "emyn_muil",
+   "costo": {},
+   "linee": [
+    "nh_erebor",
+    "nurn_erebor"
+   ]
+  },
+  {
+   "a": "brown_lands",
+   "b": "dol_guldur",
+   "costo": {},
+   "linee": [
+    "nh_erebor",
+    "nurn_erebor"
+   ]
+  },
+  {
+   "a": "harondor",
+   "b": "pelargir",
+   "costo": {},
+   "linee": [
+    "nh_helms_ar",
+    "umb_gh",
+    "umb_helms_ar"
+   ]
+  },
+  {
+   "a": "lamedon",
+   "b": "pelargir",
+   "costo": {},
+   "linee": [
+    "nh_helms_ar",
+    "umb_helms_ar"
+   ]
+  },
+  {
+   "a": "erech",
+   "b": "lamedon",
+   "costo": {},
+   "linee": [
+    "nh_helms_ar",
+    "umb_helms_ar"
+   ]
+  },
+  {
+   "a": "erech",
+   "b": "pinnath_gelin",
+   "costo": {},
+   "linee": [
+    "nh_helms_ar",
+    "umb_helms_ar"
+   ]
+  },
+  {
+   "a": "druwaith_iaur",
+   "b": "pinnath_gelin",
+   "costo": {},
+   "linee": [
+    "nh_helms_ar",
+    "umb_helms_ar"
+   ]
+  },
+  {
+   "a": "gorgoroth",
+   "b": "nurn",
+   "costo": {},
+   "linee": [
+    "nurn_erebor",
+    "nurn_helms",
+    "nurn_mt"
+   ]
+  },
+  {
+   "a": "barad_dur",
+   "b": "gorgoroth",
+   "costo": {},
+   "linee": [
+    "nurn_erebor"
+   ]
+  },
+  {
+   "a": "barad_dur",
+   "b": "udun",
+   "costo": {
+    "furtivita": 1
+   },
+   "linee": [
+    "nurn_erebor"
+   ]
+  },
+  {
+   "a": "north_ithilien",
+   "b": "udun",
+   "costo": {
+    "furtivita": 4
+   },
+   "linee": [
+    "nurn_erebor",
+    "nurn_mt"
+   ]
+  },
+  {
+   "a": "gorgoroth",
+   "b": "minas_morgul",
+   "costo": {
+    "furtivita": 1
+   },
+   "linee": [
+    "nurn_helms"
+   ]
+  },
+  {
+   "a": "minas_morgul",
+   "b": "south_ithilien",
+   "costo": {
+    "furtivita": 2
+   },
+   "linee": [
+    "nurn_helms"
+   ]
+  },
+  {
+   "a": "gorgoroth",
+   "b": "mount_doom",
+   "costo": {
+    "furtivita": 2
+   },
+   "linee": [
+    "nurn_mt"
+   ]
+  },
+  {
+   "a": "mount_doom",
+   "b": "udun",
+   "costo": {
+    "furtivita": 3
+   },
+   "linee": [
+    "nurn_mt"
+   ]
+  },
+  {
+   "a": "dagorlad",
+   "b": "rhun",
+   "costo": {},
+   "linee": [
+    "rhun_mt"
+   ]
+  },
+  {
+   "a": "dorwinion",
+   "b": "rhun",
+   "costo": {},
+   "linee": [
+    "rhun_wr_ar",
+    "rhun_wr_rosa"
+   ]
+  },
+  {
+   "a": "dorwinion",
+   "b": "southern_mirkwood",
+   "costo": {},
+   "linee": [
+    "rhun_wr_ar"
+   ]
+  },
+  {
+   "a": "lake_town",
+   "b": "old_forest_road",
+   "costo": {},
+   "linee": [
+    "rhun_wr_ar"
+   ]
+  },
+  {
+   "a": "erebor",
+   "b": "lake_town",
+   "costo": {},
+   "linee": [
+    "rhun_wr_ar"
+   ]
+  },
+  {
+   "a": "dorwinion",
+   "b": "lake_town",
+   "costo": {},
+   "linee": [
+    "rhun_wr_rosa"
+   ]
+  },
+  {
+   "a": "iron_hills",
+   "b": "lake_town",
+   "costo": {},
+   "linee": [
+    "rhun_wr_rosa"
+   ]
+  },
+  {
+   "a": "erebor",
+   "b": "iron_hills",
+   "costo": {},
+   "linee": [
+    "rhun_wr_rosa"
+   ]
+  },
+  {
+   "a": "harondor",
+   "b": "umbar",
+   "costo": {},
+   "linee": [
+    "umb_gh",
+    "umb_helms_ar"
+   ]
+  },
+  {
+   "a": "pelargir",
+   "b": "umbar",
+   "costo": {},
+   "linee": [
+    "umb_helms_blu"
+   ]
+  },
+  {
+   "a": "grey_havens",
+   "b": "the_shire",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "sarn_ford",
+   "b": "the_shire",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "hollin",
+   "b": "weather_hills",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "hollin",
+   "b": "rivendell",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "dol_guldur",
+   "b": "lorien",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "fangorn",
+   "b": "helms_deep",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "eastemnet",
+   "b": "emyn_muil",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "eastemnet",
+   "b": "edoras",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "dol_amroth",
+   "b": "lamedon",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "brown_lands",
+   "b": "dagorlad",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "dagorlad",
+   "b": "dorwinion",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "dorwinion",
+   "b": "iron_hills",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "minas_morgul",
+   "b": "udun",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "barad_dur",
+   "b": "mount_doom",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "lake_town",
+   "b": "woodland_realm",
+   "costo": {},
+   "linee": []
+  },
+  {
+   "a": "carrock",
+   "b": "rivendell",
+   "costo": {
+    "furtivita": 1
+   },
+   "linee": []
+  },
+  {
+   "a": "gladden_fields",
+   "b": "hollin",
+   "costo": {
+    "resistenza": 1
+   },
+   "linee": []
+  },
+  {
+   "a": "fangorn",
+   "b": "isengard",
+   "costo": {
+    "furtivita": 1
+   },
+   "linee": []
+  },
+  {
+   "a": "emyn_muil",
+   "b": "lorien",
+   "costo": {
+    "amicizia": 1
+   },
+   "linee": []
+  },
+  {
+   "a": "edoras",
+   "b": "erech",
+   "costo": {
+    "furtivita": 1
+   },
+   "linee": []
+  },
+  {
+   "a": "emyn_muil",
+   "b": "north_ithilien",
+   "costo": {
+    "resistenza": 1
+   },
+   "linee": []
+  }
+ ],
+ "linee": {
+  "dg_erebor": {
+   "colore": "teal",
+   "percorso": [
+    "dol_guldur",
+    "southern_mirkwood",
+    "old_forest_road",
+    "woodland_realm",
+    "erebor"
+   ]
+  },
+  "dg_helms": {
+   "colore": "verde",
+   "percorso": [
+    "dol_guldur",
+    "gladden_fields",
+    "lorien",
+    "fangorn",
+    "eastemnet",
+    "helms_deep"
+   ]
+  },
+  "dg_mt": {
+   "colore": "giallo",
+   "percorso": [
+    "dol_guldur",
+    "southern_mirkwood",
+    "dagorlad",
+    "north_ithilien",
+    "osgiliath",
+    "minas_tirith"
+   ]
+  },
+  "dun_gh": {
+   "colore": "blu",
+   "percorso": [
+    "dunland",
+    "tharbad",
+    "sarn_ford",
+    "bree",
+    "the_shire",
+    "ered_luin",
+    "grey_havens"
+   ]
+  },
+  "dun_helms": {
+   "colore": "arancio",
+   "percorso": [
+    "dunland",
+    "druwaith_iaur",
+    "fords_of_isen",
+    "helms_deep"
+   ]
+  },
+  "dun_riv": {
+   "colore": "verdechiaro",
+   "percorso": [
+    "dunland",
+    "hollin",
+    "tharbad",
+    "bree",
+    "weather_hills",
+    "rivendell"
+   ]
+  },
+  "ise_gh": {
+   "colore": "rosa",
+   "percorso": [
+    "isengard",
+    "fords_of_isen",
+    "helms_deep",
+    "edoras",
+    "druadan_forest",
+    "minas_tirith",
+    "osgiliath",
+    "south_ithilien",
+    "pelargir",
+    "dol_amroth",
+    "grey_havens"
+   ]
+  },
+  "ise_helms": {
+   "colore": "arancio",
+   "percorso": [
+    "isengard",
+    "fords_of_isen",
+    "helms_deep"
+   ]
+  },
+  "ise_riv": {
+   "colore": "verdechiaro",
+   "percorso": [
+    "isengard",
+    "fords_of_isen",
+    "dunland",
+    "hollin",
+    "tharbad",
+    "bree",
+    "weather_hills",
+    "rivendell"
+   ]
+  },
+  "mor_erebor": {
+   "colore": "teal",
+   "percorso": [
+    "moria",
+    "gladden_fields",
+    "carrock",
+    "old_forest_road",
+    "woodland_realm",
+    "erebor"
+   ]
+  },
+  "mor_mt": {
+   "colore": "giallo",
+   "percorso": [
+    "moria",
+    "gladden_fields",
+    "dol_guldur",
+    "southern_mirkwood",
+    "dagorlad",
+    "north_ithilien",
+    "osgiliath",
+    "minas_tirith"
+   ]
+  },
+  "mor_riv": {
+   "colore": "verdechiaro",
+   "percorso": [
+    "moria",
+    "hollin",
+    "tharbad",
+    "bree",
+    "weather_hills",
+    "rivendell"
+   ]
+  },
+  "nh_erebor": {
+   "colore": "teal",
+   "percorso": [
+    "near_harad",
+    "harondor",
+    "south_ithilien",
+    "osgiliath",
+    "north_ithilien",
+    "dagorlad",
+    "emyn_muil",
+    "brown_lands",
+    "dol_guldur",
+    "southern_mirkwood",
+    "old_forest_road",
+    "woodland_realm",
+    "erebor"
+   ]
+  },
+  "nh_helms_blu": {
+   "colore": "blu",
+   "percorso": [
+    "near_harad",
+    "harondor",
+    "south_ithilien",
+    "osgiliath",
+    "minas_tirith",
+    "druadan_forest",
+    "edoras",
+    "helms_deep"
+   ]
+  },
+  "nh_helms_ar": {
+   "colore": "arancio",
+   "percorso": [
+    "near_harad",
+    "harondor",
+    "pelargir",
+    "lamedon",
+    "erech",
+    "pinnath_gelin",
+    "druwaith_iaur",
+    "fords_of_isen",
+    "helms_deep"
+   ]
+  },
+  "nurn_erebor": {
+   "colore": "teal",
+   "percorso": [
+    "nurn",
+    "gorgoroth",
+    "barad_dur",
+    "udun",
+    "north_ithilien",
+    "dagorlad",
+    "emyn_muil",
+    "brown_lands",
+    "dol_guldur",
+    "southern_mirkwood",
+    "old_forest_road",
+    "woodland_realm",
+    "erebor"
+   ]
+  },
+  "nurn_helms": {
+   "colore": "blu",
+   "percorso": [
+    "nurn",
+    "gorgoroth",
+    "minas_morgul",
+    "south_ithilien",
+    "osgiliath",
+    "minas_tirith",
+    "druadan_forest",
+    "edoras",
+    "helms_deep"
+   ]
+  },
+  "nurn_mt": {
+   "colore": "giallo",
+   "percorso": [
+    "nurn",
+    "gorgoroth",
+    "mount_doom",
+    "udun",
+    "north_ithilien",
+    "osgiliath",
+    "minas_tirith"
+   ]
+  },
+  "rhun_mt": {
+   "colore": "giallo",
+   "percorso": [
+    "rhun",
+    "dagorlad",
+    "north_ithilien",
+    "osgiliath",
+    "minas_tirith"
+   ]
+  },
+  "rhun_wr_ar": {
+   "colore": "arancio",
+   "percorso": [
+    "rhun",
+    "dorwinion",
+    "southern_mirkwood",
+    "old_forest_road",
+    "lake_town",
+    "erebor",
+    "woodland_realm"
+   ]
+  },
+  "rhun_wr_rosa": {
+   "colore": "rosa",
+   "percorso": [
+    "rhun",
+    "dorwinion",
+    "lake_town",
+    "iron_hills",
+    "erebor",
+    "woodland_realm"
+   ]
+  },
+  "umb_gh": {
+   "colore": "rosa",
+   "percorso": [
+    "umbar",
+    "harondor",
+    "pelargir",
+    "dol_amroth",
+    "grey_havens"
+   ]
+  },
+  "umb_helms_ar": {
+   "colore": "arancio",
+   "percorso": [
+    "umbar",
+    "harondor",
+    "pelargir",
+    "lamedon",
+    "erech",
+    "pinnath_gelin",
+    "druwaith_iaur",
+    "fords_of_isen",
+    "helms_deep"
+   ]
+  },
+  "umb_helms_blu": {
+   "colore": "blu",
+   "percorso": [
+    "umbar",
+    "pelargir",
+    "south_ithilien",
+    "osgiliath",
+    "minas_tirith",
+    "druadan_forest",
+    "edoras",
+    "helms_deep"
+   ]
+  }
+ },
+ "carte_ombra": [
+  {
+   "id": 2900,
+   "linea": "mor_erebor",
+   "rinforzo": "moria",
+   "ordine": "occhio",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2901,
+   "linea": "mor_riv",
+   "rinforzo": "moria",
+   "ordine": "nazgul3",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2902,
+   "linea": "mor_mt",
+   "rinforzo": "moria",
+   "ordine": "nazgul2",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2903,
+   "linea": "mor_erebor",
+   "rinforzo": "moria",
+   "ordine": "nazgul2",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2904,
+   "linea": "dg_mt",
+   "rinforzo": "dol_guldur",
+   "ordine": "nazgul2",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2905,
+   "linea": "dun_gh",
+   "rinforzo": "dunland",
+   "ordine": "nazgul2",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2906,
+   "linea": "ise_helms",
+   "rinforzo": "isengard",
+   "ordine": "occhio",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2907,
+   "linea": "rhun_wr_ar",
+   "rinforzo": "rhun",
+   "ordine": "occhio",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2908,
+   "linea": "nh_helms_blu",
+   "rinforzo": "near_harad",
+   "ordine": "occhio",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2909,
+   "linea": "nurn_mt",
+   "rinforzo": "nurn",
+   "ordine": "nazgul2",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2910,
+   "linea": "mor_riv",
+   "rinforzo": "moria",
+   "ordine": "occhio",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2911,
+   "linea": "mor_mt",
+   "rinforzo": "moria",
+   "ordine": "nazgul3",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2912,
+   "linea": "dg_erebor",
+   "rinforzo": "dol_guldur",
+   "ordine": "occhio",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2913,
+   "linea": "dg_helms",
+   "rinforzo": "dol_guldur",
+   "ordine": "nazgul3",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2914,
+   "linea": "dg_erebor",
+   "rinforzo": "dol_guldur",
+   "ordine": "nazgul2",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2915,
+   "linea": "dun_riv",
+   "rinforzo": "dunland",
+   "ordine": "occhio",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2916,
+   "linea": "ise_gh",
+   "rinforzo": "isengard",
+   "ordine": "nazgul3",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2917,
+   "linea": "rhun_mt",
+   "rinforzo": "rhun",
+   "ordine": "nazgul3",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2918,
+   "linea": "nh_helms_ar",
+   "rinforzo": "near_harad",
+   "ordine": "nazgul3",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2919,
+   "linea": "nurn_helms",
+   "rinforzo": "nurn",
+   "ordine": "occhio",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2920,
+   "linea": "dg_helms",
+   "rinforzo": "dol_guldur",
+   "ordine": "occhio",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2921,
+   "linea": "dg_mt",
+   "rinforzo": "dol_guldur",
+   "ordine": "nazgul3",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2922,
+   "linea": "dun_gh",
+   "rinforzo": "dunland",
+   "ordine": "occhio",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2923,
+   "linea": "dun_helms",
+   "rinforzo": "dunland",
+   "ordine": "nazgul2",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2924,
+   "linea": "dun_riv",
+   "rinforzo": "dunland",
+   "ordine": "nazgul3",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2925,
+   "linea": "dun_helms",
+   "rinforzo": "dunland",
+   "ordine": "nazgul3",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2926,
+   "linea": "ise_riv",
+   "rinforzo": "isengard",
+   "ordine": "nazgul2",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2927,
+   "linea": "umb_helms_ar",
+   "rinforzo": "umbar",
+   "ordine": "occhio",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2928,
+   "linea": "nurn_mt",
+   "rinforzo": "nurn",
+   "ordine": "occhio",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2929,
+   "linea": "nurn_erebor",
+   "rinforzo": "nurn",
+   "ordine": "nazgul3",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2930,
+   "linea": "ise_helms",
+   "rinforzo": "isengard",
+   "ordine": "nazgul2",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2931,
+   "linea": "ise_gh",
+   "rinforzo": "isengard",
+   "ordine": "occhio",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2932,
+   "linea": "ise_riv",
+   "rinforzo": "isengard",
+   "ordine": "nazgul3",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2933,
+   "linea": "rhun_wr_ar",
+   "rinforzo": "rhun",
+   "ordine": "nazgul3",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2934,
+   "linea": "rhun_wr_rosa",
+   "rinforzo": "rhun",
+   "ordine": "occhio",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2935,
+   "linea": "rhun_mt",
+   "rinforzo": "rhun",
+   "ordine": "nazgul2",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2936,
+   "linea": "rhun_wr_rosa",
+   "rinforzo": "rhun",
+   "ordine": "nazgul2",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2937,
+   "linea": "umb_gh",
+   "rinforzo": "umbar",
+   "ordine": "nazgul3",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2938,
+   "linea": "nurn_helms",
+   "rinforzo": "nurn",
+   "ordine": "nazgul3",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2940,
+   "linea": "umb_helms_blu",
+   "rinforzo": "umbar",
+   "ordine": "nazgul2",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2941,
+   "linea": "umb_helms_ar",
+   "rinforzo": "umbar",
+   "ordine": "nazgul2",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2942,
+   "linea": "umb_gh",
+   "rinforzo": "umbar",
+   "ordine": "occhio",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2943,
+   "linea": "umb_helms_blu",
+   "rinforzo": "umbar",
+   "ordine": "nazgul3",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2944,
+   "linea": "nh_erebor",
+   "rinforzo": "near_harad",
+   "ordine": "occhio",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2945,
+   "linea": "nh_helms_blu",
+   "rinforzo": "near_harad",
+   "ordine": "nazgul3",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2946,
+   "linea": "nh_helms_ar",
+   "rinforzo": "near_harad",
+   "ordine": "nazgul2",
+   "retro": "stendardo"
+  },
+  {
+   "id": 2947,
+   "linea": "nh_erebor",
+   "rinforzo": "near_harad",
+   "ordine": "nazgul2",
+   "retro": "bandiera"
+  },
+  {
+   "id": 2948,
+   "linea": "nurn_erebor",
+   "rinforzo": "nurn",
+   "ordine": "nazgul2",
+   "retro": "stendardo"
+  },
+  {
+   "id": 3039,
+   "speciale": "saruman",
+   "nome": "Le ruote di Saruman",
+   "retro": "stendardo",
+   "testo": "Scegliete una cosa: Rompere il giuramento (togliete 2 truppe amiche qualsiasi), Dubbio (un giocatore scarta in tutto 2 carte e/o segnalini simbolo) o Disperazione (perdete 1 speranza)."
+  },
+  {
+   "id": 3049,
+   "speciale": "tamburi",
+   "nome": "I tamburi di guerra",
+   "retro": "bandiera",
+   "testo": "Aggiungete 1 truppa dell'Ombra in ogni fortezza dell'Ombra di Mordor."
+  }
+ ],
+ "carte_regione": [
+  {
+   "id": 2100,
+   "regione": "haradwaith",
+   "simbolo": "resistenza",
+   "numero": 99
+  },
+  {
+   "id": 2101,
+   "regione": "ithilien",
+   "simbolo": "resistenza",
+   "numero": 7000
+  },
+  {
+   "id": 2102,
+   "regione": "mirkwood",
+   "simbolo": "resistenza",
+   "numero": 95
+  },
+  {
+   "id": 2103,
+   "regione": "rhudaur",
+   "simbolo": "resistenza",
+   "numero": 2
+  },
+  {
+   "id": 2104,
+   "regione": "dale",
+   "simbolo": "furtivita",
+   "numero": 50
+  },
+  {
+   "id": 2105,
+   "regione": "misty_mountains",
+   "simbolo": "furtivita",
+   "numero": 30
+  },
+  {
+   "id": 2106,
+   "regione": "haradwaith",
+   "simbolo": "valore",
+   "numero": 15
+  },
+  {
+   "id": 2110,
+   "regione": "misty_mountains",
+   "simbolo": "resistenza",
+   "numero": 21
+  },
+  {
+   "id": 2111,
+   "regione": "mordor",
+   "simbolo": "resistenza",
+   "numero": 1
+  },
+  {
+   "id": 2112,
+   "regione": "rhovanion",
+   "simbolo": "resistenza",
+   "numero": 5
+  },
+  {
+   "id": 2113,
+   "regione": "rohan",
+   "simbolo": "resistenza",
+   "numero": 42
+  },
+  {
+   "id": 2114,
+   "regione": "enedwaith",
+   "simbolo": "furtivita",
+   "numero": 11
+  },
+  {
+   "id": 2115,
+   "regione": "mordor",
+   "simbolo": "furtivita",
+   "numero": 9
+  },
+  {
+   "id": 2116,
+   "regione": "ithilien",
+   "simbolo": "valore",
+   "numero": 150
+  },
+  {
+   "id": 2120,
+   "regione": "eriador",
+   "simbolo": "furtivita",
+   "numero": 4
+  },
+  {
+   "id": 2121,
+   "regione": "gondor",
+   "simbolo": "furtivita",
+   "numero": 28
+  },
+  {
+   "id": 2122,
+   "regione": "haradwaith",
+   "simbolo": "furtivita",
+   "numero": 87
+  },
+  {
+   "id": 2123,
+   "regione": "ithilien",
+   "simbolo": "furtivita",
+   "numero": 10
+  },
+  {
+   "id": 2124,
+   "regione": "mirkwood",
+   "simbolo": "furtivita",
+   "numero": 131
+  },
+  {
+   "id": 2125,
+   "regione": "rhovanion",
+   "simbolo": "furtivita",
+   "numero": 18
+  },
+  {
+   "id": 2126,
+   "regione": "mirkwood",
+   "simbolo": "valore",
+   "numero": 33
+  },
+  {
+   "id": 2130,
+   "regione": "rhudaur",
+   "simbolo": "furtivita",
+   "numero": 458
+  },
+  {
+   "id": 2131,
+   "regione": "rohan",
+   "simbolo": "furtivita",
+   "numero": 105
+  },
+  {
+   "id": 2132,
+   "regione": "dale",
+   "simbolo": "valore",
+   "numero": 111
+  },
+  {
+   "id": 2133,
+   "regione": "enedwaith",
+   "simbolo": "valore",
+   "numero": 12
+  },
+  {
+   "id": 2134,
+   "regione": "eriador",
+   "simbolo": "valore",
+   "numero": 19
+  },
+  {
+   "id": 2135,
+   "regione": "gondor",
+   "simbolo": "valore",
+   "numero": 93
+  },
+  {
+   "id": 2136,
+   "regione": "misty_mountains",
+   "simbolo": "valore",
+   "numero": 200
+  },
+  {
+   "id": 2140,
+   "regione": "mordor",
+   "simbolo": "valore",
+   "numero": 3019
+  },
+  {
+   "id": 2141,
+   "regione": "rhovanion",
+   "simbolo": "valore",
+   "numero": 20
+  },
+  {
+   "id": 2142,
+   "regione": "rhudaur",
+   "simbolo": "valore",
+   "numero": 464
+  },
+  {
+   "id": 2143,
+   "regione": "rohan",
+   "simbolo": "valore",
+   "numero": 10000
+  },
+  {
+   "id": 2159,
+   "regione": "dale",
+   "simbolo": "amicizia",
+   "numero": 13
+  },
+  {
+   "id": 2160,
+   "regione": "enedwaith",
+   "simbolo": "amicizia",
+   "numero": 400
+  },
+  {
+   "id": 2161,
+   "regione": "eriador",
+   "simbolo": "amicizia",
+   "numero": 144
+  },
+  {
+   "id": 2162,
+   "regione": "gondor",
+   "simbolo": "amicizia",
+   "numero": 26
+  },
+  {
+   "id": 2163,
+   "regione": "haradwaith",
+   "simbolo": "amicizia",
+   "numero": 130
+  },
+  {
+   "id": 2164,
+   "regione": "ithilien",
+   "simbolo": "amicizia",
+   "numero": 3000
+  },
+  {
+   "id": 2165,
+   "regione": "mirkwood",
+   "simbolo": "amicizia",
+   "numero": 14
+  },
+  {
+   "id": 2166,
+   "regione": "misty_mountains",
+   "simbolo": "amicizia",
+   "numero": 27
+  },
+  {
+   "id": 2167,
+   "regione": "mordor",
+   "simbolo": "amicizia",
+   "numero": 589
+  },
+  {
+   "id": 2168,
+   "regione": "rhovanion",
+   "simbolo": "amicizia",
+   "numero": 8
+  },
+  {
+   "id": 2169,
+   "regione": "rhudaur",
+   "simbolo": "amicizia",
+   "numero": 49
+  },
+  {
+   "id": 2800,
+   "regione": "rohan",
+   "simbolo": "amicizia",
+   "numero": 45
+  },
+  {
+   "id": 2801,
+   "regione": "eriador",
+   "simbolo": "resistenza",
+   "numero": 17
+  },
+  {
+   "id": 2802,
+   "regione": "dale",
+   "simbolo": "resistenza",
+   "numero": 7
+  },
+  {
+   "id": 2803,
+   "regione": "gondor",
+   "simbolo": "resistenza",
+   "numero": 6
+  },
+  {
+   "id": 2804,
+   "regione": "enedwaith",
+   "simbolo": "resistenza",
+   "numero": 3
+  }
+ ],
+ "carte_cieli": [
+  {
+   "id": 2109,
+   "luogo": "north_ithilien"
+  },
+  {
+   "id": 2119,
+   "luogo": "south_ithilien"
+  },
+  {
+   "id": 2129,
+   "luogo": "southern_mirkwood"
+  },
+  {
+   "id": 2139,
+   "luogo": "tharbad"
+  },
+  {
+   "id": 2151,
+   "luogo": "dorwinion"
+  },
+  {
+   "id": 2152,
+   "luogo": "druadan_forest"
+  },
+  {
+   "id": 2153,
+   "luogo": "druwaith_iaur"
+  },
+  {
+   "id": 2154,
+   "luogo": "emyn_muil"
+  },
+  {
+   "id": 2155,
+   "luogo": "fangorn"
+  },
+  {
+   "id": 2156,
+   "luogo": "gladden_fields"
+  },
+  {
+   "id": 2157,
+   "luogo": "hollin"
+  },
+  {
+   "id": 2158,
+   "luogo": "mount_doom"
+  }
+ ],
+ "carte_evento": [
+  {
+   "id": 2107,
+   "codice": "lotte_orchi",
+   "nome": "Lotte fra Orchi",
+   "testo": "Togliete fino a 2 truppe dell'Ombra da un solo luogo."
+  },
+  {
+   "id": 2108,
+   "codice": "preveggenza_elrond",
+   "nome": "La preveggenza di Elrond",
+   "testo": "Il giocatore di turno guarda fino a 4 carte in cima al mazzo dei giocatori. Può prenderne 1 in mano (non una carta Il cielo si oscura) e rimette le altre in cima nell'ordine che vuole."
+  },
+  {
+   "id": 2117,
+   "codice": "freccia_rossa",
+   "nome": "La Freccia Rossa",
+   "testo": "Spostate fino a 3 truppe amiche che si trovano nello stesso rifugio in un altro rifugio. Poi, se volete, tirate una battaglia lì (e spostate l'Occhio in quella regione)."
+  },
+  {
+   "id": 2118,
+   "codice": "lembas",
+   "nome": "Lembas",
+   "testo": "Si gioca durante le azioni. Il giocatore di turno può fare 2 azioni in più con uno dei suoi personaggi in questo turno."
+  },
+  {
+   "id": 2127,
+   "codice": "mantelli_elfici",
+   "nome": "Mantelli elfici e corda",
+   "testo": "Scegliete un personaggio: può viaggiare da solo fino a 2 volte, senza tirare ricerche (paga i percorsi speciali come al solito e non porta con sé altri personaggi né truppe)."
+  },
+  {
+   "id": 2128,
+   "codice": "cavalli_rohan",
+   "nome": "Rohan presta i cavalli",
+   "testo": "Scegliete un luogo: i personaggi che si trovano lì possono viaggiare tutti insieme fino a 3 volte, senza truppe e senza percorsi speciali. Se Frodo viaggia così, dopo ogni viaggio si tira una ricerca e non si può spendere Furtività per evitarla."
+  },
+  {
+   "id": 2137,
+   "codice": "aquile",
+   "nome": "Le Aquile",
+   "testo": "Spostate un personaggio in un luogo qualsiasi. Se è Frodo, spostate i 7 Nazgûl più vicini direttamente nella sua regione e l'Occhio su di lui, poi tirate una ricerca."
+  },
+  {
+   "id": 2138,
+   "codice": "tom_bombadil",
+   "nome": "Tom Bombadil",
+   "testo": "Scegliete: guadagnate 1 speranza, oppure ritirate fino a 3 dadi di un solo lancio."
+  },
+  {
+   "id": 2144,
+   "codice": "gwaihir",
+   "nome": "Gwaihir porta notizie",
+   "testo": "Scegliete un luogo vicino a truppe amiche: spostateci una o più di quelle truppe (senza percorsi speciali). Poi, se volete, tirate una battaglia lì (e spostate l'Occhio in quella regione)."
+  },
+  {
+   "id": 2145,
+   "codice": "entmoot",
+   "nome": "Entaconsulta",
+   "testo": "Aggiungete fino a 3 truppe degli Ent (truppe elfiche) nella Foresta di Fangorn. Poi potete spostarle, con i personaggi che vogliono seguirle, in un luogo vicino, anche Isengard, senza spendere Furtività; in quel caso non si tirano ricerche né battaglie."
+  },
+  {
+   "id": 2146,
+   "codice": "consiglio_elrond",
+   "nome": "Il Consiglio di Elrond",
+   "testo": "Spostate quanti personaggi volete a Gran Burrone, senza truppe e senza tirare ricerche. Un giocatore con un personaggio a Gran Burrone può poi passare 1 segnalino simbolo a un altro giocatore con un personaggio lì. In solitario: preparate gratis 1 carta, anche se non è della regione."
+  },
+  {
+   "id": 2147,
+   "codice": "palantir",
+   "nome": "Guardare nel Palantír",
+   "testo": "Scegliete un personaggio: spostate l'Occhio nella sua regione, poi spostate lì 3 Nazgûl qualsiasi."
+  },
+  {
+   "id": 2148,
+   "codice": "doni_elfi",
+   "nome": "I doni degli Elfi",
+   "testo": "Prendete dalla riserva un segnalino simbolo qualsiasi e datelo a un giocatore."
+  },
+  {
+   "id": 2150,
+   "codice": "ordini_contrastanti",
+   "nome": "Ordini contrastanti",
+   "testo": "Scegliete un luogo e spostate tutte le sue truppe dell'Ombra nei luoghi vicini che volete. Non si tirano battaglie; se ora ci sono truppe dell'Ombra in un rifugio senza truppe amiche, il rifugio cade."
+  }
+ ],
+ "personaggi": {
+  "aragorn": {
+   "carta": 500,
+   "nome": "Aragorn",
+   "partenza": "weather_hills",
+   "colore": "viola",
+   "abilita": [
+    {
+     "nome": "Ramingo del Nord",
+     "testo": "Se Aragorn è presente quando si tira una ricerca, potete ritirare 1 dado di ricerca."
+    },
+    {
+     "nome": "Capitano dell'Ovest",
+     "testo": "Se Aragorn è presente a una battaglia, ogni Rotta toglie fino a 2 truppe dell'Ombra dal suo luogo invece di 1."
+    },
+    {
+     "nome": "Andúril",
+     "testo": "Azione (una volta per turno): se è stato completato almeno un obiettivo, togliete 1 truppa dell'Ombra dal luogo di Aragorn."
+    }
+   ]
+  },
+  "arwen": {
+   "carta": 501,
+   "nome": "Arwen",
+   "partenza": "rivendell",
+   "colore": "verde",
+   "abilita": [
+    {
+     "nome": "Stella del Vespro",
+     "testo": "Quando Arwen arruola in un luogo elfico non spende Amicizia."
+    },
+    {
+     "nome": "Mandare aiuto",
+     "testo": "Quando Arwen prepara, se un personaggio si trova nella regione della carta potete spostare 1 truppa elfica dal luogo di Arwen al luogo di quel personaggio."
+    },
+    {
+     "nome": "Dare consiglio",
+     "testo": "Una volta nel vostro turno, quando Arwen usa la Compagnia in un rifugio, la carta data o presa non deve essere della sua regione. In solitario: una volta per turno, quando Arwen prepara, la carta scartata non deve essere della sua regione."
+    }
+   ]
+  },
+  "boromir": {
+   "carta": 504,
+   "nome": "Boromir",
+   "partenza": "minas_tirith",
+   "colore": "blu",
+   "abilita": [
+    {
+     "nome": "Erede del Sovrintendente",
+     "testo": "Quando Boromir arruola in un luogo di Gondor non spende Amicizia."
+    },
+    {
+     "nome": "Eroe di Gondor",
+     "testo": "Quando Boromir conquista spende 1 Valore in meno."
+    },
+    {
+     "nome": "Tentato dal potere",
+     "testo": "Quando Boromir partecipa alla Compagnia non si possono dare (né prendere da lui) carte Resistenza."
+    }
+   ]
+  },
+  "eomer": {
+   "carta": 505,
+   "nome": "Éomer",
+   "partenza": "eastemnet",
+   "colore": "marrone",
+   "abilita": [
+    {
+     "nome": "Cavaliere di Rohan",
+     "testo": "Una volta per turno, quando Éomer fa le sue azioni, può fare 1 viaggio in più gratis."
+    },
+    {
+     "nome": "Maresciallo del Mark",
+     "testo": "Se Éomer e almeno una truppa dei Rohirrim sono presenti a una battaglia, ignorate la perdita di 1 truppa amica."
+    }
+   ]
+  },
+  "eowyn": {
+   "carta": 508,
+   "nome": "Éowyn",
+   "partenza": "edoras",
+   "colore": "bianco",
+   "abilita": [
+    {
+     "nome": "Fanciulla dello scudo di Rohan",
+     "testo": "Quando Éowyn arruola in un luogo dei Rohirrim non spende Amicizia."
+    },
+    {
+     "nome": "Nessun uomo vivente io sono!",
+     "testo": "Se Éowyn è presente a una battaglia, ogni risultato Nazgûl! toglie dal gioco 1 Nazgûl della sua regione (e non si perdono le 2 truppe amiche)."
+    }
+   ]
+  },
+  "faramir": {
+   "carta": 509,
+   "nome": "Faramir",
+   "partenza": "minas_tirith",
+   "colore": "azzurro",
+   "abilita": [
+    {
+     "nome": "Imboscata",
+     "testo": "Quando Faramir viaggia con almeno una truppa amica può fare un attacco gratis nel luogo d'arrivo; per ogni Furtività spesa cambiate 1 dado di battaglia in Rotta."
+    },
+    {
+     "nome": "Furtivo",
+     "testo": "Quando Faramir percorre un percorso speciale spende 1 simbolo in meno."
+    },
+    {
+     "nome": "Saggezza degli Eldar",
+     "testo": "Azione (una volta per turno): se Faramir è in un rifugio, prende dagli scarti dei giocatori una carta Resistenza della regione in cui si trova."
+    }
+   ]
+  },
+  "frodo": {
+   "carta": 502,
+   "nome": "Frodo e Sam",
+   "partenza": "the_shire",
+   "colore": "giallo",
+   "abilita": [
+    {
+     "nome": "Il viaggio di Frodo",
+     "testo": "Quando Frodo viaggia o partecipa a un viaggio, il giocatore di turno spende 1 Furtività oppure tira una ricerca nel luogo d'arrivo di Frodo."
+    },
+    {
+     "nome": "Il sostegno di Elrond",
+     "testo": "Una volta per turno, quando Frodo prepara in un rifugio della regione della carta, prende anche 1 segnalino Amicizia."
+    },
+    {
+     "nome": "L'aiuto di Sam",
+     "testo": "Quando si tira una ricerca, potete spendere Amicizia per ignorare altrettanti risultati Stanchezza o Scoperto."
+    },
+    {
+     "nome": "Mettere l'Anello",
+     "testo": "Prima di tirare una ricerca potete ignorare tutte le truppe dell'Ombra presenti: perdete 1 speranza e spostate l'Occhio nella regione di Frodo."
+    }
+   ]
+  },
+  "galadriel": {
+   "carta": 506,
+   "nome": "Galadriel",
+   "partenza": "lorien",
+   "colore": "verde scuro",
+   "abilita": [
+    {
+     "nome": "Signora della Luce",
+     "testo": "In qualsiasi momento (non è un'azione): se è in un rifugio, spende 1 Furtività per pescare a caso uno degli eventi non usati nella preparazione."
+    },
+    {
+     "nome": "Lo Specchio di Galadriel",
+     "testo": "Azione: guarda le prime 4 carte del mazzo dei giocatori e le rimette in cima nell'ordine che vuole."
+    },
+    {
+     "nome": "Nenya",
+     "testo": "Se Galadriel e almeno una truppa elfica sono presenti a una battaglia, potete ritirare 1 dado di battaglia."
+    }
+   ]
+  },
+  "gandalf": {
+   "carta": 510,
+   "nome": "Gandalf",
+   "partenza": "tharbad",
+   "colore": "grigio",
+   "abilita": [
+    {
+     "nome": "Mithrandir",
+     "testo": "Quando Gandalf arruola aggiunge fino a 2 truppe nel suo luogo invece di 1."
+    },
+    {
+     "nome": "Ombromanto",
+     "testo": "Quando Gandalf viaggia da solo può spostarsi di 2 luoghi, ma non su percorsi speciali."
+    },
+    {
+     "nome": "Luce e fiamma",
+     "testo": "Se Gandalf è presente a una battaglia, potete spendere Valore per cambiare altrettanti dadi di battaglia nel risultato che volete."
+    }
+   ],
+   "bianco": {
+    "carta": 4500,
+    "nome": "Gandalf il Bianco",
+    "testo": "Luce e fiamma: spendendo 1 Valore potete cambiare quanti dadi di battaglia volete."
+   }
+  },
+  "gimli": {
+   "carta": 512,
+   "nome": "Gimli",
+   "partenza": "erebor",
+   "colore": "grigio scuro",
+   "abilita": [
+    {
+     "nome": "Figlio di Glóin",
+     "testo": "Quando Gimli arruola in un luogo dei Nani non spende Amicizia."
+    },
+    {
+     "nome": "Arte dei Nani",
+     "testo": "Azione (una volta per turno): prende 1 segnalino Valore dalla riserva."
+    }
+   ]
+  },
+  "gollum": {
+   "carta": 513,
+   "nome": "Gollum",
+   "partenza": "moria",
+   "colore": "nero",
+   "abilita": [
+    {
+     "nome": "Limiti",
+     "testo": "Gollum non può arruolare, attaccare né conquistare, e quando viaggia non porta con sé truppe amiche."
+    },
+    {
+     "nome": "Ci ha ingannati!",
+     "testo": "Quando Gollum, Frodo o truppe amiche entrano o vengono aggiunti in un luogo, se lì ci sono tutti e tre perdete 1 speranza."
+    },
+    {
+     "nome": "Guida",
+     "testo": "Se Gollum è presente quando si tira una ricerca, tirate 3 dadi in meno (si possono comunque tirare fino a 7 dadi)."
+    },
+    {
+     "nome": "Strisciante",
+     "testo": "Azione (una volta per turno): prende dagli scarti dei giocatori una carta Furtività qualsiasi."
+    },
+    {
+     "nome": "Astuto",
+     "testo": "Gollum può preparare anche fuori da un rifugio. Quando prepara può spostare 1 truppa dell'Ombra presente in un luogo vicino (senza battaglia)."
+    }
+   ]
+  },
+  "legolas": {
+   "carta": 514,
+   "nome": "Legolas",
+   "partenza": "woodland_realm",
+   "colore": "verde chiaro",
+   "abilita": [
+    {
+     "nome": "Passo silenzioso",
+     "testo": "Azione (una volta per turno): prende 1 segnalino Furtività dalla riserva."
+    },
+    {
+     "nome": "Tiro sicuro",
+     "testo": "In qualsiasi momento (non è un'azione): spende 1 Furtività per togliere 1 truppa dell'Ombra dal suo luogo o da un luogo vicino, oppure per rimandare a Mordor 1 Nazgûl della sua regione."
+    },
+    {
+     "nome": "Vista acuta",
+     "testo": "Una volta per turno, quando Legolas prepara, guarda la prima carta del mazzo dell'Ombra."
+    }
+   ]
+  },
+  "pipino": {
+   "carta": 503,
+   "nome": "Merry e Pipino",
+   "partenza": "the_shire",
+   "colore": "arancio",
+   "abilita": [
+    {
+     "nome": "Amico leale",
+     "testo": "Azione (una volta per turno): prendono 1 segnalino Amicizia dalla riserva."
+    },
+    {
+     "nome": "Distrarre",
+     "testo": "In qualsiasi momento (non è un'azione): se nella loro regione ci sono meno di 4 Nazgûl, spendono 1 Amicizia per attirare lì fino a 2 Nazgûl."
+    },
+    {
+     "nome": "Cantaci una canzone!",
+     "testo": "Azione: se sono nel luogo di Frodo, spendono 3 Amicizia per guadagnare 2 speranze."
+    }
+   ]
+  }
+ },
+ "obiettivi": [
+  {
+   "id": 2000,
+   "codice": "benedizione",
+   "nome": "Ottenere la benedizione degli Elfi",
+   "richiede": "",
+   "primo": true,
+   "preparazione": "Preparazione: 3 truppe elfiche su questa carta (non si usano finché l'obiettivo non è completato).",
+   "condizione": "Come azione, un personaggio a Gran Burrone spende 3 Amicizia mentre c'è almeno un altro personaggio.",
+   "effetto": "Le truppe della carta vanno nella riserva; ogni giocatore con un personaggio a Gran Burrone prende 1 Amicizia; +1 speranza."
+  },
+  {
+   "id": 2001,
+   "codice": "saruman",
+   "nome": "«Saruman, il tuo bastone è spezzato»",
+   "richiede": "",
+   "primo": true,
+   "preparazione": "Preparazione: 2 truppe dell'Ombra in più a Isengard.",
+   "condizione": "Isengard è un rifugio e il Rohan è libero da truppe e fortezze dell'Ombra.",
+   "effetto": "Il giocatore di turno prende 1 Resistenza dalla riserva."
+  },
+  {
+   "id": 2002,
+   "codice": "sauron",
+   "nome": "Sfidare Sauron",
+   "richiede": "",
+   "primo": true,
+   "preparazione": "",
+   "condizione": "Un personaggio spende un'azione nell'Ithilien del Nord quando ci sono almeno 2 truppe dei Rohirrim, 2 elfiche e 3 di Gondor.",
+   "effetto": "L'Occhio va nell'Ithilien e tutte le truppe dell'Ombra di Mordor vanno a Udûn."
+  },
+  {
+   "id": 2003,
+   "codice": "anello",
+   "nome": "Distruggere l'Unico Anello",
+   "richiede": "frodo",
+   "primo": false,
+   "preparazione": "Preparazione: si usano Frodo e Sam.",
+   "condizione": "Completati tutti gli altri obiettivi, come azione Frodo spende 5 Resistenza al Monte Fato e sopravvive a una ricerca finale con 1 dado in più per ogni speranza mancante (al massimo 7 dadi).",
+   "effetto": "Sauron è sconfitto: vincete tutti!"
+  },
+  {
+   "id": 4200,
+   "codice": "boromir",
+   "nome": "Boromir riscatta il suo onore",
+   "richiede": "boromir",
+   "primo": false,
+   "preparazione": "Preparazione: si usa Boromir.",
+   "condizione": "Boromir e almeno un altro personaggio sono in un luogo dove una battaglia toglie l'ultima truppa amica.",
+   "effetto": "Togliete fino a 2 truppe dell'Ombra dal luogo di Boromir; Boromir esce dal gioco. Al prossimo obiettivo completato un personaggio a caso lo sostituisce."
+  },
+  {
+   "id": 4201,
+   "codice": "pozzi",
+   "nome": "Mettere a nudo le fosse",
+   "richiede": "galadriel",
+   "primo": false,
+   "preparazione": "Preparazione: si usa Galadriel; 1 truppa dell'Ombra in più a Dol Guldur.",
+   "condizione": "Dol Guldur è un rifugio e ci sono almeno 3 truppe elfiche. Galadriel può conquistare Dol Guldur spendendo 3 Valore oppure 2 Resistenza e 1 Valore.",
+   "effetto": "Se Galadriel è a Dol Guldur, +1 speranza."
+  },
+  {
+   "id": 4202,
+   "codice": "balin",
+   "nome": "Vendicare Balin!",
+   "richiede": "",
+   "primo": false,
+   "preparazione": "",
+   "condizione": "Moria è un rifugio e ci sono almeno 2 truppe dei Nani.",
+   "effetto": "Spostate a Moria le truppe dei Nani che volete; se ce ne sono almeno 4, il giocatore di turno prende 2 Valore."
+  },
+  {
+   "id": 4203,
+   "codice": "raminghi",
+   "nome": "I Raminghi proteggono l'Eriador",
+   "richiede": "",
+   "primo": false,
+   "preparazione": "",
+   "condizione": "L'Eriador è libero da truppe e fortezze dell'Ombra e c'è almeno una truppa amica in ogni suo luogo.",
+   "effetto": "Spostate le truppe amiche dell'Eriador che volete ai Colli Ventosi o a Tharbad; +1 speranza."
+  },
+  {
+   "id": 4204,
+   "codice": "freca",
+   "nome": "Sistemare gli eredi di Freca",
+   "richiede": "",
+   "primo": false,
+   "preparazione": "",
+   "condizione": "Dunland è un rifugio e ci sono almeno 2 truppe dei Rohirrim. Si può conquistare Dunland (anche se non è una fortezza) spendendo 3 Valore oppure 3 Amicizia.",
+   "effetto": "Potete aggiungere 1 truppa dei Rohirrim a Dunland."
+  },
+  {
+   "id": 4205,
+   "codice": "umbar",
+   "nome": "Sottomettere Umbar",
+   "richiede": "",
+   "primo": false,
+   "preparazione": "",
+   "condizione": "Umbar è un rifugio, oppure c'è una truppa amica in ogni luogo dell'Haradwaith e nessuna truppa dell'Ombra.",
+   "effetto": "Spostate a Pelargir le truppe amiche dell'Haradwaith che volete."
+  },
+  {
+   "id": 4206,
+   "codice": "nani",
+   "nome": "Liberare dall'Ombra le terre dei Nani",
+   "richiede": "gimli",
+   "primo": false,
+   "preparazione": "Preparazione: si usa Gimli; 1 truppa dell'Ombra ai Monti Azzurri.",
+   "condizione": "Nessuna truppa dell'Ombra ai Monti Azzurri, almeno 4 truppe dei Nani lì, e nessuna truppa o fortezza dell'Ombra nel Dale.",
+   "effetto": "Il giocatore di turno prende 2 Valore; +1 speranza."
+  },
+  {
+   "id": 4207,
+   "codice": "eored",
+   "nome": "Cavalcare con l'éored",
+   "richiede": "eomer",
+   "primo": false,
+   "preparazione": "Preparazione: si usa Éomer.",
+   "condizione": "Quando Éomer attacca con i Rohirrim e toglie truppe dell'Ombra, ne mette 1 sullo spazio della sua regione (Rohan e regioni vicine, una per spazio). Completato con 4 truppe sulla carta.",
+   "effetto": "Le truppe tornano nella riserva; +1 speranza."
+  },
+  {
+   "id": 4208,
+   "codice": "balrog",
+   "nome": "Affrontare il Balrog",
+   "richiede": "gandalf",
+   "primo": false,
+   "preparazione": "Preparazione: si usa Gandalf.",
+   "condizione": "Gandalf spende un'azione a Moria e tira 3 dadi di battaglia (Travolti: -1 speranza, Scambio: -2, Nazgûl!: -3, Rotta: niente). Ogni Resistenza ignora un dado, ogni Valore evita 1 speranza persa.",
+   "effetto": "Gandalf esce dalla mappa: alla prossima carta Il cielo si oscura torna a Lórien come Gandalf il Bianco e +2 speranze."
+  },
+  {
+   "id": 4209,
+   "codice": "bosco_atro",
+   "nome": "Portare la luce nel Bosco Atro",
+   "richiede": "",
+   "primo": false,
+   "preparazione": "Preparazione: 1 truppa dell'Ombra nella Vecchia Via della Foresta e nel Bosco Atro Meridionale.",
+   "condizione": "Il Bosco Atro è libero da truppe dell'Ombra (non serve conquistare Dol Guldur) e c'è una truppa elfica in ogni suo luogo.",
+   "effetto": "Scegliete un luogo del Bosco Atro e spostateci le truppe elfiche del Bosco Atro che volete; +1 speranza."
+  },
+  {
+   "id": 4210,
+   "codice": "theoden",
+   "nome": "Liberare la mente di Théoden",
+   "richiede": "",
+   "primo": false,
+   "preparazione": "Preparazione: 4 truppe dei Rohirrim su questa carta.",
+   "condizione": "Come azione, un personaggio a Edoras spende 2 Amicizia e 1 Resistenza mentre c'è almeno un altro personaggio.",
+   "effetto": "Le truppe della carta vanno nella riserva; aggiungete fino a 2 truppe dei Rohirrim a Edoras; +1 speranza."
+  },
+  {
+   "id": 4211,
+   "codice": "morgul",
+   "nome": "Infiltrarsi a Minas Morgul",
+   "richiede": "",
+   "primo": false,
+   "preparazione": "Preparazione: 1 truppa dell'Ombra in più a Minas Morgul.",
+   "condizione": "Minas Morgul è un rifugio. Si può conquistare spendendo 3 Valore oppure 3 Furtività.",
+   "effetto": "Il giocatore di turno prende 2 Furtività; guardate le prime 2 carte dell'Ombra e togliete dal gioco quelle che volete."
+  },
+  {
+   "id": 4212,
+   "codice": "eowyn",
+   "nome": "«Non più fanciulla dello scudo»",
+   "richiede": "eowyn",
+   "primo": false,
+   "preparazione": "Preparazione: si usa Éowyn. Se Éowyn è presente a una battaglia può spendere 2 Valore per cambiare 1 dado in Nazgûl!.",
+   "condizione": "Éowyn ha distrutto almeno 2 Nazgûl e il Rohan è libero da truppe e fortezze dell'Ombra.",
+   "effetto": "+1 speranza."
+  },
+  {
+   "id": 4213,
+   "codice": "hobbit",
+   "nome": "Gli Hobbit giurano fedeltà",
+   "richiede": "pipino",
+   "primo": false,
+   "preparazione": "Preparazione: si usano Merry e Pipino.",
+   "condizione": "In un rifugio Merry e Pipino possono scartare con un'azione una carta Amicizia della loro regione per mettere 1 Amicizia sul simbolo del rifugio (Elfi, Nani, Rohirrim, Gondor). Completato con 2 simboli coperti.",
+   "effetto": "Merry e Pipino prendono i 2 segnalini Amicizia; +1 speranza."
+  },
+  {
+   "id": 4214,
+   "codice": "shelob",
+   "nome": "La tana di Shelob",
+   "richiede": "gollum",
+   "primo": false,
+   "preparazione": "Preparazione: si usa Gollum (non può averlo chi ha Frodo).",
+   "condizione": "Sam spende un'azione a Minas Morgul con Gollum presente e tira 3 dadi di battaglia (Travolti: -1 speranza, Scambio: -2, Nazgûl!: -3, Rotta: niente); si perde anche 1 speranza per ogni Resistenza del giocatore di Gollum. Ogni Resistenza ignora un dado, ogni Valore evita 1 speranza persa.",
+   "effetto": "Se Frodo non ha perso speranza può fare un'azione in più in questo turno."
+  },
+  {
+   "id": 4215,
+   "codice": "anduin",
+   "nome": "Assicurare il passaggio dell'Anduin",
+   "richiede": "faramir",
+   "primo": false,
+   "preparazione": "Preparazione: si usa Faramir; 1 truppa dell'Ombra a Osgiliath.",
+   "condizione": "Osgiliath è un rifugio. Faramir può conquistarla spendendo 3 Valore oppure 2 Resistenza e 1 Furtività.",
+   "effetto": "Potete aggiungere 1 truppa di Gondor a Osgiliath."
+  },
+  {
+   "id": 4216,
+   "codice": "denethor",
+   "nome": "Spodestare Denethor",
+   "richiede": "",
+   "primo": false,
+   "preparazione": "Preparazione: 4 truppe di Gondor su questa carta.",
+   "condizione": "Come azione, un personaggio a Minas Tirith spende 2 Furtività, 1 Amicizia e 1 Valore mentre c'è almeno un altro personaggio.",
+   "effetto": "Le truppe della carta vanno nella riserva; aggiungete fino a 3 truppe di Gondor a Minas Tirith; +1 speranza."
+  },
+  {
+   "id": 4217,
+   "codice": "sei",
+   "nome": "«Fanno sei!»",
+   "richiede": "legolas",
+   "primo": false,
+   "preparazione": "Preparazione: si usa Legolas.",
+   "condizione": "Quando Legolas toglie una truppa dell'Ombra con Tiro sicuro, la mette su questa carta. Completato con 6 truppe sulla carta.",
+   "effetto": "Le truppe tornano nella riserva; +1 speranza."
+  },
+  {
+   "id": 4218,
+   "codice": "stendardo",
+   "nome": "Arwen spiega lo stendardo",
+   "richiede": "arwen",
+   "primo": false,
+   "preparazione": "Preparazione: si usa Arwen.",
+   "condizione": "Arwen spende un'azione e 1 Amicizia a Minas Tirith, che è un rifugio, con almeno una truppa di Gondor, una dei Rohirrim, una elfica e una dei Nani.",
+   "effetto": "+1 speranza."
+  },
+  {
+   "id": 4219,
+   "codice": "spergiuri",
+   "nome": "Gli Spergiuri adempiono al loro dovere",
+   "richiede": "aragorn",
+   "primo": false,
+   "preparazione": "Preparazione: si usa Aragorn. Una volta per partita Aragorn viaggia da Edoras a Erech: aggiungete 2 truppe dell'Ombra a Pelargir, spostate lì tutte quelle di Umbar e aggiungete fino a 3 truppe di Gondor a Erech.",
+   "condizione": "Aragorn ha fatto quel viaggio e il Gondor è libero da truppe e fortezze dell'Ombra.",
+   "effetto": "+1 speranza."
+  }
+ ],
+ "scenari": [
+  {
+   "codice": "primo",
+   "nome": "La vostra prima partita",
+   "obiettivi": [
+    "benedizione",
+    "saruman",
+    "sauron",
+    "anello"
+   ],
+   "difficolta": "introduttivo"
+  },
+  {
+   "codice": "oscurita",
+   "nome": "Tenere a bada l'oscurità",
+   "obiettivi": [
+    "balrog",
+    "spergiuri",
+    "umbar",
+    "anello"
+   ],
+   "difficolta": "standard"
+  },
+  {
+   "codice": "rohan",
+   "nome": "I Cavalieri di Rohan",
+   "obiettivi": [
+    "eored",
+    "theoden",
+    "freca",
+    "eowyn",
+    "anello"
+   ],
+   "difficolta": "eroico"
+  },
+  {
+   "codice": "elfi",
+   "nome": "Il destino degli Elfi",
+   "obiettivi": [
+    "sei",
+    "stendardo",
+    "pozzi",
+    "bosco_atro",
+    "anello"
+   ],
+   "difficolta": "eroico"
+  },
+  {
+   "codice": "sovrintendente",
+   "nome": "I figli del Sovrintendente",
+   "obiettivi": [
+    "boromir",
+    "anduin",
+    "denethor",
+    "morgul",
+    "anello"
+   ],
+   "difficolta": "epico"
+  },
+  {
+   "codice": "piccoli",
+   "nome": "Nessun eroe è troppo piccolo",
+   "obiettivi": [
+    "balin",
+    "nani",
+    "raminghi",
+    "hobbit",
+    "shelob",
+    "anello"
+   ],
+   "difficolta": "leggendario"
+  }
+ ],
+ "difficolta": {
+  "introduttivo": {
+   "nome": "Introduttiva",
+   "cieli": 4,
+   "obiettivi": 4
+  },
+  "standard": {
+   "nome": "Standard",
+   "cieli": 5,
+   "obiettivi": 4
+  },
+  "eroico": {
+   "nome": "Eroica",
+   "cieli": 5,
+   "obiettivi": 5
+  },
+  "epico": {
+   "nome": "Epica",
+   "cieli": 6,
+   "obiettivi": 5
+  },
+  "leggendario": {
+   "nome": "Leggendaria",
+   "cieli": 6,
+   "obiettivi": 6
+  }
+ },
+ "nazgul_inizio": {
+  "eriador": 2,
+  "rhudaur": 1,
+  "misty_mountains": 1,
+  "gondor": 1,
+  "mordor": 4
+ },
+ "truppe_inizio": {
+  "nani": {
+   "ered_luin": 1,
+   "erebor": 1,
+   "iron_hills": 1
+  },
+  "elfi": {
+   "grey_havens": 1,
+   "rivendell": 1,
+   "lorien": 1,
+   "woodland_realm": 1
+  },
+  "rohirrim": {
+   "helms_deep": 1,
+   "edoras": 1,
+   "eastemnet": 1
+  },
+  "gondor": {
+   "minas_tirith": 2,
+   "dol_amroth": 2,
+   "pelargir": 1
+  }
+ },
+ "ombra_inizio": {
+  "dunland": 1,
+  "isengard": 1,
+  "moria": 2,
+  "dol_guldur": 1,
+  "rhun": 3,
+  "minas_morgul": 2,
+  "barad_dur": 2,
+  "nurn": 3,
+  "umbar": 1,
+  "near_harad": 2
+ },
+ "riserva": {
+  "nani": 8,
+  "elfi": 9,
+  "rohirrim": 8,
+  "gondor": 10,
+  "ombra": 48,
+  "simboli": 9
+ }
+}
