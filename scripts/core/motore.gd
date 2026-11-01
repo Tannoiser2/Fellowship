@@ -1710,13 +1710,13 @@ func descrivi_ombra(id: int) -> String:
 	if c.has("speciale"):
 		return c["nome"]
 	var li: Dictionary = Dati.linea(c["linea"])
-	return "%s → %s / +1 a %s" % [Dati.nome(li["percorso"][0]), Dati.nome(li["percorso"][-1]), Dati.nome(c["rinforzo"])]
+	return "da %s a %s / +1 a %s" % [Dati.nome(li["percorso"][0]), Dati.nome(li["percorso"][-1]), Dati.nome(c["rinforzo"])]
 
 
 func avanzata(lid: String) -> void:
 	var li: Dictionary = Dati.linea(lid)
 	var p: Array = li["percorso"]
-	_log("AVANZATA lungo la linea %s → %s." % [Dati.nome(p[0]), Dati.nome(p[-1])])
+	_log("AVANZATA lungo la linea da %s a %s." % [Dati.nome(p[0]), Dati.nome(p[-1])])
 	var mosse := false
 	for k in range(p.size() - 2, -1, -1):
 		var l: String = p[k]
@@ -2411,6 +2411,28 @@ func _distruggi_anello() -> void:
 	var ok := await ricerca("ricerca finale al Monte Fato", true, mancanti)
 	if ok and speranza > 0 and esito == "":
 		await completa("anello")
+
+
+# =====================================================================================
+# COPIA (per lo sguardo avanti dell'IA)
+# =====================================================================================
+
+const _COPIA := ["solo", "difficolta", "giocatori", "pg", "stato", "nazgul", "occhio", "speranza", "minaccia",
+	"riserva_truppe", "riserva_ombra", "riserva_simboli", "mazzo", "scarti", "eventi_inutilizzati", "mazzo_ombra",
+	"scarti_ombra", "risolte", "obiettivi", "su_carta", "eored", "hobbit", "nazgul_eowyn", "aragorn_erech",
+	"gandalf_attesa", "boromir_sostituire", "turno_di", "turno", "solo_indice", "esito", "fase", "attivo",
+	"azioni_rimaste", "usi", "lembas", "azione_extra", "ultima_ombra"]
+
+
+## Una copia indipendente dello stato, con un generatore casuale diverso (le carte coperte restano coperte
+## solo per convenzione: l'IA non le guarda, perché le simulazioni non pescano carte).
+func copia(seme_copia: int) -> Motore:
+	var c := Motore.new()
+	for k in _COPIA:
+		var v = get(k)
+		c.set(k, v.duplicate(true) if (v is Dictionary or v is Array) else v)
+	c.rng.seed = seme_copia
+	return c
 
 
 # =====================================================================================

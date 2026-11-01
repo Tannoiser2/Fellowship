@@ -6,10 +6,11 @@ func _init() -> void:
 	var n := int(args[0]) if args.size() > 0 else 10
 	var ng := int(args[1]) if args.size() > 1 else 0
 	var diff: String = args[2] if args.size() > 2 else "introduttivo"
+	var start := int(args[3]) if args.size() > 3 else 0
 	var vinte := 0
 	var turni := 0
 	var cause := {}
-	for k in n:
+	for k in range(start, start + n):
 		var m := Motore.new()
 		root.add_child(m)
 		var gg: Array = []

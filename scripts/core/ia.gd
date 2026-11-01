@@ -8,6 +8,9 @@ extends RefCounted
 ## 5 Resistenza, Frodo entra a Mordor per la strada più economica in Furtività.
 
 var pausa := 0.35
+## semplice: scelte rapide, senza simulazioni (si usa dentro le simulazioni stesse)
+var semplice := false
+var guarda_avanti := true
 
 
 func decide(m: Motore, posto: int, req: Dictionary):
@@ -107,6 +110,34 @@ func _dist(a: String) -> Dictionary:
 	return d
 
 
+## Dijkstra dal luogo di Frodo: ogni passo costa 1 più la speranza attesa persa nella ricerca all'arrivo.
+func _percorso_sicuro(m: Motore, da: String) -> Dictionary:
+	var d := {da: 0.0}
+	var aperti := [da]
+	var chiusi := {}
+	while not aperti.is_empty():
+		var best := 0
+		for k in aperti.size():
+			if d[aperti[k]] < d[aperti[best]]:
+				best = k
+		var x: String = aperti.pop_at(best)
+		chiusi[x] = true
+		for y in Dati.vicini(x):
+			if chiusi.has(y):
+				continue
+			var e: Dictionary = Dati.collegamento(x, y)
+			var w := 1.0
+			for s in e["costo"]:
+				w += float(e["costo"][s]) * 1.2
+			var dadi := float(mini(7, m.nazgul[Dati.regione(y)] + m.stato[y]["ombra"]))
+			w += dadi * (0.34 + (0.0 if m.e_rifugio(y) else 0.17)) * 1.5
+			if not d.has(y) or d[x] + w < d[y]:
+				d[y] = d[x] + w
+				if not aperti.has(y):
+					aperti.append(y)
+	return d
+
+
 func _fase_finale(m: Motore) -> bool:
 	for o in m.obiettivi:
 		if o["codice"] != "anello" and not o["fatto"]:
@@ -128,8 +159,8 @@ func _piano(m: Motore, op: Array) -> int:
 		var v: float = _utilita_pg(m, p) * (1.0 if n == 4 else 0.25)
 		# Frodo: 4 azioni solo nella fase finale
 		if p == "frodo" and n == 4 and not _fase_finale(m):
-			var pf := _pericolo(m, m.regione_frodo())
-			v += pf * 2.0 - 5.0
+			var pf := _pericolo(m, m.regione_frodo()) + float(m.stato[m.luogo_frodo()]["ombra"])
+			v += pf * 2.5 - 6.0
 		if v > bv:
 			bv = v
 			best = k
@@ -188,33 +219,39 @@ func _bersagli(m: Motore, p: String) -> Array:
 			var v: float = 10.0 - _pericolo(m, reg) * 1.6 - float(dm.get(h, 20)) * (0.45 if _fase_finale(m) else 0.2)
 			r.append({"luogo": h, "v": max(0.5, v)})
 		return r
-	# rifugi minacciati
+	var mia_truppe: int = m.amiche(m.pg[p]["luogo"])
 	for l in m.stato:
 		var o: int = m.stato[l]["ombra"]
+		var am := m.amiche(l)
+		# rifugi minacciati: arruolare o portare truppe
 		if m.e_rifugio(l):
 			var vic := 0
 			for v in Dati.vicini(l):
 				vic += int(m.stato[v]["ombra"])
-			var pericolo: float = o * 2.0 + vic * 0.6 - m.amiche(l) * 0.8
+			var pericolo: float = o * 2.0 + vic * 0.6 - am * 0.8
 			if pericolo > 0.5:
-				r.append({"luogo": l, "v": 2.0 + pericolo})
-		elif o > 0 and m.amiche(l) > 0 and p != "gollum":
-			r.append({"luogo": l, "v": 1.5 + o * 0.5})
-		# fortezze da conquistare
-		if m.e_fortezza(l) and p != "gollum":
-			var v: float = 2.5 if o <= 1 else 1.0
+				r.append({"luogo": l, "v": 2.5 + pericolo})
+		# battaglie possibili: truppe amiche e dell'Ombra nello stesso luogo
+		if o > 0 and am > 0 and p != "gollum":
+			r.append({"luogo": l, "v": 3.0 + o * 0.6 + (2.0 if m.e_rifugio(l) else 0.0)})
+		# fortezze da conquistare: solo se ci si arriva con truppe o ce ne sono già
+		if m.e_fortezza(l) and p != "gollum" and o == 0 and (am > 0 or mia_truppe > 1):
+			var v := 4.0
 			if l in ["isengard", "moria", "dol_guldur", "umbar", "minas_morgul"]:
-				v += 1.5
+				v += 2.0
 			r.append({"luogo": l, "v": v})
+		# luoghi d'arruolamento vicini all'Ombra
+		if Dati.luogo(l)["arruolo"] != "" and p != "gollum" and not m.e_fortezza(l):
+			var vic2 := 0
+			for v in Dati.vicini(l):
+				vic2 += int(m.stato[v]["ombra"])
+			if vic2 + o > 0:
+				r.append({"luogo": l, "v": 1.5 + (vic2 + o) * 0.4})
 	# attaccare lontano da Frodo per distogliere l'Occhio
 	if m.occhio == m.regione_frodo() and p != "gollum":
 		for l in m.stato:
-			if m.stato[l]["ombra"] > 0 and Dati.regione(l) != m.regione_frodo():
-				var vicine := m.amiche(l)
-				for v in Dati.vicini(l):
-					vicine += m.amiche(v)
-				if vicine > 0:
-					r.append({"luogo": l, "v": 6.0})
+			if m.stato[l]["ombra"] > 0 and Dati.regione(l) != m.regione_frodo() and m.amiche(l) > 0:
+				r.append({"luogo": l, "v": 7.0})
 	# obiettivi
 	for ob in m.obiettivi:
 		if ob["fatto"]:
@@ -276,10 +313,147 @@ func _bersagli(m: Motore, p: String) -> Array:
 
 func _azione(m: Motore, req: Dictionary, op: Array) -> int:
 	var p: String = req.get("pg", m.attivo)
+	if semplice or not guarda_avanti:
+		return _azione_euristica(m, p, op)
+	# sguardo avanti: prova ogni azione su copie della partita e valuta la situazione che ne esce
+	var base := valuta(m)
+	var best := op.size() - 1
+	var bv := -1e18
+	for k in op.size():
+		var o: Dictionary = op[k]
+		var v := 0.0
+		if o["chiave"] == "fine":
+			v = base - (0.3 if m.azioni_rimaste > 0 else 0.0)
+		elif o["chiave"] in ["specchio"]:
+			v = base - 2.0
+		else:
+			var campioni := 3 if o["chiave"] in ["attacca", "ob_balrog", "ob_shelob", "ob_anello"] or (o["chiave"] == "viaggio" and _con_frodo(m, p)) else 1
+			var tot := 0.0
+			for c in campioni:
+				tot += _prova(m, p, o, 7919 * (k + 1) + c * 104729 + m.turno * 31)
+			v = tot / campioni
+			v += _valore(m, p, o) * 0.15
+		if v > bv:
+			bv = v
+			best = k
+	return best
+
+
+func _con_frodo(m: Motore, p: String) -> bool:
+	return p == "frodo" or (m.in_gioco("frodo") and m.pg["frodo"]["luogo"] == m.pg[p]["luogo"])
+
+
+## Esegue l'azione su una copia (con scelte interne euristiche) e valuta il risultato.
+func _prova(m: Motore, p: String, o: Dictionary, seme: int) -> float:
+	var c := m.copia(seme)
+	var ia2 := IA.new()
+	ia2.semplice = true
+	ia2.pausa = 0.0
+	var ctl := ControlloIA.new()
+	ctl.ia = ia2
+	for i in c.giocatori.size():
+		c.controllori.append(ctl)
+	c._esegui_azione(p, o)
+	c._controlla_obiettivi()
+	var v := valuta(c)
+	c.free()
+	return v
+
+
+## Valutazione della situazione: speranza, pericolo per Frodo, rifugi minacciati, truppe dell'Ombra, obiettivi.
+func valuta(m: Motore) -> float:
+	if m.esito == "vittoria":
+		return 1e9
+	if m.esito == "sconfitta" or m.speranza <= 0:
+		return -1e9 + m.speranza
+	var v: float = float(m.speranza) * 14.0
+	# obiettivi
+	var finale := true
+	for o in m.obiettivi:
+		if o["fatto"]:
+			v += 40.0
+		elif o["codice"] != "anello":
+			finale = false
+	# Frodo
+	if m.in_gioco("frodo"):
+		var l := m.luogo_frodo()
+		var r := Dati.regione(l)
+		var dadi := float(mini(7, m.nazgul[r] + m.stato[l]["ombra"]))
+		var perdita := dadi * (0.34 + (0.0 if m.e_rifugio(l) else 0.17))
+		var occhio := m.occhio == r
+		v -= perdita * (9.0 if occhio else 4.0)
+		if occhio:
+			v -= 7.0 + float(m.valore_minaccia()) * 1.5
+		v -= float(m.nazgul[r]) * 1.5
+		# potenziale: costo del percorso più sicuro verso un rifugio tranquillo (ogni passo pesa quanto la
+		# ricerca che costerebbe), così Frodo esce in tempo dalle regioni dove i Nazgûl si radunano
+		if not finale:
+			var costi := _percorso_sicuro(m, l)
+			var pot := 1e9
+			for h in costi:
+				if not m.e_rifugio(h) or m.stato[h]["ombra"] > 0:
+					continue
+				var rh := Dati.regione(h)
+				var dz: float = float(m.nazgul[rh]) * 1.8 + (3.0 if m.occhio == rh else 0.0)
+				for rv in Dati.regioni_vicine(rh):
+					dz += float(m.nazgul[rv]) * 0.35
+				pot = minf(pot, dz + costi[h])
+			v -= pot * 3.0
+		var res := m.disponibili(m.posto_di("frodo"), "resistenza")
+		v += float(mini(res, 6)) * (3.0 if finale else 1.5)
+		v += float(mini(m.disponibili(m.posto_di("frodo"), "furtivita"), 4)) * 1.2
+		var dm: float = _dist("mount_doom").get(l, 30.0)
+		if finale:
+			v -= dm * (4.0 if res >= 5 else 1.0)
+		else:
+			v -= maxf(0.0, dm - 6.0) * 0.4
+	# rifugi
+	for l in m.stato:
+		var o: int = m.stato[l]["ombra"]
+		var am := m.amiche(l)
+		if m.e_rifugio(l):
+			var vic := 0
+			for x in Dati.vicini(l):
+				vic += int(m.stato[x]["ombra"])
+			var minaccia := float(o) * 2.2 + float(vic) * 0.7 - float(am) * 1.1
+			if minaccia > 0.0:
+				v -= minaccia * 4.0
+			if o > 0:
+				v -= 6.0
+		elif m.e_fortezza(l) and Dati.luogo(l)["tipo"] == "rifugio":
+			v -= 5.0
+		v -= float(o) * 1.1
+		if o > 0 and am > 0:
+			v -= float(mini(o, am)) * 0.5
+		v += float(mini(am, 4)) * 0.6
+	if m.riserva_ombra < 10:
+		v -= float(10 - m.riserva_ombra) * 3.0
+	# conquiste e fortezze liberate
+	for l in m.stato:
+		if m.stato[l]["liberata"]:
+			v += 6.0
+	# simboli in mano e segnalini
+	for i in m.giocatori.size():
+		for s in Dati.SIMBOLI:
+			v += float(m.giocatori[i]["gettoni"][s]) * 0.9
+		v += float(m.giocatori[i]["mano"].size()) * 0.5
+	# vicinanza dei personaggi agli obiettivi aperti
+	for p in m.pg:
+		if not m.in_gioco(p) or p == "frodo":
+			continue
+		var t := _obiettivo_pg(m, p)
+		var d: float = _dist(m.pg[p]["luogo"]).get(t["luogo"], 30.0)
+		v -= d * 0.25 * clampf(t["v"], 0.0, 4.0)
+	# progressi sulle carte obiettivo
+	v += float(m.su_carta.get("sei", 0)) * 4.0 + float(m.eored.size()) * 5.0 + float(m.hobbit.size()) * 8.0 + float(m.nazgul_eowyn) * 8.0
+	return v
+
+
+func _azione_euristica(m: Motore, p: String, op: Array) -> int:
 	var best := op.size() - 1
 	var bv := -1e9
 	for k in op.size():
-		var v: float = _valore(m, p, op[k])
+		var v := _valore(m, p, op[k])
 		if v > bv:
 			bv = v
 			best = k
@@ -291,7 +465,7 @@ func _valore(m: Motore, p: String, o: Dictionary) -> float:
 	var pos: int = m.posto_di(p)
 	match o["chiave"]:
 		"fine":
-			return 0.0
+			return -1.2 if m.azioni_rimaste > 0 else 0.0
 		"viaggio":
 			var t := _obiettivo_pg(m, p)
 			var dt := _dist(t["luogo"])
@@ -351,11 +525,13 @@ func _valore(m: Motore, p: String, o: Dictionary) -> float:
 			return v
 		"attacca":
 			var n: int = o["dadi"]
-			var v: float = 2.0 + m.stato[l]["ombra"] * 0.4 + n * 0.5
+			var v: float = 4.0 + m.stato[l]["ombra"] * 0.5 + n * 0.7
 			if m.e_rifugio(l):
 				v += 2.0
 			if m.occhio == m.regione_frodo() and Dati.regione(l) != m.regione_frodo():
-				v += 4.0
+				v += 6.0
+			if m.e_rifugio(l) and m.stato[l]["ombra"] >= m.amiche(l):
+				v += 3.0
 			if Dati.regione(l) == m.regione_frodo() and m.occhio != m.regione_frodo():
 				v -= 4.0
 			if m.nazgul[Dati.regione(l)] > 0 and not m.presente("eowyn", l):
