@@ -536,8 +536,8 @@ var _mat_pg: StandardMaterial3D
 const ALTEZZA_PG := {"frodo": 1.1, "pipino": 1.1, "gollum": 0.85, "eomer": 1.8, "gimli": 1.2}
 
 
-## Miniatura dipinta del personaggio (modello 3D con i colori nei vertici), su una basetta,
-## girata verso la camera. null se il modello non c'è.
+## Miniatura dipinta del personaggio (modello 3D con i colori nei vertici), su una basetta.
+## Sta ferma come una miniatura vera: guarda verso il lato dei giocatori. null se il modello non c'è.
 func _miniatura(chi: String, pos: Vector3, attivo: bool) -> Node3D:
 	if not _scene_pg.has(chi):
 		var path := "res://assets/modelli/pg_%s.glb" % chi
@@ -553,8 +553,6 @@ func _miniatura(chi: String, pos: Vector3, attivo: bool) -> Node3D:
 	var h: float = ALTEZZA_PG.get(chi.trim_suffix("_bianco"), 1.5) * (1.15 if attivo else 1.0)
 	var p := Node3D.new()
 	p.position = pos
-	p.set_meta("sagoma", true)
-	p.rotation.y = _rot.y
 	var n: Node3D = _scene_pg[chi].instantiate()
 	n.scale = Vector3.ONE * h
 	p.add_child(n)
