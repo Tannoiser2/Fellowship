@@ -242,6 +242,9 @@ func _bersagli(m: Motore, p: String) -> Array:
 			var v: float = 10.0 - _pericolo(m, reg) * 1.6 - float(dm.get(h, 20)) * (0.45 if _fase_finale(m) else 0.2)
 			r.append({"luogo": h, "v": max(0.5, v)})
 		return r
+	var ruolo: Dictionary = strategia(m).get("ruoli", {}).get(p, {})
+	if not ruolo.is_empty():
+		r.append({"luogo": ruolo["luogo"], "v": 14.0})
 	var mia_truppe: int = m.amiche(m.pg[p]["luogo"])
 	for l in m.stato:
 		var o: int = m.stato[l]["ombra"]
@@ -334,19 +337,25 @@ func _bersagli(m: Motore, p: String) -> Array:
 	return r
 
 
+## Turni interi simulati dopo quello in corso, e partite simulate per ogni azione candidata.
+var orizzonte := 1
+var campioni_rollout := 3
+var candidati_rollout := 4
+
+
 func _azione(m: Motore, req: Dictionary, op: Array) -> int:
 	var p: String = req.get("pg", m.attivo)
 	if semplice or not guarda_avanti:
 		return _azione_euristica(m, p, op)
-	# sguardo avanti: prova ogni azione su copie della partita e valuta la situazione che ne esce
+	# 1. sguardo breve: ogni azione su una copia, valutata subito
 	var base := valuta(m)
-	var best := op.size() - 1
-	var bv := -1e18
+	var punti: Array = []
 	for k in op.size():
 		var o: Dictionary = op[k]
 		var v := 0.0
 		if o["chiave"] == "fine":
-			v = base - (0.3 if m.azioni_rimaste > 0 else 0.0)
+			# passare non conviene quasi mai: ogni azione è gratis (Frodo invece a volte deve star fermo)
+			v = base - ((0.3 if p == "frodo" else 9.0) if m.azioni_rimaste > 0 else 0.0)
 		elif o["chiave"] in ["specchio"]:
 			v = base - 2.0
 		else:
@@ -356,10 +365,78 @@ func _azione(m: Motore, req: Dictionary, op: Array) -> int:
 				tot += _prova(m, p, o, 7919 * (k + 1) + c * 104729 + m.turno * 31)
 			v = tot / campioni
 			v += _valore(m, p, o) * 0.15
+			if o["chiave"] == "viaggio" and _provenienza.get(p, "") == o["luogo"]:
+				v -= 12.0
+		punti.append([v, k])
+	punti.sort_custom(func(a, b): return a[0] > b[0])
+	if orizzonte <= 0 or punti.size() == 1 or op[punti[0][1]]["chiave"] == "ob_anello":
+		return _scelto(m, p, op, punti[0][1])
+	# 2. sguardo lungo: le azioni migliori giocate fino in fondo al turno e per altri turni interi
+	#    (carte dell'Ombra comprese), con tutti i personaggi mossi dalla strategia di squadra
+	var best: int = punti[0][1]
+	var bv := -1e18
+	for q in mini(candidati_rollout, punti.size()):
+		var k: int = punti[q][1]
+		var tot := 0.0
+		for c in campioni_rollout:
+			tot += _rollout(m, p, op[k], 15485863 * (c + 1) + m.turno * 7919 + m.storia.size())
+		var v: float = tot / campioni_rollout + punti[q][0] * 0.25
+		if op[k]["chiave"] == "fine" and p != "frodo" and m.azioni_rimaste > 0:
+			v -= 9.0
+		if op[k]["chiave"] == "viaggio" and _provenienza.get(p, "") == op[k]["luogo"]:
+			v -= 12.0
 		if v > bv:
 			bv = v
 			best = k
-	return best
+	return _scelto(m, p, op, best)
+
+
+func _scelto(m: Motore, p: String, op: Array, k: int) -> int:
+	if op[k]["chiave"] == "viaggio":
+		_provenienza[p] = m.pg[p]["luogo"]
+	elif op[k]["chiave"] == "fine":
+		_provenienza.erase(p)
+	return k
+
+
+## Partita simulata: l'azione, il resto delle azioni del personaggio, la pesca, le carte dell'Ombra e poi
+## altri turni interi. Le carte coperte (mazzi) vengono rimescolate: l'IA non sa cosa uscirà.
+func _rollout(m: Motore, p: String, o: Dictionary, seme: int) -> float:
+	var c := m.copia(seme)
+	c._mescola(c.mazzo)
+	c._mescola(c.mazzo_ombra)
+	var ia2 := IA.new()
+	ia2.semplice = true
+	ia2.pausa = 0.0
+	ia2._strat = _strat.duplicate(true)
+	ia2._strat_chiave = ""
+	var ctl := ControlloIA.new()
+	ctl.ia = ia2
+	for i in c.giocatori.size():
+		c.controllori.append(ctl)
+	if o["chiave"] != "fine":
+		c._esegui_azione(p, o)
+		c._controlla_obiettivi()
+		if c.esito == "" and c.in_gioco(p) and c.azioni_rimaste > 0:
+			c._azioni_di(p, c.azioni_rimaste)
+	if c.esito == "":
+		c.fase = "pesca"
+		c._pesca_carte()
+	if c.esito == "":
+		c.fase = "ombra"
+		c._carte_ombra()
+	if c.esito == "":
+		if c.solo:
+			c.solo_indice = (c.solo_indice + 1) % c._ordine_solo().size()
+		else:
+			c.turno_di = (c.turno_di + 1) % c.giocatori.size()
+		for t in orizzonte:
+			if c.esito != "":
+				break
+			c._turno()
+	var v := valuta(c)
+	c.free()
+	return v
 
 
 func _con_frodo(m: Motore, p: String) -> bool:
@@ -454,6 +531,7 @@ func valuta(m: Motore) -> float:
 			v -= float(mini(o, am)) * 0.5
 		v += float(mini(am, 5)) * (2.6 if m.e_rifugio(l) else 1.6)
 	v -= _rischio_rifugi(m) * 42.0
+	v += _sbarramenti(m) * 4.0
 	if m.riserva_ombra < 10:
 		v -= float(10 - m.riserva_ombra) * 3.0
 	# conquiste e fortezze liberate
@@ -474,13 +552,162 @@ func valuta(m: Motore) -> float:
 		v -= d * 0.25 * clampf(t["v"], 0.0, 4.0)
 	# progressi verso gli obiettivi aperti: l'IA vede i passi intermedi (simboli raccolti, personaggi
 	# sul posto, truppe radunate, Ombra scacciata) e non solo l'obiettivo finito
+	var st := strategia(m)
 	for o in m.obiettivi:
 		if not o["fatto"] and o["codice"] != "anello":
-			v += _progresso(m, o["codice"]) * PESO_PROGRESSO
+			var peso := PESO_PROGRESSO * (1.8 if o["codice"] == st.get("focus", "") else 1.0)
+			v += _progresso(m, o["codice"]) * peso
+	# i personaggi vicini al compito che la strategia di squadra ha dato loro
+	var ruoli: Dictionary = st.get("ruoli", {})
+	for p in ruoli:
+		if m.in_gioco(p) and p != "frodo":
+			var d: float = _dist(m.pg[p]["luogo"]).get(ruoli[p]["luogo"], 30.0)
+			v -= d * 2.5
 	return v
 
 
 const PESO_PROGRESSO := 30.0
+
+## Luogo dove si lavora per ogni obiettivo (per mandarci i personaggi).
+const LUOGO_OBIETTIVO := {"benedizione": "rivendell", "theoden": "edoras", "denethor": "minas_tirith",
+	"saruman": "isengard", "sauron": "north_ithilien", "balin": "moria", "freca": "dunland",
+	"morgul": "minas_morgul", "anduin": "osgiliath", "umbar": "umbar", "pozzi": "dol_guldur",
+	"nani": "ered_luin", "stendardo": "minas_tirith", "balrog": "moria", "bosco_atro": "southern_mirkwood",
+	"raminghi": "tharbad", "eowyn": "edoras", "eored": "edoras", "spergiuri": "erech", "hobbit": "rivendell"}
+## Obiettivi che vanno fatti da un personaggio preciso.
+const CHI_OBIETTIVO := {"balrog": "gandalf", "stendardo": "arwen", "pozzi": "galadriel", "anduin": "faramir",
+	"eored": "eomer", "eowyn": "eowyn", "sei": "legolas", "hobbit": "pipino", "spergiuri": "aragorn", "nani": "gimli"}
+## Obiettivi con un'azione a due personaggi nello stesso luogo.
+const IN_DUE := ["benedizione", "theoden", "denethor"]
+
+var _strat := {}
+var _strat_chiave := ""
+## Compiti dati nei turni precedenti: un personaggio li tiene finché non sono finiti (niente andirivieni).
+var _ruoli_fissi := {}
+## Da dove arrivava ogni personaggio con l'ultimo viaggio (per non tornare subito indietro).
+var _provenienza := {}
+
+
+func _ombra_vicina(m: Motore, l: String) -> int:
+	var n := 0
+	for x in Dati.vicini(l):
+		n += int(m.stato[x]["ombra"])
+	return n
+
+
+## Strategia di squadra, rifatta a ogni turno: quale obiettivo chiudere per primo (quello più avanti e
+## più vicino), chi ci lavora, chi difende i rifugi in pericolo e chi va a bloccare gli eserciti dell'Ombra.
+func strategia(m: Motore) -> Dictionary:
+	var chiave := "%d|%d|%d" % [m.turno, m.turno_di, m.get_instance_id()]
+	if chiave == _strat_chiave:
+		return _strat
+	_strat_chiave = chiave
+	_strat = {}
+	var liberi: Array = []
+	for p in m.pg:
+		if m.in_gioco(p) and p != "frodo" and p != "gollum":
+			liberi.append(p)
+	var ruoli := {}
+	# 0. i compiti ancora validi restano a chi li aveva
+	for p in _ruoli_fissi.keys():
+		var r: Dictionary = _ruoli_fissi[p]
+		var valido: bool = m.in_gioco(p) and p in liberi
+		match r["tipo"]:
+			"obiettivo":
+				valido = valido and m.obiettivo_attivo(r["cod"])
+			"difesa":
+				var minacciato: bool = _rischi(m).get(r["luogo"], 0.0) > 0.1
+				var in_viaggio: bool = m.pg[p]["luogo"] != r["luogo"] and m.turno - int(r["dal"]) < 3
+				valido = valido and m.e_rifugio(r["luogo"]) and (minacciato or in_viaggio)
+			"militare":
+				valido = valido and m.turno - int(r["dal"]) < 4 and (m.stato[r["luogo"]]["ombra"] > 0 or _ombra_vicina(m, r["luogo"]) > 0)
+		if valido:
+			ruoli[p] = r
+			liberi.erase(p)
+	# 1. obiettivo su cui concentrarsi: progresso alto e personaggi vicini (= si chiude prima)
+	var best := ""
+	var bv := -1.0
+	for o in m.obiettivi:
+		var cod: String = o["codice"]
+		if o["fatto"] or cod == "anello" or cod == "boromir" or cod == "shelob":
+			continue
+		if CHI_OBIETTIVO.has(cod) and not m.in_gioco(CHI_OBIETTIVO[cod]):
+			continue
+		var prog := _progresso(m, cod)
+		var l: String = LUOGO_OBIETTIVO.get(cod, "")
+		var d := 6.0
+		if l != "":
+			d = 30.0
+			for p in liberi:
+				if not CHI_OBIETTIVO.has(cod) or CHI_OBIETTIVO[cod] == p:
+					d = minf(d, _dist(m.pg[p]["luogo"]).get(l, 30.0))
+		var v := prog * 2.0 + 1.0 / (1.0 + d * 0.3)
+		if v > bv:
+			bv = v
+			best = cod
+	for p in ruoli:
+		if ruoli[p]["tipo"] == "obiettivo":
+			best = ruoli[p]["cod"]
+	_strat["focus"] = best
+	var gia := 0
+	for p in ruoli:
+		if ruoli[p]["tipo"] == "obiettivo":
+			gia += 1
+	if best != "" and LUOGO_OBIETTIVO.has(best):
+		var l: String = LUOGO_OBIETTIVO[best]
+		var serve := 2 if best in IN_DUE else 1
+		var ordinati := liberi.duplicate()
+		ordinati.sort_custom(func(a, b): return _dist(m.pg[a]["luogo"]).get(l, 30.0) < _dist(m.pg[b]["luogo"]).get(l, 30.0))
+		if CHI_OBIETTIVO.has(best):
+			ordinati.erase(CHI_OBIETTIVO[best])
+			ordinati.push_front(CHI_OBIETTIVO[best])
+		for p in ordinati.slice(0, maxi(0, serve - gia)):
+			if p in liberi:
+				ruoli[p] = {"tipo": "obiettivo", "luogo": l, "cod": best, "dal": m.turno}
+				liberi.erase(p)
+	# 2. difesa dei rifugi più a rischio: il personaggio libero più vicino ci va (e arruola lì)
+	var rischi := _rischi(m)
+	var hs := rischi.keys()
+	hs.sort_custom(func(a, b): return rischi[a] > rischi[b])
+	for h in hs:
+		if rischi[h] < 0.25 or liberi.is_empty():
+			break
+		var vicino: String = liberi[0]
+		for p in liberi:
+			if _dist(m.pg[p]["luogo"]).get(h, 30.0) < _dist(m.pg[vicino]["luogo"]).get(h, 30.0):
+				vicino = p
+		var gia_difeso := false
+		for q in ruoli:
+			if ruoli[q]["luogo"] == h:
+				gia_difeso = true
+		if gia_difeso:
+			continue
+		ruoli[vicino] = {"tipo": "difesa", "luogo": h, "dal": m.turno}
+		liberi.erase(vicino)
+	# 3. gli altri bloccano gli eserciti: la pila dell'Ombra più grossa che minaccia un rifugio
+	var pl := _prob_linee(m)
+	var bersagli: Array = []
+	for lid in pl:
+		var p: Array = Dati.linea(lid)["percorso"]
+		for k in range(0, p.size() - 1):
+			var o: int = m.stato[p[k]]["ombra"]
+			if o >= 2 and not m.e_fortezza(p[k]):
+				bersagli.append({"luogo": p[k + 1] if m.amiche(p[k]) == 0 else p[k], "v": float(o) * pl[lid]})
+	bersagli.sort_custom(func(a, b): return a["v"] > b["v"])
+	for b in bersagli:
+		if liberi.is_empty():
+			break
+		var vicino: String = liberi[0]
+		for p in liberi:
+			if _dist(m.pg[p]["luogo"]).get(b["luogo"], 30.0) < _dist(m.pg[vicino]["luogo"]).get(b["luogo"], 30.0):
+				vicino = p
+		ruoli[vicino] = {"tipo": "militare", "luogo": b["luogo"], "dal": m.turno}
+		liberi.erase(vicino)
+	_strat["ruoli"] = ruoli
+	# solo la partita vera fissa i compiti (non le simulazioni)
+	if m.is_inside_tree() or not semplice:
+		_ruoli_fissi = ruoli.duplicate(true)
+	return _strat
 
 
 ## Probabilità che ogni linea di battaglia avanzi al prossimo turno dell'Ombra, dalle carte rimaste nel mazzo.
@@ -499,7 +726,9 @@ func _prob_linee(m: Motore) -> Dictionary:
 
 ## Rischio (in rifugi attesi persi) che un rifugio cada al prossimo turno dell'Ombra: truppe ombra già lì
 ## più quelle che le avanzate probabili porteranno, contro le truppe amiche che lo difendono.
-func _rischio_rifugi(m: Motore) -> float:
+## Rischio (0..1) che ogni rifugio cada al prossimo turno dell'Ombra: truppe ombra già lì più quelle che
+## le avanzate probabili porteranno, contro le truppe amiche che lo difendono.
+func _rischi(m: Motore) -> Dictionary:
 	var pl := _prob_linee(m)
 	var arrivi := {}
 	for lid in pl:
@@ -508,16 +737,45 @@ func _rischio_rifugi(m: Motore) -> float:
 			var o: int = m.stato[p[k - 1]]["ombra"]
 			if o > 0 and m.e_rifugio(p[k]):
 				arrivi[p[k]] = arrivi.get(p[k], 0.0) + float(o) * minf(1.0, pl[lid])
-	var tot := 0.0
+	var r := {}
 	for h in arrivi:
 		var att: float = float(m.stato[h]["ombra"]) + arrivi[h]
 		var am := float(m.amiche(h))
-		tot += clampf((att - am * 0.9) / (att + 1.0), 0.0, 1.0) * minf(1.0, arrivi[h] + 0.3)
+		r[h] = clampf((att - am * 0.9) / (att + 1.0), 0.0, 1.0) * minf(1.0, arrivi[h] + 0.3)
 	for h in m.stato:
 		if m.e_rifugio(h) and not arrivi.has(h) and m.stato[h]["ombra"] > 0:
 			var o := float(m.stato[h]["ombra"])
-			tot += clampf((o - float(m.amiche(h)) * 0.9) / (o + 1.0), 0.0, 1.0) * 0.5
+			r[h] = clampf((o - float(m.amiche(h)) * 0.9) / (o + 1.0), 0.0, 1.0) * 0.5
+	return r
+
+
+func _rischio_rifugi(m: Motore) -> float:
+	var tot := 0.0
+	var r := _rischi(m)
+	for h in r:
+		tot += r[h]
 	return tot
+
+
+## Sbarramenti: truppe amiche sulle linee di battaglia subito a valle di una pila dell'Ombra la fermano
+## prima che arrivi a un rifugio (l'avanzata le porta a combattere lì).
+func _sbarramenti(m: Motore) -> float:
+	var pl := _prob_linee(m)
+	var v := 0.0
+	for lid in pl:
+		var p: Array = Dati.linea(lid)["percorso"]
+		for k in range(1, p.size()):
+			var o: int = m.stato[p[k - 1]]["ombra"]
+			var am := m.amiche(p[k])
+			if o > 0 and am > 0:
+				# conta di più se più avanti sulla linea c'è un rifugio da proteggere
+				var rif := 0.0
+				for q in range(k, p.size()):
+					if m.e_rifugio(p[q]):
+						rif = 1.0
+						break
+				v += float(mini(o, am)) * minf(1.0, pl[lid] * 2.0) * (0.5 + rif)
+	return v
 
 
 ## Quanto un personaggio qualsiasi è vicino a un luogo (1 = è lì).
@@ -662,7 +920,9 @@ func _valore(m: Motore, p: String, o: Dictionary) -> float:
 	var pos: int = m.posto_di(p)
 	match o["chiave"]:
 		"fine":
-			return -1.2 if m.azioni_rimaste > 0 else 0.0
+			if m.azioni_rimaste <= 0:
+				return 0.0
+			return -1.2 if p == "frodo" else -4.0
 		"viaggio":
 			var t := _obiettivo_pg(m, p)
 			var dt := _dist(t["luogo"])
