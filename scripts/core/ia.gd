@@ -8,6 +8,9 @@ extends RefCounted
 ## 5 Resistenza, Frodo entra a Mordor per la strada più economica in Furtività.
 
 var pausa := 0.35
+## Spiegazione breve dell'ultima scelta importante, per il registro della partita (vuota se non serve).
+var spiegazione := ""
+var _focus_detto := ""
 ## semplice: scelte rapide, senza simulazioni (si usa dentro le simulazioni stesse)
 var semplice := false
 var guarda_avanti := true
@@ -170,6 +173,73 @@ func _resistenza_compagnia(m: Motore) -> int:
 
 
 func _piano(m: Motore, op: Array) -> int:
+	var k0 := _piano_euristico(m, op)
+	if semplice or not guarda_avanti or orizzonte <= 0:
+		return k0
+	# ogni ripartizione del turno (chi fa 4 azioni e chi 1, e in che ordine) giocata fino in fondo
+	var best := k0
+	var bv := -1e18
+	for k in op.size():
+		var tot := 0.0
+		for c in campioni_rollout:
+			tot += _rollout_piano(m, op[k], 49979687 * (c + 1) + m.turno * 131 + k)
+		var v: float = tot / campioni_rollout + (3.0 if k == k0 else 0.0)
+		if v > bv:
+			bv = v
+			best = k
+	var o: Dictionary = op[best]
+	var st := strategia(m)
+	var r: Dictionary = st.get("ruoli", {}).get(o["pg"], {})
+	spiegazione = "%s fa %d azioni%s." % [m.nome_pg(o["pg"]), int(o["n"]), (" (compito: %s a %s)" % [r["tipo"], Dati.nome(r["luogo"])]) if not r.is_empty() else ""]
+	return best
+
+
+func _rollout_piano(m: Motore, o: Dictionary, seme: int) -> float:
+	var c := m.copia(seme)
+	_mescola_coperte(c, m)
+	var ia2 := IA.new()
+	ia2.semplice = true
+	ia2.pausa = 0.0
+	var ctl := ControlloIA.new()
+	ctl.ia = ia2
+	for i in c.giocatori.size():
+		c.controllori.append(ctl)
+	var p1: String = o["pg"]
+	var n1: int = int(o["n"])
+	var p2 := ""
+	if c.solo:
+		p2 = "frodo" if p1 != "frodo" else c._ordine_solo()[c.solo_indice % c._ordine_solo().size()]
+	else:
+		for q in c.giocatori[c.turno_di]["pg"]:
+			if q != p1 and c.in_gioco(q):
+				p2 = q
+	if c.in_gioco(p1):
+		c._azioni_di(p1, n1)
+	if c.esito == "" and p2 != "" and c.in_gioco(p2):
+		c._azioni_di(p2, 5 - n1)
+	c.attivo = ""
+	if c.esito == "":
+		c.fase = "pesca"
+		c._pesca_carte()
+	if c.esito == "":
+		c.fase = "ombra"
+		c._carte_ombra()
+	if c.esito == "":
+		if c.solo:
+			c.solo_indice = (c.solo_indice + 1) % c._ordine_solo().size()
+		else:
+			c.turno_di = (c.turno_di + 1) % c.giocatori.size()
+		for t in orizzonte:
+			if c.esito != "":
+				break
+			c._turno()
+	var v := valuta(c)
+	c.free()
+	return v
+
+
+## Il personaggio più utile fa 4 azioni (regole pratiche, senza simulare).
+func _piano_euristico(m: Motore, op: Array) -> int:
 	# il personaggio più utile fa 4 azioni
 	var best := 0
 	var bv := -1e9
@@ -399,12 +469,27 @@ func _scelto(m: Motore, p: String, op: Array, k: int) -> int:
 	return k
 
 
+## Rimescola le carte coperte della copia; il dorso della carta in cima al mazzo dell'Ombra è pubblico
+## (bandiera o stendardo) e resta lo stesso.
+func _mescola_coperte(c: Motore, m: Motore) -> void:
+	c._mescola(c.mazzo)
+	if c.mazzo_ombra.is_empty():
+		return
+	var dorso: String = Dati.carta(m.mazzo_ombra.back()).get("retro", "")
+	c._mescola(c.mazzo_ombra)
+	for k in range(c.mazzo_ombra.size() - 1, -1, -1):
+		if Dati.carta(c.mazzo_ombra[k]).get("retro", "") == dorso:
+			var t = c.mazzo_ombra[k]
+			c.mazzo_ombra[k] = c.mazzo_ombra.back()
+			c.mazzo_ombra[c.mazzo_ombra.size() - 1] = t
+			break
+
+
 ## Partita simulata: l'azione, il resto delle azioni del personaggio, la pesca, le carte dell'Ombra e poi
 ## altri turni interi. Le carte coperte (mazzi) vengono rimescolate: l'IA non sa cosa uscirà.
 func _rollout(m: Motore, p: String, o: Dictionary, seme: int) -> float:
 	var c := m.copia(seme)
-	c._mescola(c.mazzo)
-	c._mescola(c.mazzo_ombra)
+	_mescola_coperte(c, m)
 	var ia2 := IA.new()
 	ia2.semplice = true
 	ia2.pausa = 0.0
@@ -538,11 +623,15 @@ func valuta(m: Motore) -> float:
 	for l in m.stato:
 		if m.stato[l]["liberata"]:
 			v += 6.0
-	# simboli in mano e segnalini
+	# simboli: valgono di più quelli che servono ai piani (finale di Frodo, obiettivi, conquiste, reclutare)
+	var fab := _fabbisogno(m)
 	for i in m.giocatori.size():
 		for s in Dati.SIMBOLI:
-			v += float(m.giocatori[i]["gettoni"][s]) * 0.9
-		v += float(m.giocatori[i]["mano"].size()) * 0.5
+			var ha := m.disponibili(i, s)
+			var serve: int = fab[i].get(s, 0)
+			v += float(mini(ha, serve)) * 3.2 + float(maxi(0, ha - serve)) * 0.6
+		# mano troppo piena: si rischia di dover scartare a fine turno
+		v -= float(maxi(0, m.giocatori[i]["mano"].size() - 6)) * 1.5
 	# vicinanza dei personaggi agli obiettivi aperti
 	for p in m.pg:
 		if not m.in_gioco(p) or p == "frodo":
@@ -567,6 +656,32 @@ func valuta(m: Motore) -> float:
 
 
 const PESO_PROGRESSO := 30.0
+
+## Simboli che ogni giocatore dovrebbe tenere da parte: le 5 Resistenze e un po' di Furtività per chi ha
+## Frodo, i costi dell'obiettivo su cui si lavora, 3 Valore per una conquista utile, Amicizia per reclutare.
+func _fabbisogno(m: Motore) -> Array:
+	var r: Array = []
+	for i in m.giocatori.size():
+		r.append({"amicizia": 1})
+	if m.in_gioco("frodo"):
+		var pf := m.posto_di("frodo")
+		r[pf]["resistenza"] = 5
+		r[pf]["furtivita"] = 2
+	var st := strategia(m)
+	var costi := {"benedizione": {"amicizia": 3}, "theoden": {"amicizia": 2, "resistenza": 1},
+		"denethor": {"furtivita": 2, "amicizia": 1, "valore": 1}, "stendardo": {"amicizia": 1},
+		"saruman": {"valore": 3}, "morgul": {"valore": 3}, "anduin": {"valore": 3}, "umbar": {"valore": 3},
+		"pozzi": {"valore": 3}, "balin": {"valore": 3}, "freca": {"valore": 3}}
+	var ruoli: Dictionary = st.get("ruoli", {})
+	for p in ruoli:
+		if not m.in_gioco(p) or ruoli[p]["tipo"] != "obiettivo":
+			continue
+		var c: Dictionary = costi.get(ruoli[p].get("cod", ""), {})
+		var i := m.posto_di(p)
+		for s in c:
+			r[i][s] = maxi(int(r[i].get(s, 0)), int(c[s]) + (5 if s == "resistenza" and r[i].has("resistenza") and i == m.posto_di("frodo") else 0))
+	return r
+
 
 ## Luogo dove si lavora per ogni obiettivo (per mandarci i personaggi).
 const LUOGO_OBIETTIVO := {"benedizione": "rivendell", "theoden": "edoras", "denethor": "minas_tirith",
@@ -707,6 +822,13 @@ func strategia(m: Motore) -> Dictionary:
 	# solo la partita vera fissa i compiti (non le simulazioni)
 	if m.is_inside_tree() or not semplice:
 		_ruoli_fissi = ruoli.duplicate(true)
+		if m.is_inside_tree() and not semplice and best != _focus_detto:
+			_focus_detto = best
+			var parti: Array = []
+			for p in ruoli:
+				parti.append("%s %s a %s" % [m.nome_pg(p), {"obiettivo": "lavora all'obiettivo", "difesa": "difende", "militare": "ferma l'Ombra"}.get(ruoli[p]["tipo"], ""), Dati.nome(ruoli[p]["luogo"])])
+			if best != "":
+				spiegazione = "Strategia: prima «%s». %s." % [Dati.obiettivo(best)["nome"], "; ".join(parti)]
 	return _strat
 
 
@@ -959,7 +1081,9 @@ func _valore(m: Motore, p: String, o: Dictionary) -> float:
 		"prepara":
 			var c := Dati.carta(int(o["carta"]))
 			var mano: int = m.giocatori[pos]["mano"].size()
-			var v: float = 0.1 + maxi(0, mano - 4) * 0.5
+			# Preparare costa un'azione e rende il simbolo non più passabile con la Compagnia:
+			# conviene solo con la mano quasi piena
+			var v: float = -1.5 + maxi(0, mano - 5) * 1.2
 			if c["simbolo"] == "furtivita" and m.in_gioco("frodo") and pos == m.posto_di("frodo"):
 				v += 1.2 + _pericolo(m, m.regione_frodo()) * 0.3
 			if c["simbolo"] == "resistenza":
@@ -1060,7 +1184,35 @@ func _accompagna(m: Motore, req: Dictionary, op: Array) -> int:
 		for v in Dati.vicini(da):
 			if v != dest:
 				tenere += int(m.stato[v]["ombra"])
-	if portate >= mini(3, m.amiche(da) - tenere):
+	# truppe portate verso il compito del personaggio: un esercito da riunire (Sfidare Sauron, Stendardo),
+	# una roccaforte da conquistare, un rifugio da difendere, una pila dell'Ombra da fermare
+	var ruolo: Dictionary = strategia(m).get("ruoli", {}).get(p, {})
+	var servono := {}
+	var limite := 3
+	if not ruolo.is_empty() and dest != "":
+		var dt2 := _dist(ruolo["luogo"])
+		if dt2.get(dest, 30.0) < dt2.get(da, 30.0) or dest == ruolo["luogo"]:
+			match ruolo.get("cod", ruolo["tipo"]):
+				"sauron":
+					var l2: String = ruolo["luogo"]
+					servono = {"rohirrim": 2, "elfi": 2, "gondor": 3}
+					for a in servono.keys():
+						servono[a] = maxi(0, servono[a] - int(m.stato[l2]["truppe"][a]))
+					porta = true
+					limite = 7
+				"stendardo":
+					servono = {"rohirrim": 1, "elfi": 1, "gondor": 1, "nani": 1}
+					porta = true
+					limite = 4
+				"militare", "difesa", "saruman", "morgul", "anduin", "umbar", "pozzi", "balin", "freca":
+					porta = true
+	if portate >= mini(limite, m.amiche(da) - tenere):
+		porta = false
+	if porta and not servono.is_empty():
+		for k in op.size():
+			var a: String = op[k].get("armata", "")
+			if op[k]["chiave"] == "truppa" and int(servono.get(a, 0)) > int(req.get("truppe", {}).get(a, 0)):
+				return k
 		porta = false
 	if p != "frodo" and m.presente("frodo", da) and m.disponibili(m.turno_di, "furtivita") > 0:
 		var t := _obiettivo_pg(m, "frodo")
@@ -1117,15 +1269,18 @@ func _scarta(m: Motore, posto: int, op: Array) -> int:
 	return best
 
 
+## Dopo il tiro di combattimento: si calcola l'esito con le facce reali e si interviene solo se cambia
+## qualcosa che conta (un rifugio che cade, l'ultima guarnigione, una conquista da preparare).
 func _battaglia(m: Motore, req: Dictionary, op: Array) -> int:
 	var l: String = req.get("luogo", "")
 	var facce: Array = req.get("facce", [])
 	var perdite := 0
 	var togli := 0
+	var aragorn := m.presente("aragorn", l)
 	for f in facce:
 		match f:
 			"rotta":
-				togli += 1
+				togli += 2 if aragorn else 1
 			"scambio":
 				togli += 1
 				perdite += 1
@@ -1137,17 +1292,47 @@ func _battaglia(m: Motore, req: Dictionary, op: Array) -> int:
 					perdite += 2
 	var ombra_dopo: int = m.stato[l]["ombra"] - togli
 	var amiche_dopo: int = m.amiche(l) - perdite
-	var cade: bool = m.e_rifugio(l) and ombra_dopo > 0 and amiche_dopo <= 0
+	var rifugio := m.e_rifugio(l)
+	var cade: bool = rifugio and ombra_dopo > 0 and amiche_dopo <= 0
+	# le modifiche gratuite o quasi si usano sempre
 	for k in op.size():
-		var c: String = op[k]["chiave"]
-		if c in ["fiamma", "nenya", "imboscata"]:
+		if op[k]["chiave"] in ["nenya", "imboscata"]:
 			return k
-		if cade and c == "valore":
+		if op[k]["chiave"] == "fiamma" and (cade or ombra_dopo > 0):
 			return k
 	if cade:
+		# 1. Valore: toglie direttamente le truppe ombra che resterebbero
 		for k in op.size():
-			if op[k]["chiave"] == "ritira" and _resistenza_compagnia(m) >= 6:
+			if op[k]["chiave"] == "valore":
+				if not semplice:
+					spiegazione = "Si spende Valore per non perdere %s (costerebbe 3 speranza)." % Dati.nome(l)
 				return k
+		# 2. Resistenza: si ritira il dado peggiore, se non toglie a Frodo le Resistenze del finale
+		var peggiore := -1
+		var pv := -1
+		for k in op.size():
+			if op[k]["chiave"] != "ritira":
+				continue
+			var pos: int = op[k]["pos"]
+			var riserva := 5 if m.in_gioco("frodo") and pos == m.posto_di("frodo") else 0
+			if m.disponibili(pos, "resistenza") <= riserva and not _fase_finale(m):
+				# perdere il rifugio costa 3 speranza: vale più di una Resistenza del finale
+				if m.speranza > 4:
+					continue
+			var f: String = facce[op[k]["dado"]]
+			var gravita: int = {"nazgul": 3, "travolti": 1, "scambio": 1}.get(f, 0)
+			if gravita > pv:
+				pv = gravita
+				peggiore = k
+		if peggiore >= 0:
+			return peggiore
+	# battaglia non decisiva: Valore solo per completare l'eliminazione dove si vuole conquistare
+	if not rifugio and ombra_dopo > 0 and ombra_dopo <= 1 and amiche_dopo > 0 and m.e_fortezza(l):
+		for k in op.size():
+			if op[k]["chiave"] == "valore":
+				var pos: int = op[k]["pos"]
+				if m.disponibili(pos, "valore") >= 4:
+					return k
 	return 0
 
 

@@ -667,6 +667,12 @@ func _premi(k: int) -> void:
 # EVENTI DEL MOTORE
 # =====================================================================================
 
+## Nota dell'IA sulle scelte importanti (in grigio, nel registro).
+func nota_ia(t: String) -> void:
+	if registro != null and not _ripresa:
+		registro.append_text("\n[color=#8f8a7c][i]IA: %s[/i][/color]" % t)
+
+
 func _al_messaggio(t: String) -> void:
 	if registro == null:
 		return

@@ -974,7 +974,7 @@ func _viaggio(p: String, dest: String, costo: Dictionary, passi: int, senza_rice
 								op.append({"testo": "Lascia 1 truppa %s" % Dati.NOMI_ARMATE[a], "chiave": "lascia", "armata": a})
 				var r := await chiedi(turno_di, {"tipo": "accompagna", "titolo": "%s va a %s" % [nome_pg(p), Dati.nome(dest)],
 					"testo": "Chi e che cosa porta con sé?", "opzioni": op, "conferma": true, "pg": p, "luogo": dest,
-					"portate": truppe.values().reduce(func(a, b): return a + b, 0), "compagni": compagni.duplicate()})
+					"portate": truppe.values().reduce(func(a, b): return a + b, 0), "truppe": truppe.duplicate(), "compagni": compagni.duplicate()})
 				var x: Dictionary = op[r]
 				if x["chiave"] == "parti":
 					break
