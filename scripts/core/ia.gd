@@ -10,6 +10,13 @@ extends RefCounted
 var pausa := 0.35
 ## Spiegazione breve dell'ultima scelta importante, per il registro della partita (vuota se non serve).
 var spiegazione := ""
+## Missioni su più turni dei compagni (vedi missioni.gd); false = solo valutazione e simulazioni.
+var usa_missioni := true
+var missioni := Missioni.new()
+
+
+func _init() -> void:
+	missioni.ia = self
 var _focus_detto := ""
 ## semplice: scelte rapide, senza simulazioni (si usa dentro le simulazioni stesse)
 var semplice := false
@@ -173,6 +180,35 @@ func _resistenza_compagnia(m: Motore) -> int:
 
 
 func _piano(m: Motore, op: Array) -> int:
+	if usa_missioni:
+		missioni.ia = self
+		missioni.aggiorna(m)
+		var best := -1
+		var bv := 0.0
+		for k in op.size():
+			if int(op[k]["n"]) != 4:
+				continue
+			var u: float = missioni.urgenza(m, op[k]["pg"])
+			if op[k]["pg"] == "frodo" and not _fase_finale(m):
+				# Frodo prende le 4 azioni solo se deve scappare (Occhio, Nazgûl, truppe ombra addosso)
+				var pf := _pericolo(m, m.regione_frodo()) + float(m.stato[m.luogo_frodo()]["ombra"])
+				u = minf(u, 2.0) + maxf(0.0, pf * 2.5 - 4.0)
+				if m.occhio == m.regione_frodo() and _passi_fuori(m.regione_frodo(), m.luogo_frodo(), m) > 1:
+					u += 12.0
+			elif op[k]["pg"] == "frodo":
+				u = 20.0
+			# a parità, prima agisce chi ha le 4 azioni
+			if k > 0 and op[k - 1]["pg"] == op[k]["pg"]:
+				u -= 0.01
+			if u > bv:
+				bv = u
+				best = k
+		if best >= 0:
+			if not semplice:
+				var mi: Dictionary = missioni.assegnate.get(op[best]["pg"], {})
+				var cosa := missioni.descrivi(mi)
+				spiegazione = "%s fa 4 azioni%s." % [m.nome_pg(op[best]["pg"]), (" per " + cosa) if cosa != "" else ""]
+			return best
 	var k0 := _piano_euristico(m, op)
 	if semplice or not guarda_avanti or orizzonte <= 0:
 		return k0
@@ -200,6 +236,8 @@ func _rollout_piano(m: Motore, o: Dictionary, seme: int) -> float:
 	var ia2 := IA.new()
 	ia2.semplice = true
 	ia2.pausa = 0.0
+	ia2.missioni.assegnate = missioni.assegnate.duplicate(true)
+	ia2.missioni._turno_assegnazione = m.turno
 	var ctl := ControlloIA.new()
 	ctl.ia = ia2
 	for i in c.giocatori.size():
@@ -415,6 +453,36 @@ var candidati_rollout := 4
 
 func _azione(m: Motore, req: Dictionary, op: Array) -> int:
 	var p: String = req.get("pg", m.attivo)
+	if usa_missioni:
+		missioni.ia = self
+		missioni.aggiorna(m)
+		var km := missioni.azione(m, p, op)
+		if not semplice and not missioni.note.is_empty():
+			spiegazione = " ".join(missioni.note)
+		missioni.note.clear()
+		if km >= 0 and (semplice or not guarda_avanti):
+			return _scelto(m, p, op, km)
+		if km >= 0:
+			# la missione propone; le simulazioni controllano che non costi troppo (rifugi, Frodo, speranza)
+			return _azione_senza_missioni(m, req, op, p, km)
+		# le scelte libere non devono consumare i simboli tenuti da parte per le missioni
+		var buone: Array = []
+		for k in op.size():
+			if not missioni.spreca(m, p, op[k]):
+				buone.append(k)
+		if buone.size() < op.size() and not buone.is_empty():
+			var op2: Array = []
+			for k in buone:
+				op2.append(op[k])
+			var k2 := _azione_senza_missioni(m, req, op2, p)
+			return _scelto(m, p, op, buone[k2])
+	return _azione_senza_missioni(m, req, op, p)
+
+
+const BONUS_MISSIONE := 8.0
+
+
+func _azione_senza_missioni(m: Motore, req: Dictionary, op: Array, p: String, preferito := -1) -> int:
 	if semplice or not guarda_avanti:
 		return _azione_euristica(m, p, op)
 	# 1. sguardo breve: ogni azione su una copia, valutata subito
@@ -435,10 +503,27 @@ func _azione(m: Motore, req: Dictionary, op: Array) -> int:
 				tot += _prova(m, p, o, 7919 * (k + 1) + c * 104729 + m.turno * 31)
 			v = tot / campioni
 			v += _valore(m, p, o) * 0.15
-			if o["chiave"] == "viaggio" and _provenienza.get(p, "") == o["luogo"]:
+			if o["chiave"] == "viaggio" and _provenienza.get(p, "") == o["luogo"] and k != preferito:
 				v -= 12.0
+		if k == preferito:
+			v += BONUS_MISSIONE
+		elif preferito >= 0 and usa_missioni and missioni.spreca(m, p, o):
+			v -= 20.0
 		punti.append([v, k])
 	punti.sort_custom(func(a, b): return a[0] > b[0])
+	# la proposta della missione è sempre fra le candidate delle simulazioni
+	if preferito >= 0:
+		var dentro := false
+		for q in mini(candidati_rollout, punti.size()):
+			if punti[q][1] == preferito:
+				dentro = true
+		if not dentro:
+			for q in punti.size():
+				if punti[q][1] == preferito:
+					var x = punti[q]
+					punti.remove_at(q)
+					punti.insert(mini(candidati_rollout - 1, punti.size()), x)
+					break
 	if orizzonte <= 0 or punti.size() == 1 or op[punti[0][1]]["chiave"] == "ob_anello":
 		return _scelto(m, p, op, punti[0][1])
 	# 2. sguardo lungo: le azioni migliori giocate fino in fondo al turno e per altri turni interi
@@ -453,8 +538,10 @@ func _azione(m: Motore, req: Dictionary, op: Array) -> int:
 		var v: float = tot / campioni_rollout + punti[q][0] * 0.25
 		if op[k]["chiave"] == "fine" and p != "frodo" and m.azioni_rimaste > 0:
 			v -= 9.0
-		if op[k]["chiave"] == "viaggio" and _provenienza.get(p, "") == op[k]["luogo"]:
+		if op[k]["chiave"] == "viaggio" and _provenienza.get(p, "") == op[k]["luogo"] and k != preferito:
 			v -= 12.0
+		if k == preferito:
+			v += BONUS_MISSIONE
 		if v > bv:
 			bv = v
 			best = k
@@ -493,6 +580,8 @@ func _rollout(m: Motore, p: String, o: Dictionary, seme: int) -> float:
 	var ia2 := IA.new()
 	ia2.semplice = true
 	ia2.pausa = 0.0
+	ia2.missioni.assegnate = missioni.assegnate.duplicate(true)
+	ia2.missioni._turno_assegnazione = m.turno
 	ia2._strat = _strat.duplicate(true)
 	ia2._strat_chiave = ""
 	var ctl := ControlloIA.new()
@@ -534,6 +623,8 @@ func _prova(m: Motore, p: String, o: Dictionary, seme: int) -> float:
 	var ia2 := IA.new()
 	ia2.semplice = true
 	ia2.pausa = 0.0
+	ia2.missioni.assegnate = missioni.assegnate.duplicate(true)
+	ia2.missioni._turno_assegnazione = m.turno
 	var ctl := ControlloIA.new()
 	ctl.ia = ia2
 	for i in c.giocatori.size():
@@ -1177,6 +1268,20 @@ func _accompagna(m: Motore, req: Dictionary, op: Array) -> int:
 	var da: String = m.pg[p]["luogo"] if p != "" else ""
 	# porta truppe solo verso una battaglia e se il luogo di partenza non è un rifugio
 	var porta: bool = dest != "" and m.stato[dest]["ombra"] > 0
+	if usa_missioni and p != "" and missioni.assegnate.has(p):
+		var voglio: Dictionary = missioni.truppe_da_portare(m, p, dest)
+		var gia: Dictionary = req.get("truppe", {})
+		var frodo_k := -1
+		if p != "frodo" and m.presente("frodo", da) and missioni.assegnate.get(p, {}).get("tipo", "") == "compagno":
+			pass
+		if not voglio.has("_niente"):
+			for k in op.size():
+				if op[k]["chiave"] == "truppa":
+					var a: String = op[k]["armata"]
+					if int(voglio.get(a, 0)) > int(gia.get(a, 0)):
+						return k
+			return 0
+		porta = false
 	var portate: int = req.get("portate", 0)
 	var tenere := 0
 	if m.e_rifugio(da):
@@ -1350,6 +1455,14 @@ func _ricerca(m: Motore, op: Array) -> int:
 
 func _compagnia(m: Motore, op: Array) -> int:
 	var fp: int = m.posto_di("frodo") if m.in_gioco("frodo") else -1
+	# prima le carte che mancano a chi deve compiere un obiettivo
+	if usa_missioni:
+		for k in op.size():
+			var c := Dati.carta(int(op[k]["carta"]))
+			var ris := missioni.riservati(m, int(op[k]["a"]))
+			var s: String = c["simbolo"]
+			if ris.has(s) and m.disponibili(int(op[k]["a"]), s) < int(ris[s]):
+				return k
 	for k in op.size():
 		var c := Dati.carta(int(op[k]["carta"]))
 		if op[k]["a"] == fp and c["simbolo"] == "resistenza":
