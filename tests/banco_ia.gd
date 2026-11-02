@@ -1,7 +1,9 @@
 extends SceneTree
 ## Banco di prova riproducibile dell'IA.
 ##   godot --headless --path . -s tests/banco_ia.gd -- <politica> <configurazione> <primo_seme> <quante> <file_uscita>
-## politica: casuale (mosse legali a caso) | base (solo regole pratiche, senza simulazioni) | piena (IA completa)
+## politica: casuale (mosse legali a caso) | base (solo regole pratiche, senza simulazioni) | missioni (missioni +
+##   simulazione azione per azione) | piena (IA del gioco) | piani / piani2 (in più: ricerca di sequenze intere di
+##   azioni, con 1 o 2 turni simulati dopo; sperimentale, spenta nel gioco)
 ## configurazione: intro2 (2 giocatori, obiettivi e personaggi introduttivi) | solo (solitario ufficiale,
 ##   obiettivi e personaggi introduttivi) | casuale3 (3 giocatori, obiettivi e personaggi a caso)
 ## Ogni partita scrive una riga JSON con esito, durata, cause della perdita di speranza, rifugi persi, risorse finali.
@@ -56,6 +58,13 @@ func _init() -> void:
 			ia.pausa = 0.0
 			if politica == "base":
 				ia.guarda_avanti = false
+			if politica == "missioni":
+				ia.cerca_piani = false
+			if politica == "piani":
+				ia.cerca_piani = true
+			if politica == "piani2":
+				ia.cerca_piani = true
+				ia.orizzonte_piano = 2
 			ctl = ControlloIA.new()
 			ctl.ia = ia
 		for i in m.giocatori.size():

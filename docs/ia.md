@@ -36,3 +36,17 @@ Provate e misurate, poi tolte perché sui semi di verifica 5000-5019 non miglior
 - numero di presidi proporzionale alla minaccia totale (da 1 a 3) e soglia più bassa;
 - Frodo compagno per la Benedizione quando parte insieme a chi la compie (sui semi di sviluppo: Benedizione da 14 a 10 su 20, partite più corte per le ricerche).
 Risultato in verifica: 2 giocatori Benedizione 14 (prima 15), Saruman 7 (prima 9), rifugi persi 1,60 (prima 1,40); solitario rifugi persi 2,05 (prima 1,60).
+
+## Ricerca di sequenze intere (sperimentale, spenta: `cerca_piani = false`)
+
+Per i blocchi di 2-4 azioni l'IA può cercare la sequenza migliore con una ricerca a fascio (4 sequenze per passo, tutte le azioni legali, le azioni con dadi provate due volte tenendo l'esito peggiore), poi giocare le 5 sequenze migliori fino al turno dopo (o ai due turni dopo) 3-4 volte con i mazzi rimescolati. Frodo e chi viaggia con lui ne sono esclusi.
+Misure sui semi di sviluppo 1000-1019 (20 partite per configurazione), confronto con l'IA del gioco (`missioni`):
+
+| | 2 giocatori: Benedizione / Saruman / rifugi persi / turni | solitario: Benedizione / Saruman / rifugi persi / turni |
+|---|---|---|
+| missioni (IA del gioco) | 15 / 6 / 1,70 / 16,9 | 14 / 8 / 1,90 / 16,8 |
+| sequenze, 1 turno dopo (v10, Frodo incluso) | 12 / 5 / 1,20 / 14,6 | 13 / 4 / 2,05 / 15,8 |
+| sequenze, 1 turno dopo (v11) | 16 / 5 / 1,50 / 18,2 | 15 / 6 / 1,85 / 16,9 |
+| sequenze, 2 turni dopo (v12) | 14 / 3 / 1,25 / 15,9 | 13 / 2 / 1,50 / 16,0 |
+
+Vittorie 0/20 in tutte le prove. Guardare più avanti difende un po' meglio i rifugi ma chiude meno obiettivi: la ricerca ottimizza la valutazione della posizione, che non è ancora allineata alla vittoria.

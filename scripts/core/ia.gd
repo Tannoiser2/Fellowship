@@ -267,7 +267,7 @@ func _rollout_piano(m: Motore, o: Dictionary, seme: int) -> float:
 			c.solo_indice = (c.solo_indice + 1) % c._ordine_solo().size()
 		else:
 			c.turno_di = (c.turno_di + 1) % c.giocatori.size()
-		for t in orizzonte:
+		for t in orizzonte_piano:
 			if c.esito != "":
 				break
 			c._turno()
@@ -453,6 +453,8 @@ var candidati_rollout := 4
 
 func _azione(m: Motore, req: Dictionary, op: Array) -> int:
 	var p: String = req.get("pg", m.attivo)
+	if cerca_piani and not semplice and guarda_avanti and m.azioni_rimaste >= 2 and not _con_frodo(m, p):
+		return _azione_da_piano(m, p, op)
 	if usa_missioni:
 		missioni.ia = self
 		missioni.aggiorna(m)
@@ -480,6 +482,188 @@ func _azione(m: Motore, req: Dictionary, op: Array) -> int:
 
 
 const BONUS_MISSIONE := 8.0
+
+# -------------------------------------------------------------------------------------
+# RICERCA DI PIANI: sequenze intere di azioni del personaggio, valutate giocando i turni seguenti
+# -------------------------------------------------------------------------------------
+
+## true = per i blocchi di 2-4 azioni l'IA cerca la sequenza migliore invece di scegliere un'azione alla volta.
+var cerca_piani := false
+var larghezza_fascio := 4        # sequenze tenute a ogni passo della ricerca
+var piani_finali := 5            # sequenze migliori giocate fino in fondo
+var campioni_piano := 4          # partite simulate per sequenza
+var orizzonte_piano := 1         # turni interi simulati dopo quello della sequenza
+var _piano_corrente: Array = []  # firme delle azioni ancora da fare
+var _piano_chiave := ""
+
+
+func _firma(o: Dictionary) -> String:
+	return "%s|%s|%s|%s|%s|%s" % [o.get("chiave", ""), o.get("luogo", ""), o.get("dadi", ""), o.get("carta", ""), o.get("con", ""), o.get("da_regione", "")]
+
+
+func _azione_da_piano(m: Motore, p: String, op: Array) -> int:
+	var chiave := "%d|%s|%d" % [m.turno, p, m.storia.size()]
+	# si continua il piano se la prossima azione prevista è ancora possibile
+	if _piano_chiave.begins_with("%d|%s|" % [m.turno, p]) and not _piano_corrente.is_empty():
+		var f: String = _piano_corrente[0]
+		for k in op.size():
+			if _firma(op[k]) == f:
+				_piano_corrente.pop_front()
+				_piano_chiave = chiave
+				return _scelto(m, p, op, k)
+	# altrimenti (nuovo turno, o un tiro di dadi ha cambiato le cose) si cerca un piano nuovo
+	var proposta := -1
+	if usa_missioni:
+		missioni.ia = self
+		missioni.aggiorna(m)
+		proposta = missioni.azione(m, p, op)
+		if not missioni.note.is_empty():
+			spiegazione = " ".join(missioni.note)
+		missioni.note.clear()
+	var piano := _cerca_piano(m, p, _firma(op[proposta]) if proposta >= 0 else "")
+	if piano.is_empty():
+		return _azione_senza_missioni(m, {}, op, p, proposta)
+	for k in op.size():
+		if _firma(op[k]) == piano[0]:
+			_piano_corrente = piano.slice(1)
+			_piano_chiave = chiave
+			return _scelto(m, p, op, k)
+	return _azione_senza_missioni(m, {}, op, p, proposta)
+
+
+func _nuovo_controllo(c: Motore) -> void:
+	var ia2 := IA.new()
+	ia2.semplice = true
+	ia2.pausa = 0.0
+	ia2.missioni.assegnate = missioni.assegnate.duplicate(true)
+	ia2.missioni._turno_assegnazione = c.turno
+	var ctl := ControlloIA.new()
+	ctl.ia = ia2
+	c.controllori.clear()
+	for i in c.giocatori.size():
+		c.controllori.append(ctl)
+
+
+## Ricerca a fascio: a ogni passo si provano tutte le azioni legali delle sequenze migliori (valutate subito
+## sulla copia); alla fine le sequenze migliori si giocano fino al turno dopo, più volte, e vince la media.
+func _cerca_piano(m: Motore, p: String, firma_proposta: String) -> Array:
+	var seme := m.turno * 7919 + m.storia.size() * 104729
+	var fascio: Array = [{"c": m.copia(seme), "seq": [], "v": 0.0}]
+	_nuovo_controllo(fascio[0]["c"])
+	var finiti: Array = []
+	var passi: int = m.azioni_rimaste
+	for passo in passi:
+		var figli: Array = []
+		for nodo in fascio:
+			var c: Motore = nodo["c"]
+			if c.esito != "" or c.azioni_rimaste <= 0 or not c.in_gioco(p):
+				finiti.append(nodo)
+				continue
+			# fermarsi qui è sempre una sequenza possibile (penalizzata: ogni azione è gratis)
+			finiti.append({"c": c, "seq": nodo["seq"] + ["fine"], "v": valuta(c) - (0.3 if p == "frodo" else 6.0) * c.azioni_rimaste, "condiviso": true})
+			var ops: Array = c.opzioni_azione(p)
+			for o in ops:
+				if o["chiave"] in ["fine", "specchio", "evento"]:
+					continue
+				if usa_missioni and missioni.spreca(c, p, o) and _firma(o) != firma_proposta:
+					continue
+				var c2 := c.copia(seme + figli.size() * 31 + passo * 997)
+				_nuovo_controllo(c2)
+				c2.attivo = p
+				c2._esegui_azione(p, o)
+				c2._controlla_obiettivi()
+				var v := valuta(c2) + _valore(c, p, o) * 0.15
+				# azioni con dadi: un secondo esito per non premiare un tiro fortunato
+				if o["chiave"] in ["attacca", "ob_balrog", "ob_shelob"]:
+					var c3 := c.copia(seme + figli.size() * 37 + passo * 1009 + 5)
+					_nuovo_controllo(c3)
+					c3.attivo = p
+					c3._esegui_azione(p, o)
+					c3._controlla_obiettivi()
+					var v3 := valuta(c3)
+					if v3 < v:
+						# si tiene la copia peggiore: la sequenza deve reggere anche con un tiro sfortunato
+						c2.free()
+						c2 = c3
+						v = v3 + _valore(c, p, o) * 0.15
+					else:
+						c3.free()
+				if passo == 0 and _firma(o) == firma_proposta:
+					v += BONUS_MISSIONE
+				if o["chiave"] == "viaggio" and (_provenienza.get(p, "") == o["luogo"] or nodo["seq"].size() > 0 and _torna_indietro(nodo, o)):
+					v -= 12.0
+				figli.append({"c": c2, "seq": nodo["seq"] + [_firma(o)], "v": v, "da": c.pg[p]["luogo"]})
+		if figli.is_empty():
+			fascio = []
+			break
+		figli.sort_custom(func(a, b): return a["v"] > b["v"])
+		for f in figli.slice(larghezza_fascio):
+			f["c"].free()
+		fascio = figli.slice(0, larghezza_fascio)
+	finiti.append_array(fascio)
+	if finiti.is_empty():
+		return []
+	finiti.sort_custom(func(a, b): return a["v"] > b["v"])
+	# le sequenze migliori giocate fino in fondo (pesca, carte dell'Ombra, turni seguenti)
+	var best: Array = []
+	var bv := -1e18
+	var provate := 0
+	var viste := {}
+	for nodo in finiti:
+		if provate >= piani_finali:
+			break
+		var chiave: String = ",".join(nodo["seq"])
+		if viste.has(chiave):
+			continue
+		viste[chiave] = true
+		provate += 1
+		var tot := 0.0
+		for k in campioni_piano:
+			tot += _gioca_seguito(nodo["c"], m, seme + 15485863 * (k + 1))
+		var v: float = tot / campioni_piano + nodo["v"] * 0.2
+		if v > bv:
+			bv = v
+			best = nodo["seq"]
+	# libera le copie (alcune sono condivise fra "fermarsi" e il fascio)
+	var liberate := {}
+	for nodo in finiti:
+		var c: Motore = nodo["c"]
+		if not liberate.has(c.get_instance_id()):
+			liberate[c.get_instance_id()] = true
+			c.free()
+	if not best.is_empty() and best[0] == "fine":
+		return []
+	return best
+
+
+func _torna_indietro(nodo: Dictionary, o: Dictionary) -> bool:
+	return nodo.get("da", "") == o["luogo"]
+
+
+## Dal punto in cui finisce la sequenza: l'altro personaggio (regole pratiche), pesca, carte dell'Ombra,
+## poi altri turni interi; mazzi coperti rimescolati.
+func _gioca_seguito(foglia: Motore, m: Motore, seme: int) -> float:
+	var c := foglia.copia(seme)
+	_mescola_coperte(c, m)
+	_nuovo_controllo(c)
+	if c.esito == "":
+		c.fase = "pesca"
+		c._pesca_carte()
+	if c.esito == "":
+		c.fase = "ombra"
+		c._carte_ombra()
+	if c.esito == "":
+		if c.solo:
+			c.solo_indice = (c.solo_indice + 1) % c._ordine_solo().size()
+		else:
+			c.turno_di = (c.turno_di + 1) % c.giocatori.size()
+		for t in orizzonte_piano:
+			if c.esito != "":
+				break
+			c._turno()
+	var v := valuta(c)
+	c.free()
+	return v
 
 
 func _azione_senza_missioni(m: Motore, req: Dictionary, op: Array, p: String, preferito := -1) -> int:
@@ -604,7 +788,7 @@ func _rollout(m: Motore, p: String, o: Dictionary, seme: int) -> float:
 			c.solo_indice = (c.solo_indice + 1) % c._ordine_solo().size()
 		else:
 			c.turno_di = (c.turno_di + 1) % c.giocatori.size()
-		for t in orizzonte:
+		for t in orizzonte_piano:
 			if c.esito != "":
 				break
 			c._turno()
