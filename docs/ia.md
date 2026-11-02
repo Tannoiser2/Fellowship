@@ -28,3 +28,11 @@ python3 tools/riassunto_banco.py file.jsonl ...
 - configurazioni: `intro2` (2 giocatori, obiettivi e personaggi introduttivi), `solo` (solitario ufficiale introduttivo), `casuale3`;
 - semi di sviluppo da 1000, semi di verifica da 5000 (non usati per regolare l'IA);
 - i risultati sono in `tests/risultati/`.
+
+## Prove scartate (2 novembre 2026)
+
+Provate e misurate, poi tolte perché sui semi di verifica 5000-5019 non miglioravano (test3_*.jsonl contro test2_dopo_*.jsonl):
+- esercito che prende truppe già sulla mappa (lasciando 1-2 truppe nei rifugi) e tiene la posizione mentre un compagno porta il resto;
+- numero di presidi proporzionale alla minaccia totale (da 1 a 3) e soglia più bassa;
+- Frodo compagno per la Benedizione quando parte insieme a chi la compie (sui semi di sviluppo: Benedizione da 14 a 10 su 20, partite più corte per le ricerche).
+Risultato in verifica: 2 giocatori Benedizione 14 (prima 15), Saruman 7 (prima 9), rifugi persi 1,60 (prima 1,40); solitario rifugi persi 2,05 (prima 1,60).
